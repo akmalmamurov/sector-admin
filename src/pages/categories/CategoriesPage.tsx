@@ -1,8 +1,18 @@
+import CategoiesModal from "@/components/modal/CategoiesModal";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const CategoriesPage = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const toggleModal = () => setIsOpen(!isOpen);
   return (
-    <div>CategoriesPage</div>
-  )
-}
+    <div>
+      <Button className="bg-white text-navMenu px-5" onClick={toggleModal}>
+        Создать
+      </Button>
+      <CategoiesModal isOpen={isOpen} toggleOpen={toggleModal} />
+    </div>
+  );
+};
 
-export default CategoriesPage
+export default CategoriesPage;

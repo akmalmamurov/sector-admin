@@ -26,7 +26,7 @@ export const AdminLayout = () => {
               open ? "pl-[292px]" : "pl-[146px]"
             )}
           >
-            <div className="-mt-32">
+            <div className="-mt-28">
               <Outlet />
             </div>
           </main>

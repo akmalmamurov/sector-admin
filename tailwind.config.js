@@ -4,6 +4,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        montserrat: ["Montserrat", "sans-serif"],
+        roboto: ["Roboto", "sans-serif"],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
@@ -13,7 +17,7 @@ export default {
         header: "#11CDEF",
         navMenu: "#5E72E4",
         itemColor: "#67748E",
-		bodyColor: "rgb(248, 249, 250)",
+        bodyColor: "rgb(248, 249, 250)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {

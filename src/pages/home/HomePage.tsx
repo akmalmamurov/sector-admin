@@ -1,6 +1,10 @@
+import { useCurrentColor } from "@/hooks";
+import classNames from "classnames";
+
 const HomePage = () => {
+  const theme = useCurrentColor();
   return (
-    <div className="bg-white py-20">
+    <div className={classNames("py-20",theme.sidebar)}>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque

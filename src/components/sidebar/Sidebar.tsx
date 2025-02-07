@@ -7,21 +7,26 @@ import {
 import { NavLink } from "react-router-dom";
 import classNames from "classnames";
 import { logo, logoXl } from "@/assets/images";
+import useSettings from "@/context/settings";
+import useSidebarColor from "@/hooks/useSidebar";
 
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
-  { title: "Category", url: "/categories", icon: Grid },
+  { title: "Catalog", url: "/catalog", icon: Grid },
   { title: "Products", url: "/products", icon: ShoppingBasket },
   { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export const SidebarDemo = ({ open }: { open: boolean }) => {
+  const { sidenavColor,} = useSettings();
+  const sidebarTheme = useSidebarColor();
   return (
-    <aside className="pt-5 px-5 fixed left-0 z-50">
+    <aside className="pt-5 px-5 fixed left-0 z-50 ">
       <div
         className={classNames(
-          " bg-white text-black transition-all duration-300 relative overflow-hidden rounded-md shadow-xl",
-          open ? "w-[240px]" : "w-24"
+          ` text-black transition-all duration-300 relative overflow-hidden rounded-md shadow-xl`,
+          open ? "w-[240px]" : "w-24",
+          sidebarTheme.sidebar
         )}
         style={{
           transition: "width 0.5s, padding 0.3s",
@@ -48,12 +53,14 @@ export const SidebarDemo = ({ open }: { open: boolean }) => {
                   to={item.url}
                   className={({ isActive }) =>
                     classNames(
-                      `flex items-center cursor-pointer mb-1 ${
+                      `flex items-center cursor-pointer mb-1 text-sm font-semibold font-montserrat ${
                         open ? "justify-normal" : "justify-center"
-                      } gap-3 px-4 py-3 rounded-md hover:bg-navMenu/80 hover:text-white hoverEffect`,
+                      } gap-3 px-4 py-3 rounded-md`,
                       isActive
-                        ? "bg-navMenu text-white" // Active state styles
-                        : "text-itemColor" // Default state styles
+                        ? sidenavColor && sidenavColor !== ""
+                          ? `${sidenavColor} text-white`
+                          : `${sidebarTheme.linkSideBar} ${sidebarTheme.text}`
+                        : sidebarTheme.text
                     )
                   }
                 >

@@ -2,7 +2,7 @@ import CategoiesModal from "@/components/modal/CategoiesModal";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-const CategoriesPage = () => {
+const CatalogPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const toggleModal = () => setIsOpen(!isOpen);
   return (
@@ -15,4 +15,4 @@ const CategoriesPage = () => {
   );
 };
 
-export default CategoriesPage;
+export default CatalogPage;

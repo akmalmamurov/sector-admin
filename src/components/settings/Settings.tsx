@@ -53,7 +53,7 @@ const SettingsDrawer = ({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         className={classNames(
-          "w-[360px] font-montserrat border-transparent",
+          "w-[360px]  border-transparent",
           theme.drawColor
         )}
       >

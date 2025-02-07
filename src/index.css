@@ -1,4 +1,10 @@
-@import url("./assets/fonts/fonts.css");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap");
+
+body {
+  pointer-events: auto !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -79,15 +85,16 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-roboto;
+    @apply bg-background text-foreground;
   }
-}
-body{
-  pointer-events: auto !important;
 }
 
 @layer components {
   .hoverEffect {
     @apply duration-300 ease-in-out;
+  }
+  .inputs {
+    @apply w-full p-3 text-sm placeholder:text-inputColor/50 focus:outline-none rounded-[8px]
+    ring-1 ring-gray-300 focus:ring-1 focus:shadow-inputShadow;
   }
 }

@@ -18,7 +18,7 @@ const menuItems = [
 ];
 
 export const SidebarDemo = ({ open }: { open: boolean }) => {
-  const { sidenavColor,} = useSettings();
+  const { sidenavColor } = useSettings();
   const sidebarTheme = useSidebarColor();
   return (
     <aside className="pt-5 px-5 fixed left-0 z-50 ">
@@ -53,7 +53,7 @@ export const SidebarDemo = ({ open }: { open: boolean }) => {
                   to={item.url}
                   className={({ isActive }) =>
                     classNames(
-                      `flex items-center cursor-pointer mb-1 text-sm font-semibold font-montserrat ${
+                      `flex items-center cursor-pointer mb-1 text-sm font-semibold  ${
                         open ? "justify-normal" : "justify-center"
                       } gap-3 px-4 py-3 rounded-md`,
                       isActive

@@ -6,8 +6,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        montserrat: ["Montserrat", "sans-serif"],
-        roboto: ["Roboto", "sans-serif"],
+        sans: ["Open Sans", "Helvetica", "Arial", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -25,6 +24,9 @@ export default {
         textColor: "#344767",
         bodyColor: "rgb(248, 249, 250)",
         drawColor: "#111C44",
+        descColor: "#67748E",
+        activeInput: "rgb(17, 205, 239)",
+        inputColor: "rgb(52, 71, 103)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -91,6 +93,12 @@ export default {
           "linear-gradient(310deg, rgb(245, 54, 92), rgb(245, 96, 54))",
         "border-gradient":
           "linear-gradient(to right, rgba(52, 71, 103, 0), rgba(52, 71, 103, 0.4), rgba(52, 71, 103, 0))",
+        "login-gradient":
+          "linear-gradient(310deg, rgb(17, 113, 239), rgb(17, 205, 239));",
+      },
+      boxShadow: {
+        inputShadow:
+          "rgba(17,205,239,0) 0rem 0.18975rem 0.5625rem 0rem, rgba(17,205,239,0.1) 0.1875rem 0.25rem 0.5rem 0rem",
       },
     },
   },

@@ -1,0 +1,104 @@
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import SignRight from "./SignRight";
+import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
+import classNames from "classnames";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
+
+const SignIn = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FieldValues>();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    console.log(data);
+    toast.success("Sign in successfully!");
+  };
+
+  return (
+    <div className="flex min-h-screen bg-white p-4 w-full">
+      <div className="grid grid-cols-2 w-full place-items-center">
+        {/* Left */}
+        <div className="flex flex-col items-center mb-10">
+          <div className="">
+            <h3 className="text-2xl font-semibold text-textColor">Sign In</h3>
+            <p className="text-base text-descColor mt-2">
+              Enter your email and password to sign in
+            </p>
+            <form
+              noValidate
+              onSubmit={handleSubmit(onSubmit)}
+              className="flex flex-col mt-10 gap-5 w-[432px]"
+            >
+              <div>
+                <input
+                  type="text"
+                  {...register("email", { required: "Email is required" })}
+                  className={classNames(
+                    "inputs",
+                    errors.email
+                      ? "ring-red-500 focus:ring-red-500"
+                      : "focus:ring-activeInput"
+                  )}
+                  placeholder="Email"
+                />
+                {errors.email && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {errors.email.message as string}
+                  </span>
+                )}
+              </div>
+              <div className="relative">
+                <input
+                  autoComplete="off"
+                  {...register("password", {
+                    required: "Password is required",
+                  })}
+                  type={showPassword ? "text" : "password"}
+                  className={classNames(
+                    "inputs pr-10",
+                    errors.password
+                      ? "ring-red-500 focus:ring-red-500"
+                      : "focus:ring-activeInput"
+                  )}
+                  placeholder="Password"
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {!showPassword ? (
+                    <Eye className="h-5 w-5 text-gray-500" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-gray-500" />
+                  )}
+                </button>
+                {errors.password && (
+                  <span className="text-red-500 text-sm mt-1">
+                    {errors.password.message as string}
+                  </span>
+                )}
+              </div>
+              <Button
+                type="submit"
+                className="h-[47px] bg-header hover:bg-header/90 hoverEffect shadow-inputShadow mt-12 rounded-[8px] font-bold"
+              >
+                Sign In
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Right */}
+        <SignRight />
+      </div>
+    </div>
+  );
+};
+
+export default SignIn;

@@ -9,39 +9,48 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { CreateButton } from "../create-button";
 import { useEffect } from "react";
-import { Catalog } from "@/types";
-import { useCreateCatalog } from "@/hooks/catalog/create-catalog";
-import { useUpdateCatalog } from "@/hooks/catalog/update-catalog";
+import { Catalog, SubCatalog } from "@/types";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCreateSubCatalog, useUpdateSubCatalog } from "@/hooks";
 
-interface CatalogRequest {
+interface SubCatalogRequest {
   title: string;
+  catalogId: string;
 }
 
-interface CatalogModalProps {
+interface SubCatalogModalProps {
   isOpen: boolean;
-  handleOpen: (elementOrIsOpen?: Catalog | boolean) => void;
-  element: Partial<Catalog>;
+  handleOpen: (elementOrIsOpen?: SubCatalog | boolean) => void;
+  element: Partial<SubCatalog>;
+  catalogs: Catalog[];
 }
 
-export const CatalogModal = ({
+export const SubCatalogModal = ({
   isOpen,
   handleOpen,
   element,
-}: CatalogModalProps) => {
+  catalogs,
+}: SubCatalogModalProps) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
-  } = useForm<CatalogRequest>();
+  } = useForm<SubCatalogRequest>();
 
-  const { mutate: createCatalog } = useCreateCatalog();
+  const { mutate: createSubCatalog } = useCreateSubCatalog();
+  const { mutate: updateSubCatalog } = useUpdateSubCatalog();
 
-  const { mutate: updateCatalog } = useUpdateCatalog();
-
-  const onSubmit = (data: CatalogRequest) => {
+  const onSubmit = (data: SubCatalogRequest) => {
     if (element?.id) {
-      updateCatalog(
+      updateSubCatalog(
         { id: element.id, data },
         {
           onSuccess: () => {
@@ -51,7 +60,7 @@ export const CatalogModal = ({
         }
       );
     } else {
-      createCatalog(data, {
+      createSubCatalog(data, {
         onSuccess: () => {
           handleOpen(false);
           reset();
@@ -63,9 +72,12 @@ export const CatalogModal = ({
   useEffect(() => {
     if (isOpen) {
       if (Object.keys(element).length > 0) {
-        reset({ title: element.title || "" });
+        reset({
+          title: element.title || "",
+          catalogId: element.catalogId || "",
+        });
       } else {
-        reset({ title: "" });
+        reset({ title: "", catalogId: "" });
       }
     }
   }, [isOpen, element, reset]);
@@ -76,23 +88,42 @@ export const CatalogModal = ({
         <DialogHeader className="font-bold">
           <DialogTitle>
             {Object.keys(element).length === 0
-              ? "Create Catalog"
-              : "Update Catalog"}
+              ? "Create Subcatalog"
+              : "Update Subcatalog"}
           </DialogTitle>
         </DialogHeader>
-        <DialogDescription className="hidden">a</DialogDescription>
+        <DialogDescription className="hidden">s</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-1">Select Catalog</label>
+            <Select
+              onValueChange={(value) => setValue("catalogId", value)}
+              defaultValue={element.catalogId}
+            >
+              <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header">
+                <SelectValue placeholder="Select Catalog" />
+              </SelectTrigger>
+              <SelectContent>
+                {catalogs.map((catalog) => (
+                  <SelectItem key={catalog.id} value={catalog.id}>
+                    {catalog.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
           <div>
             <input
               type="text"
               {...register("title", { required: "Title is required" })}
               className={classNames(
-                "inputs ",
+                "inputs",
                 errors.title
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"
               )}
-              placeholder="Catalog Title"
+              placeholder="Subcatalog Title"
             />
             {errors.title && (
               <span className="text-red-500">{errors.title.message}</span>
@@ -113,4 +144,4 @@ export const CatalogModal = ({
   );
 };
 
-export default CatalogModal;
+export default SubCatalogModal;

@@ -5,3 +5,7 @@ export * from "./catalog/create-catalog";
 export * from "./catalog/delete-catalog";
 export * from "./catalog/update-catalog";
 export * from "./catalog/get-catalog";
+export * from "./sub-catalog/get-subcatalog"
+export * from "./sub-catalog/create-subcatalog";
+export * from "./sub-catalog/update-subcatalog";
+export * from "./sub-catalog/delete-subcatalog";

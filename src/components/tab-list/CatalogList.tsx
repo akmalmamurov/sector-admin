@@ -31,7 +31,6 @@ export const CatalogList = () => {
     setIsOpen(true);
   };
 
-  // ✅ `catalogData` endi faqat massiv bo‘ladi
   const { data: catalogData = [], isLoading, error } = useGetCatalog();
 
   const handleDelete = (id: string) => {

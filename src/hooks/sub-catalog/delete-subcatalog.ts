@@ -1,19 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import request from "@/services";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import request from "@/services";
 
-const deleteCatalog = async (id: string): Promise<void> => {
-  await request.delete(`/catalog/delete/${id}`);
+const deleteSubCatalog = async (id: string): Promise<void> => {
+  await request.delete(`/catalog/subcatalog/delete/${id}`);
 };
 
-export const useDeleteCatalog = () => {
+export const useDeleteSubCatalog = () => {
   const queryClient = useQueryClient();
 
   return useMutation<void, AxiosError, { id: string }>({
-    mutationFn: ({ id }) => deleteCatalog(id), 
+    mutationFn: ({ id }) => deleteSubCatalog(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["catalog"] });
+      queryClient.invalidateQueries({ queryKey: ["subcatalog"] });
       toast.success("Catalog deleted successfully!");
     },
     onError: (error) => {

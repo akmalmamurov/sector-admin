@@ -48,7 +48,7 @@ const CatalogPage = () => {
           ))}
         </TabsList>
 
-        <div className="mt-10">
+        <div className="mt-5">
           {tabList.map((el) => (
             <TabsContent key={el.value} value={el.value} className="p-0">
               <el.item />

@@ -19,51 +19,60 @@ const Navbar = ({ open, setOpen, isOpen, setIsOpen }: Props) => {
   const pathnames = location.pathname.split("/").filter((x) => x);
 
   return (
-    <nav className="flex items-center justify-between px-8 h-[75px] text-white ">
-      <div className="flex items-center">
-        <div className="flex items-center gap-2">
-          {/* Home icon */}
-          <Link
-            to="/"
-            className="flex items-center gap-1 text-white hover:text-gray-200"
-          >
-            <Home size={16} />
-            <span className="font-semibold">Home</span>
-          </Link>
+    <nav className=" px-8 h-[75px] text-white ">
+      <div className="flex items-center justify-between py-2">
+        <div className="flex items-center">
+          <div className="flex items-center gap-2">
+            {/* Home icon */}
 
-          {/* Dynamic breadcrumbs */}
-          {pathnames.map((name, index) => {
-            const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
-            const isLast = index === pathnames.length - 1;
+            <Link
+              to="/"
+              className="flex items-center gap-1 text-white hover:text-gray-200"
+            >
+              <Home size={16} />
+              <span className="font-semibold">Home</span>
+            </Link>
 
-            return (
-              <span key={name} className="flex items-center gap-2">
-                <span className="text-white">/</span>
-                {!isLast ? (
-                  <Link to={routeTo} className="hover:text-gray-200 capitalize">
-                    {name.replace("-", " ")}
-                  </Link>
-                ) : (
-                  <span className="capitalize font-semibold">
-                    {name.replace("-", " ")}
-                  </span>
-                )}
-              </span>
-            );
-          })}
+            {/* Dynamic breadcrumbs */}
+            {pathnames.map((name, index) => {
+              const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
+              const isLast = index === pathnames.length - 1;
+
+              return (
+                <span key={name} className="flex items-center gap-2">
+                  <span className="text-white">/</span>
+                  {!isLast ? (
+                    <Link
+                      to={routeTo}
+                      className="hover:text-gray-200 capitalize"
+                    >
+                      {name.replace("-", " ")}
+                    </Link>
+                  ) : (
+                    <span className="capitalize font-semibold">
+                      {name.replace("-", " ")}
+                    </span>
+                  )}
+                </span>
+              );
+            })}
+          </div>
+
+          <BurgerMenuIcon isOpen={open} toggleOpen={toggleOpen} />
         </div>
 
-        <BurgerMenuIcon isOpen={open} toggleOpen={toggleOpen} />
+        <div className="flex items-center gap-5 px-5">
+          <button className="flex gap-1 items-center text-sm capitalize">
+            <UserCircle className="w-5 h-5" />
+            {username}
+          </button>
+          <button onClick={() => setIsOpen(true)}>
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
       </div>
-
-      <div className="flex items-center gap-5 px-5">
-        <button className="flex gap-1 items-center text-sm">
-          <UserCircle className="w-5 h-5" />
-          {username}
-        </button>
-        <button onClick={() => setIsOpen(true)}>
-          <Settings className="w-5 h-5" />
-        </button>
+      <div>
+        <h3 className="capitalize font-semibold">{pathnames}</h3>
       </div>
 
       <SettingsDrawer

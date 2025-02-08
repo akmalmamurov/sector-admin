@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
 import useStore from "@/context/store";
-import { DOMAIN } from "@/constants/api";
+import { DOMAIN } from "@/constants";
 interface ErrorResponse {
     message: string;
   }

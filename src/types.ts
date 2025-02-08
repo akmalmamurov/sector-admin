@@ -21,3 +21,14 @@ export interface UserLogin {
   email: string;
   password: string;
 }
+export interface Catalog {
+  id: string;
+  title: string;
+  subcatalogs: Catalog[];
+}
+
+export interface PageInterface<T> {
+  data: T;
+  error: string | null;
+  status: number;
+}

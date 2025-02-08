@@ -1,4 +1,4 @@
-import { Home, Settings, ShoppingBasket, Grid, LogOut } from "lucide-react";
+import { Home,ShoppingBasket, Grid, LogOut, User2 } from "lucide-react";
 import {
   SidebarContent,
   SidebarMenu,
@@ -15,7 +15,7 @@ const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Catalog", url: "/catalog", icon: Grid },
   { title: "Products", url: "/products", icon: ShoppingBasket },
-  { title: "Settings", url: "/settings", icon: Settings },
+  { title: "Users", url: "/users", icon: User2 },
 ];
 
 export const SidebarDemo = ({ open }: { open: boolean }) => {

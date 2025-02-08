@@ -1,1 +1,1 @@
-export * from "./CategoiesModal";
+export * from "./CatalogModal";

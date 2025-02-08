@@ -1,6 +1,7 @@
 export interface ModalProps {
   isOpen: boolean;
-  toggleOpen: (open: boolean) => void;
+  handleOpen: (isOpen: boolean) => void;
+  element: React.ReactNode;
 }
 export interface ThemeProps {
   text: string;
@@ -16,7 +17,12 @@ export interface ThemeProps {
 }
 
 export type ThemeMap = Record<string, ThemeProps>;
-
+export interface PageInterface<T> {
+  data: T;
+  total?: number;
+  page?: number;
+  limit?: number;
+}
 export interface UserLogin {
   email: string;
   password: string;
@@ -24,11 +30,9 @@ export interface UserLogin {
 export interface Catalog {
   id: string;
   title: string;
-  subcatalogs: Catalog[];
+  subcatalogs?: Catalog[];
 }
 
-export interface PageInterface<T> {
-  data: T;
-  error: string | null;
-  status: number;
+export interface CatalogRequest {
+  title: string;
 }

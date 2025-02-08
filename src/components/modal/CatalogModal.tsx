@@ -33,7 +33,11 @@ export const CatalogModal = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<CatalogRequest>();
+  } = useForm<CatalogRequest>({
+    defaultValues: {
+      title: element?.title || "",
+    },
+  });
 
   const { mutate: createCatalog } = useCreateCatalog();
 
@@ -51,22 +55,26 @@ export const CatalogModal = ({
         }
       );
     } else {
-      createCatalog(data, {
-        onSuccess: () => {
-          handleOpen(false);
-          reset();
+      createCatalog(
+        {
+          ...data,
+          title: data.title.trim(),
         },
-      });
+        {
+          onSuccess: () => {
+            handleOpen(false);
+            reset();
+          },
+        }
+      );
     }
   };
 
   useEffect(() => {
     if (isOpen) {
-      if (Object.keys(element).length > 0) {
-        reset({ title: element.title || "" });
-      } else {
-        reset({ title: "" });
-      }
+      reset({
+        title: element?.title || "",
+      });
     }
   }, [isOpen, element, reset]);
 

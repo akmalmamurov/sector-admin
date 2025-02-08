@@ -60,12 +60,18 @@ export const SubCatalogModal = ({
         }
       );
     } else {
-      createSubCatalog(data, {
-        onSuccess: () => {
-          handleOpen(false);
-          reset();
+      createSubCatalog(
+        {
+          ...data,
+          title: data.title.trim(),
         },
-      });
+        {
+          onSuccess: () => {
+            handleOpen(false);
+            reset();
+          },
+        }
+      );
     }
   };
 

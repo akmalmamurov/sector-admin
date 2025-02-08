@@ -1,2 +1,2 @@
 export * from "./CatalogModal";
-export * from "./SubcatalogModal";
+export * from "./SubCatalogModal";

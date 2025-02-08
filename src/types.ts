@@ -36,12 +36,6 @@ export interface Catalog {
 export interface CatalogRequest {
   title: string;
 }
-export interface Category {
-  id: string;
-  title: string;
-  path: string;
-  subCatalogId: string;
-}
 
 export interface SubCatalog {
   id: string;
@@ -58,4 +52,23 @@ export interface SubCatalogResponse {
 export interface SubCatalogRequest {
   title: string;
   catalogId: string;
+}
+// category
+export interface Category {
+  length: number;
+  id: string;
+  title: string;
+  path: string;
+  subCatalogId: string;
+}
+
+export interface CategoryResponse {
+  data: Category[];
+  error: null | string;
+  status: number;
+}
+export interface CategoryRequest {
+  title: string;
+  path: string;
+  subCatalogId: string;
 }

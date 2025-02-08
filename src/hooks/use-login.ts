@@ -3,7 +3,6 @@ import { UserLogin } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import useStore from "@/context/store";
-import * as API from "@/constants/api"
 interface LoginResponse {
   token: string;
   role: string;
@@ -12,7 +11,7 @@ interface LoginResponse {
 }
 
 const signIn = async (data: UserLogin): Promise<LoginResponse> => {
-  const res = await request.post<LoginResponse>(`${API.DOMAIN}/admin/login`, data);
+  const res = await request.post<LoginResponse>(`/admin/login`, data);
   return res.data;
 };
 

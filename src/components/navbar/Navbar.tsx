@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, Settings, UserCircle } from "lucide-react";
 import BurgerMenuIcon from "../burger-menu/BurgerMenuIcon";
 import SettingsDrawer from "../settings/Settings";
+import useStore from "@/context/store";
 
 interface Props {
   open: boolean;
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const Navbar = ({ open, setOpen, isOpen, setIsOpen }: Props) => {
+  const { username } = useStore();
   const toggleOpen = () => setOpen(!open);
   const location = useLocation();
 
@@ -57,7 +59,7 @@ const Navbar = ({ open, setOpen, isOpen, setIsOpen }: Props) => {
       <div className="flex items-center gap-5 px-5">
         <Link to={"/signin"} className="flex gap-1 items-center text-sm">
           <UserCircle className="w-5 h-5" />
-          Sign in
+       {username}
         </Link>
         <button onClick={() => setIsOpen(true)}>
           <Settings className="w-5 h-5" />

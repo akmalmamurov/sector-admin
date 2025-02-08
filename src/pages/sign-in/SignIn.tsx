@@ -1,22 +1,29 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import SignRight from "./SignRight";
-import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import classNames from "classnames";
 import { Eye, EyeOff } from "lucide-react";
 import { toast } from "react-toastify";
+import { useLogin } from "@/hooks";
+import { UserLogin } from "@/types";
 
 const SignIn = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm<UserLogin>();
   const [showPassword, setShowPassword] = useState(false);
+  const { mutate: signIn } = useLogin();
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit: SubmitHandler<UserLogin> = (data) => {
     console.log(data);
-    toast.success("Sign in successfully!");
+    signIn(data, {
+      onSuccess: () => {
+        toast.success("Sign in successfully!");
+      },
+    });
   };
 
   return (

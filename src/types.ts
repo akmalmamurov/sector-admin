@@ -11,6 +11,13 @@ export interface ThemeProps {
   mainColor: string;
   drawColor: string;
   switch: string;
+  tabActive: string;
+  tabBg: string;
 }
 
 export type ThemeMap = Record<string, ThemeProps>;
+
+export interface UserLogin {
+  email: string;
+  password: string;
+}

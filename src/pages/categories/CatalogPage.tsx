@@ -5,6 +5,8 @@ import {
 } from "@/components/tab-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { tabHeader } from "@/data";
+import { useCurrentColor } from "@/hooks";
+import classNames from "classnames";
 
 const tabList = [
   {
@@ -21,22 +23,31 @@ const tabList = [
   },
 ];
 const CatalogPage = () => {
+  const theme = useCurrentColor();
   return (
     <div>
       {/* tabs */}
       <Tabs defaultValue="catalog" className="w-full">
-        <TabsList className="h-[42px] p-1 font-sans relative">
+        <TabsList
+          className={classNames(
+            "h-[42px] p-1 font-sans relative gap-7",
+            theme.tabBg
+          )}
+        >
           {tabHeader.map((el) => (
             <TabsTrigger
               key={el}
-              className="px-5 h-full text-textColor text-base font-normal py-0 capitalize
-                data-[state=active]:text-textColor"
+              className={classNames(
+                "px-5 h-full text-base font-normal py-0 capitalize",
+                theme.text
+              )}
               value={el}
             >
               {el}
             </TabsTrigger>
           ))}
         </TabsList>
+
         <div className="mt-10">
           {tabList.map((el) => (
             <TabsContent key={el.value} value={el.value} className="p-0">

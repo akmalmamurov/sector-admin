@@ -26,6 +26,8 @@ const useSettings = create<StoreState>((set) => ({
       mainColor: "bg-bodyColor",
       drawColor: "bg-white",
       switch: "input",
+      tabBg: "bg-gray-100",
+      tabActive: "bg-[#FFFFFF]",
     },
     dark: {
       text: "text-white",
@@ -36,6 +38,8 @@ const useSettings = create<StoreState>((set) => ({
       mainColor: "bg-darkBg",
       drawColor: "bg-drawColor",
       switch: "darkBg",
+      tabActive: "bg-darkSidebar",
+      tabBg: "bg-drawColor",
     },
   } as ThemeMap,
 

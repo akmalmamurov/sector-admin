@@ -4,13 +4,10 @@ import * as path from "node:path";
 
 export default defineConfig({
   plugins: [react()],
+  base: "./",
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
-  },
-  base: "/",
-  build: {
-    outDir: "dist",
   },
 });

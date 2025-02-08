@@ -1,11 +1,11 @@
 import axios, { AxiosResponse, AxiosError, InternalAxiosRequestConfig } from "axios";
-import * as API from "@/constants/api";
 import useStore from "@/context/store";
+import { DOMAIN } from "@/constants/api";
 interface ErrorResponse {
     message: string;
   }
 const request = axios.create({
-  baseURL: API.DOMAIN,
+  baseURL: DOMAIN,
   headers: {
     "Content-Type": "application/json",
   },

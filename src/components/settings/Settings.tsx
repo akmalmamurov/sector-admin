@@ -9,6 +9,7 @@ import classNames from "classnames";
 import { Switch } from "../ui/switch";
 import useSettings from "@/context/settings";
 import { useCurrentColor } from "@/hooks";
+import { X } from "lucide-react";
 
 interface SettingsDrawerProps {
   open: boolean;
@@ -52,11 +53,14 @@ const SettingsDrawer = ({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
-        className={classNames(
-          "w-[360px]  border-transparent",
-          theme.drawColor
-        )}
+        className={classNames("w-[360px]  border-transparent", theme.drawColor)}
       >
+        <button
+          onClick={() => setOpen(false)}
+          className="absolute top-3.5 right-4 p-1 rounded-md  "
+        >
+          <X className={classNames("h-5 w-5", theme.text)} />
+        </button>
         <SheetHeader className="pb-2">
           <SheetTitle className={theme.text}>Settings</SheetTitle>
           <SheetDescription className={theme.text}>
@@ -89,7 +93,9 @@ const SettingsDrawer = ({
             <h3 className={classNames("font-semibold ", theme.text)}>
               Sidenav Type
             </h3>
-            <p className={classNames("text-sm",theme.text)}>Choose between 2 different sidenav types.</p>
+            <p className={classNames("text-sm", theme.text)}>
+              Choose between 2 different sidenav types.
+            </p>
             <div className="flex mt-3 gap-2">
               <button
                 onClick={() => setSideNavType("white")}

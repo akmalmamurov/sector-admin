@@ -57,10 +57,10 @@ const Navbar = ({ open, setOpen, isOpen, setIsOpen }: Props) => {
       </div>
 
       <div className="flex items-center gap-5 px-5">
-        <Link to={"/signin"} className="flex gap-1 items-center text-sm">
+        <button className="flex gap-1 items-center text-sm">
           <UserCircle className="w-5 h-5" />
-       {username}
-        </Link>
+          {username}
+        </button>
         <button onClick={() => setIsOpen(true)}>
           <Settings className="w-5 h-5" />
         </button>

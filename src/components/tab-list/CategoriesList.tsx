@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { CreateButton } from "../create-button";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -25,12 +24,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  useCurrentColor,
   useDeleteCategory,
   useGetCatalog,
   useGetCategories,
   useGetSubCatalogs,
 } from "@/hooks";
 import CategoriesModal from "../modal/CategoriesModal";
+import classNames from "classnames";
 
 export const CategoriesList = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -49,8 +50,7 @@ export const CategoriesList = () => {
   >(subCatalogData.length > 0 ? subCatalogData[0]?.id : null);
 
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
-  console.log(categoriesData);
-  
+  const theme = useCurrentColor();
 
   const { mutate: deleteCategory } = useDeleteCategory();
 
@@ -68,9 +68,11 @@ export const CategoriesList = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-md shadow-md">
+    <div className={classNames("p-6  rounded-md shadow-md", theme.sidebar)}>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Categories List</h2>
+        <h2 className={classNames("text-xl font-semibold", theme.text)}>
+          Categories List
+        </h2>
         <div className="flex gap-5">
           <Select
             onValueChange={(value) => {
@@ -82,7 +84,7 @@ export const CategoriesList = () => {
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
               <SelectValue placeholder="Select Catalog" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={theme.bg}>
               {catalogData.map((catalog) => (
                 <SelectItem
                   key={catalog.id}
@@ -102,7 +104,7 @@ export const CategoriesList = () => {
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
               <SelectValue placeholder="Select Subcatalog" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={theme.bg}>
               {subCatalogData.map((subcatalog) => (
                 <SelectItem
                   key={subcatalog.id}
@@ -125,37 +127,82 @@ export const CategoriesList = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Categories path</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5",
+                    theme.text
+                  )}
+                >
+                  Title
+                </TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5",
+                    theme.text
+                  )}
+                >
+                  Categories path
+                </TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5 text-right",
+                    theme.text
+                  )}
+                >
+                  Action
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {categoriesData?.map((category) => (
                 <TableRow key={category?.id}>
-                  <TableCell>{category?.title}</TableCell>
-                  <TableCell>{category?.path}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell
+                    className={classNames("text-sm px-6 py-1", theme.text)}
+                  >
+                    {category?.title}
+                  </TableCell>
+                  <TableCell
+                    className={classNames("text-sm px-6 py-1", theme.text)}
+                  >
+                    {category?.path}
+                  </TableCell>
+                  <TableCell
+                    className={classNames(
+                      "text-sm px-6 py-1 text-end",
+                      theme.text
+                    )}
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="w-4 h-4" />
-                        </Button>
+                        <button className="h-8 w-8 p-0  ">
+                          <MoreHorizontal
+                            className={classNames("w-4 h-4 ", theme.text)}
+                          />
+                        </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent
+                        align="end"
+                        className={classNames(theme.bg)}
+                      >
                         <DropdownMenuItem>
                           <button
                             onClick={() => handleOpen(category)}
                             className="w-full flex justify-center items-center"
                           >
                             <Edit className="mr-2 w-4 h-4 text-blue-600" />
-                            <span className="min-w-[47px]">Edit</span>
+                            <span className={`min-w-[47px] ${theme.text}`}>
+                              Edit
+                            </span>
                           </button>
                         </DropdownMenuItem>
+
                         <DropdownMenuItem>
                           <button
                             onClick={() => handleDelete(category.id)}
-                            className="w-full flex justify-center items-center"
+                            className={classNames(
+                              "w-full flex justify-center items-center",
+                              theme.text
+                            )}
                           >
                             <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
                             Delete

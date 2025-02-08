@@ -12,6 +12,8 @@ import { useEffect } from "react";
 import { Catalog } from "@/types";
 import { useCreateCatalog } from "@/hooks/catalog/create-catalog";
 import { useUpdateCatalog } from "@/hooks/catalog/update-catalog";
+import { useCurrentColor } from "@/hooks";
+import { X } from "lucide-react";
 
 interface CatalogRequest {
   title: string;
@@ -38,7 +40,7 @@ export const CatalogModal = ({
       title: element?.title || "",
     },
   });
-
+  const theme = useCurrentColor();
   const { mutate: createCatalog } = useCreateCatalog();
 
   const { mutate: updateCatalog } = useUpdateCatalog();
@@ -80,13 +82,16 @@ export const CatalogModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
-      <DialogContent>
+      <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle>
+          <DialogTitle className={theme.text}>
             {Object.keys(element).length === 0
               ? "Create Catalog"
               : "Update Catalog"}
           </DialogTitle>
+          <button onClick={() => handleOpen(false)}>
+            <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
+          </button>
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -95,7 +100,7 @@ export const CatalogModal = ({
               type="text"
               {...register("title", { required: "Title is required" })}
               className={classNames(
-                "inputs ",
+                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
                 errors.title
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"

@@ -17,7 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateSubCatalog, useUpdateSubCatalog } from "@/hooks";
+import {
+  useCreateSubCatalog,
+  useCurrentColor,
+  useUpdateSubCatalog,
+} from "@/hooks";
+import { X } from "lucide-react";
 
 interface SubCatalogRequest {
   title: string;
@@ -47,7 +52,7 @@ export const SubCatalogModal = ({
 
   const { mutate: createSubCatalog } = useCreateSubCatalog();
   const { mutate: updateSubCatalog } = useUpdateSubCatalog();
-
+  const theme = useCurrentColor();
   const onSubmit = (data: SubCatalogRequest) => {
     if (element?.id) {
       updateSubCatalog(
@@ -90,18 +95,28 @@ export const SubCatalogModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
-      <DialogContent>
+      <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle>
+          <DialogTitle className={theme.text}>
             {Object.keys(element).length === 0
               ? "Create Subcatalog"
               : "Update Subcatalog"}
           </DialogTitle>
+          <button onClick={() => handleOpen(false)}>
+            <X
+              className={classNames(
+                theme.text,
+                "w-6 h-6 absolute top-4 right-4"
+              )}
+            />
+          </button>
         </DialogHeader>
         <DialogDescription className="hidden">s</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Select Catalog</label>
+            <label className={classNames("block  mb-1", theme.text)}>
+              Select Catalog
+            </label>
             <Select
               onValueChange={(value) => setValue("catalogId", value)}
               defaultValue={element.catalogId}
@@ -109,9 +124,9 @@ export const SubCatalogModal = ({
               <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header">
                 <SelectValue placeholder="Select Catalog" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={theme.bg}>
                 {catalogs.map((catalog) => (
-                  <SelectItem key={catalog.id} value={catalog.id}>
+                  <SelectItem key={catalog.id} value={catalog.id} className={`${theme.text} cursor-pointer`}>
                     {catalog.title}
                   </SelectItem>
                 ))}
@@ -124,7 +139,7 @@ export const SubCatalogModal = ({
               type="text"
               {...register("title", { required: "Title is required" })}
               className={classNames(
-                "inputs",
+                `inputs ${theme.sidebar} ${theme.text}`,
                 errors.title
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"

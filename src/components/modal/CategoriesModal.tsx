@@ -17,7 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateCategory, useGetSubCatalogs } from "@/hooks";
+import { useCreateCategory, useCurrentColor, useGetSubCatalogs } from "@/hooks";
+import { X } from "lucide-react";
 
 interface CategoriesModalProps {
   isOpen: boolean;
@@ -44,6 +45,7 @@ export const CategoriesModal = ({
     catalogs.length > 0 ? catalogs[0].id : null
   );
 
+  const theme = useCurrentColor();
   const { data: subCatalogs = [] } = useGetSubCatalogs(selectedCatalogId);
   const { mutate: createCategory } = useCreateCategory();
 
@@ -66,26 +68,34 @@ export const CategoriesModal = ({
   useEffect(() => {
     if (isOpen) {
       reset({
-        title: element?.title || "", 
-        path: element?.path || "", 
-        subCatalogId: element?.subCatalogId || "", 
+        title: element?.title || "",
+        path: element?.path || "",
+        subCatalogId: element?.subCatalogId || "",
       });
-  
+
       setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
     }
   }, [isOpen, element, catalogs, reset]);
-  
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
-      <DialogContent>
+      <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle>{Object.keys(element).length === 0 ? "Create Category" : "Update Category"} Category</DialogTitle>
+          <DialogTitle className={theme.text}>
+            {Object.keys(element).length === 0
+              ? "Create Category"
+              : "Update Category"}{" "}
+          </DialogTitle>
         </DialogHeader>
+        <button onClick={() => handleOpen(false)}>
+          <X
+            className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")}
+          />
+        </button>
         <DialogDescription className="hidden">s</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Select Catalog</label>
+            <label className={`block mb-1 ${theme.text}`}>Select Catalog</label>
             <Select
               onValueChange={(value) => {
                 setSelectedCatalogId(value);
@@ -96,7 +106,7 @@ export const CategoriesModal = ({
               <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header">
                 <SelectValue placeholder="Select Catalog" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className={`${theme.bg} ${theme.text}`}>
                 {catalogs.map((catalog) => (
                   <SelectItem key={catalog.id} value={catalog.id}>
                     {catalog.title}
@@ -107,7 +117,7 @@ export const CategoriesModal = ({
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">
+            <label className={`block mb-1 ${theme.text}`}>
               Select Subcatalog
             </label>
             <Controller
@@ -128,10 +138,10 @@ export const CategoriesModal = ({
                   >
                     <SelectValue placeholder="Select Subcatalog" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className={`${theme.bg} ${theme.text}`}>
                     {subCatalogs.map((subcatalog) => (
                       <SelectItem key={subcatalog.id} value={subcatalog.id}>
-                        {subcatalog.title}
+                        {subcatalog.title || "Create Subcatalog"}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -150,7 +160,7 @@ export const CategoriesModal = ({
               type="text"
               {...register("title", { required: "Title is required" })}
               className={classNames(
-                "inputs",
+                `inputs ${theme.sidebar} ${theme.text}`,
                 errors.title
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"
@@ -166,7 +176,7 @@ export const CategoriesModal = ({
               type="text"
               {...register("path", { required: "Path is required" })}
               className={classNames(
-                "inputs",
+                `inputs ${theme.sidebar} ${theme.text}`,
                 errors.path
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"
@@ -183,7 +193,7 @@ export const CategoriesModal = ({
               Cancel
             </CreateButton>
             <CreateButton type="submit">
-            {Object.keys(element).length === 0 ? "Create" : "Update"}
+              {Object.keys(element).length === 0 ? "Create" : "Update"}
             </CreateButton>
           </div>
         </form>

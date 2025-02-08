@@ -24,8 +24,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDeleteSubCatalog, useGetCatalog, useGetSubCatalogs } from "@/hooks";
+import {
+  useCurrentColor,
+  useDeleteSubCatalog,
+  useGetCatalog,
+  useGetSubCatalogs,
+} from "@/hooks";
 import { SubCatalogModal } from "../modal";
+import classNames from "classnames";
 
 export const SubCatalogList = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +40,7 @@ export const SubCatalogList = () => {
   const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
     catalogData[0]?.id
   );
+  const theme = useCurrentColor();
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
   const { mutate: deleteSubCatalog } = useDeleteSubCatalog();
@@ -50,9 +57,11 @@ export const SubCatalogList = () => {
   };
 
   return (
-    <div className="p-6 bg-white rounded-md shadow-md">
+    <div className={classNames("p-6  rounded-md shadow-md", theme.sidebar)}>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Subcatalog Table</h2>
+        <h2 className={classNames("text-xl font-semibold", theme.text)}>
+          Subcatalog Table
+        </h2>
 
         <div>
           <Select
@@ -62,7 +71,7 @@ export const SubCatalogList = () => {
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
               <SelectValue placeholder="Select Catalog" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className={theme.bg}>
               {catalogData.map((catalog) => (
                 <SelectItem
                   key={catalog.id}
@@ -86,37 +95,81 @@ export const SubCatalogList = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                <TableHead>Categories Count</TableHead>
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5",
+                    theme.text
+                  )}
+                >
+                  Title
+                </TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5",
+                    theme.text
+                  )}
+                >
+                  Categories Count
+                </TableHead>
+                <TableHead
+                  className={classNames(
+                    "font-medium text-sm uppercase px-5 text-right",
+                    theme.text
+                  )}
+                >
+                  Action
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {subCatalogData.map((sub: SubCatalog) => (
                 <TableRow key={sub.id}>
-                  <TableCell>{sub.title}</TableCell>
-                  <TableCell>{sub.categories?.length || 0}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell
+                    className={classNames("text-sm px-6 py-1", theme.text)}
+                  >
+                    {sub.title}
+                  </TableCell>
+                  <TableCell
+                    className={classNames("text-sm px-6 py-1", theme.text)}
+                  >
+                    {sub.categories?.length || 0}
+                  </TableCell>
+                  <TableCell
+                    className={classNames(
+                      "text-sm px-6 py-1 text-end",
+                      theme.text
+                    )}
+                  >
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
-                          <MoreHorizontal className="w-4 h-4" />
+                          <MoreHorizontal
+                            className={classNames("w-4 h-4", theme.text)}
+                          />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent
+                        align="end"
+                        className={classNames(theme.bg)}
+                      >
                         <DropdownMenuItem>
                           <button
                             onClick={() => handleOpen(sub)}
                             className="w-full flex justify-center items-center"
                           >
                             <Edit className="mr-2 w-4 h-4 text-blue-600" />
-                            <span className="min-w-[47px]">Edit</span>
+                            <span className={`min-w-[47px] ${theme.text}`}>
+                              Edit
+                            </span>
                           </button>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                           <button
                             onClick={() => handleDelete(sub.id)}
-                            className="w-full flex justify-center items-center"
+                            className={classNames(
+                              "w-full flex justify-center items-center",
+                              theme.text
+                            )}
                           >
                             <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
                             Delete

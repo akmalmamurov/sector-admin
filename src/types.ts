@@ -76,7 +76,7 @@ export interface CategoryRequest {
 export interface BrandRequest {
   id: string;
   title: string;
-  path: string;
+  logo: File | null;
 }
 export interface Brand {
   id: string;

@@ -1,4 +1,4 @@
-import { BrandRequest } from "@/types";
+import { Brand, BrandRequest } from "@/types";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -17,7 +17,7 @@ import { DOMAIN } from "@/constants";
 interface Props {
   isOpen: boolean;
   handleOpen: (isOpen: boolean) => void;
-  element: Partial<BrandRequest>;
+  element: Partial<Brand>;
 }
 
 export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
@@ -43,11 +43,11 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     formData.append("title", data.title.trim());
 
     if (file) {
-      formData.append("path", file); 
+      formData.append("logo", file); 
     } else if (element?.path) {
-      formData.append("path", element.path);
+      formData.append("logo", element.path);
     } else {
-      setError("path", { type: "manual", message: "Image is required" }); 
+      setError("logo", { type: "manual", message: "Image is required" }); 
       return;
     }
 
@@ -82,7 +82,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       });
 
       if (element?.path) {
-        setPreview(`${DOMAIN}/${element.path}`); 
+        setPreview(`${DOMAIN}/brands/${element.path}`); 
       } else {
         setPreview(null);
       }
@@ -95,7 +95,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      clearErrors("path"); 
+      clearErrors("logo"); 
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
@@ -149,7 +149,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
                 className="mt-2 max-h-32 mx-auto"
               />
             )}
-            {errors.path && <span className="text-red-500">{errors.path.message}</span>}
+            {errors.logo && <span className="text-red-500">{errors.logo.message}</span>}
           </div>
 
           <div className="flex justify-end gap-4 mt-4">

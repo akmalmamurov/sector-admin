@@ -82,7 +82,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       });
 
       if (element?.path) {
-        setPreview(`${DOMAIN}/brands/${element.path}`); 
+        setPreview(`${DOMAIN}/${element.path}`); 
       } else {
         setPreview(null);
       }

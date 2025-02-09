@@ -58,7 +58,7 @@ export const BrandTable = ({ handleOpen, brandData }: Props) => {
               {brand?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              <img src={`${DOMAIN}/brands/${brand?.path}`} alt={brand?.title} className="w-10 h-10" />
+              <img src={`${DOMAIN}/${brand?.path}`} alt={brand?.title} className="w-10 h-10" />
             </TableCell>
             <TableCell
               className={classNames("text-sm px-6 py-1 text-end", theme.text)}

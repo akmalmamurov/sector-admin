@@ -30,8 +30,10 @@ request.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     const errorMessage = (error.response?.data as ErrorResponse)?.message;
+    console.log(errorMessage);
+    
 
-    if (errorMessage === "Token not verified!") {
+    if (errorMessage === "Admin not found") {
       const { logOut } = useStore.getState();
       logOut();
       window.location.href = "/signin";

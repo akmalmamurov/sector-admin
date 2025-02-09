@@ -8,10 +8,9 @@ import {
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { useCurrentColor } from "@/hooks";
-import { Catalog, SubCatalog,  } from "@/types"; // Subcatalog qo‘shildi
+import { Brand, Catalog, Category, SubCatalog,  } from "@/types"; 
 
-// `T` faqat Catalog yoki Subcatalog bo‘lishi mumkin
-type ItemType = Catalog | SubCatalog;
+type ItemType = Catalog | SubCatalog | Category | Brand;
 
 interface UpDeleteProps<T extends ItemType> {
   item: T;

@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { SubCatalog, SubCatalogRequest } from "@/types";
 import { UPDATE_SUBCATALOG } from "@/constants";
+import { toast } from "react-toastify";
 
 const updateSubCatalog = async ({
   id,
@@ -26,6 +27,10 @@ export const useUpdateSubCatalog = () => {
     mutationFn: updateSubCatalog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subcatalog"] });
+      toast.success("Updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 };

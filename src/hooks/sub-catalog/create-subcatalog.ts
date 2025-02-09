@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_SUBCATALOG } from "@/constants";
 import { SubCatalog, SubCatalogRequest } from "@/types";
+import { toast } from "react-toastify";
 
 const createSubCatalog = async (
   data: SubCatalogRequest
@@ -18,6 +19,10 @@ export const useCreateSubCatalog = () => {
     mutationFn: createSubCatalog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subcatalog"] });
+      toast.success("Created successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 };

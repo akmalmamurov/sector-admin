@@ -14,10 +14,9 @@ export const useDeleteSubCatalog = () => {
     mutationFn: ({ id }) => deleteSubCatalog(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subcatalog"] });
-      toast.success("Catalog deleted successfully!");
+      toast.success("Deleted successfully!");
     },
     onError: (error) => {
-      console.error("Delete failed:", error.message);
       toast.error(`Error: ${error.message}`);
     },
   });

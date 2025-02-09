@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { Category, CategoryRequest } from "@/types";
 import { UPDATE_CATEGORY } from "@/constants";
+import { toast } from "react-toastify";
 
 const updateCategory = async ({
   id,
@@ -26,6 +27,10 @@ export const useUpdateCategory = () => {
     mutationFn: updateCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["category"] });
+      toast.success("Updated successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 };

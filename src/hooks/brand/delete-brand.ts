@@ -3,17 +3,17 @@ import request from "@/services";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
-const deleteCatalog = async (id: string): Promise<void> => {
-  await request.delete(`/catalog/delete/${id}`);
+const deleteBrand = async (id: string): Promise<void> => {
+  await request.delete(`/brand/delete/${id}`);
 };
 
-export const useDeleteCatalog = () => {
+export const useDeleteBrand = () => {
   const queryClient = useQueryClient();
 
   return useMutation<void, AxiosError, { id: string }>({
-    mutationFn: ({ id }) => deleteCatalog(id), 
+    mutationFn: ({ id }) => deleteBrand(id), 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["catalog"] });
+      queryClient.invalidateQueries({ queryKey: ["brand"] });
       toast.success("Deleted successfully!");
     },
     onError: (error) => {

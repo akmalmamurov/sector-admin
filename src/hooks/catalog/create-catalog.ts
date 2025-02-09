@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_CATALOG } from "@/constants";
 import { Catalog, CatalogRequest } from "@/types";
+import { toast } from "react-toastify";
 
 const createCatalog = async (data: CatalogRequest): Promise<Catalog> => {
   const res = await request.post<Catalog>(CREATE_CATALOG, data);
@@ -16,6 +17,10 @@ export const useCreateCatalog = () => {
     mutationFn: createCatalog,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["catalog"] });
+      toast.success("Created successfully!");
+    },
+    onError: (error) => {
+      toast.error(`Error: ${error.message}`);
     },
   });
 };

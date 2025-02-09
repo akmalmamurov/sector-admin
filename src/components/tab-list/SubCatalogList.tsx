@@ -59,7 +59,7 @@ export const SubCatalogList = () => {
       </div>
 
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        {subCatalogData.length > 0 ? (
+        {subCatalogData?.length > 0 ? (
           <SubCatalogTable
             subCatalogData={subCatalogData}
             handleOpen={handleOpen}

@@ -74,11 +74,12 @@ export interface CategoryRequest {
 }
 
 export interface BrandRequest {
+  id: string;
   title: string;
-  url: string;
+  path: string;
 }
 export interface Brand {
   id: string;
   title: string;
-  url: string;
+  path: string;
 }

@@ -13,3 +13,7 @@ export * from "./category/get-category";
 export * from "./category/create-category";
 export * from "./category/update-category";
 export * from "./category/delete-category";
+export * from "./brand/create-brand";
+export * from "./brand/delete-brand";
+export * from "./brand/update-brand";
+export * from "./brand/get-brand";

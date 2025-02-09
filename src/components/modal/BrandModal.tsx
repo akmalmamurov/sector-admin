@@ -9,40 +9,108 @@ import {
 } from "../ui/dialog";
 import classNames from "classnames";
 import { CreateButton } from "../create-button";
-import { useCurrentColor } from "@/hooks";
+import { useCreateBrand, useCurrentColor, useUpdateBrand } from "@/hooks";
 import { X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { DOMAIN } from "@/constants";
 
 interface Props {
   isOpen: boolean;
   handleOpen: (isOpen: boolean) => void;
   element: Partial<BrandRequest>;
 }
+
 export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   const theme = useCurrentColor();
+  const { mutate: createBrand } = useCreateBrand();
+  const { mutate: updateBrand } = useUpdateBrand();
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+
   const {
     register,
     handleSubmit,
+    reset,
+    setError,
+    clearErrors, 
     formState: { errors },
   } = useForm<BrandRequest>();
-  const onSubmit = (data: BrandRequest) => {
-    console.log(data);
+
+  console.log(element);
+
+  const onSubmit = async (data: BrandRequest) => {
+    const formData = new FormData();
+    formData.append("title", data.title.trim());
+
+    if (file) {
+      formData.append("path", file); 
+    } else if (element?.path) {
+      formData.append("path", element.path);
+    } else {
+      setError("path", { type: "manual", message: "Image is required" }); 
+      return;
+    }
+
+    if (element?.id) {
+      updateBrand(
+        { id: element.id, data: formData },
+        {
+          onSuccess: () => {
+            handleOpen(false);
+            reset();
+            setPreview(null);
+            setFile(null);
+          },
+        }
+      );
+    } else {
+      createBrand(formData, {
+        onSuccess: () => {
+          handleOpen(false);
+          reset();
+          setPreview(null);
+          setFile(null);
+        },
+      });
+    }
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        title: element?.title || "",
+      });
+
+      if (element?.path) {
+        setPreview(`${DOMAIN}/${element.path}`); 
+      } else {
+        setPreview(null);
+      }
+
+      setFile(null);
+    }
+  }, [isOpen, element, reset]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+      clearErrors("path"); 
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
-            {Object.keys(element).length === 0
-              ? "Create Catalog"
-              : "Update Catalog"}
+            {Object.keys(element).length === 0 ? "Create Catalog" : "Update Catalog"}
           </DialogTitle>
           <button onClick={() => handleOpen(false)}>
-            <X
-              className={classNames(
-                theme.text,
-                "w-6 h-6 absolute top-4 right-4"
-              )}
-            />
+            <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
           </button>
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
@@ -53,31 +121,35 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               {...register("title", { required: "Title is required" })}
               className={classNames(
                 `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                errors.title
-                  ? "ring-red-500 focus:ring-red-500"
-                  : "focus:ring-activeInput"
+                errors.title ? "ring-red-500 focus:ring-red-500" : "focus:ring-activeInput"
               )}
               placeholder="Brand Title"
             />
-            {errors.title && (
-              <span className="text-red-500">{errors.title.message}</span>
-            )}
+            {errors.title && <span className="text-red-500">{errors.title.message}</span>}
           </div>
+
           <div className="mt-4">
             <input
-              type="text"
-              {...register("url", { required: "Url is required" })}
-              className={classNames(
-                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                errors.url
-                  ? "ring-red-500 focus:ring-red-500"
-                  : "focus:ring-activeInput"
-              )}
-              placeholder="Url"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+              id="path-upload"
             />
-            {errors.url && (
-              <span className="text-red-500">{errors.url.message}</span>
+            <label
+              htmlFor="path-upload"
+              className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
+            >
+              Upload path
+            </label>
+            {preview && (
+              <img
+                src={preview}
+                alt="path Preview"
+                className="mt-2 max-h-32 mx-auto"
+              />
             )}
+            {errors.path && <span className="text-red-500">{errors.path.message}</span>}
           </div>
 
           <div className="flex justify-end gap-4 mt-4">

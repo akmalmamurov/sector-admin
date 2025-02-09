@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { Catalog, CatalogRequest } from "@/types";
 import { UPDATE_CATALOG } from "@/constants";
+import { toast } from "react-toastify";
 
 const updateCatalog = async ({
   id,
@@ -23,6 +24,10 @@ export const useUpdateCatalog = () => {
       mutationFn: updateCatalog,
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["catalog"] });
+        toast.success("Updated successfully!");
+      },
+      onError: (error) => {
+        toast.error(`Error: ${error.message}`);
       },
     }
   );

@@ -72,3 +72,13 @@ export interface CategoryRequest {
   path: string;
   subCatalogId: string;
 }
+
+export interface BrandRequest {
+  title: string;
+  url: string;
+}
+export interface Brand {
+  id: string;
+  title: string;
+  url: string;
+}

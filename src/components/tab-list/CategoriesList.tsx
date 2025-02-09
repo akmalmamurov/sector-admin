@@ -60,7 +60,7 @@ export const CategoriesList = () => {
             </SelectContent>
           </Select>
         </div>
-        <CreateButton onClick={() => handleOpen()}>Create Categories</CreateButton>
+        <CreateButton onClick={() => handleOpen()}>Create Category</CreateButton>
       </div>
 
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">

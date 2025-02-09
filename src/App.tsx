@@ -6,6 +6,7 @@ import CatalogPage from "@/pages/categories/CatalogPage";
 import SignIn from "@/pages/sign-in/SignIn";
 import useStore from "@/context/store";
 import UsersPage from "@/pages/user/UsersPage";
+import BrandPage from "./pages/brand/BrandPage";
 
 function App() {
   const { auth } = useStore();
@@ -24,6 +25,7 @@ function App() {
             <Route path="/catalog" element={<CatalogPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/brands" element={<BrandPage />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

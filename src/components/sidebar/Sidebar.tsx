@@ -1,11 +1,7 @@
-import { Home,ShoppingBasket, Grid, LogOut, User2 } from "lucide-react";
-import {
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { NavLink } from "react-router-dom";
 import classNames from "classnames";
+import { Home,ShoppingBasket, Grid, LogOut, User2,  Earth } from "lucide-react";
+import { NavLink } from "react-router-dom";
+import { SidebarContent, SidebarMenu, SidebarMenuItem, } from "@/components/ui/sidebar";
 import { logo, logoXl } from "@/assets/images";
 import useSettings from "@/context/settings";
 import useSidebarColor from "@/hooks/useSidebar";
@@ -15,6 +11,7 @@ const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Catalog", url: "/catalog", icon: Grid },
   { title: "Products", url: "/products", icon: ShoppingBasket },
+  { title: "Brands", url: "/brands", icon: Earth },
   { title: "Users", url: "/users", icon: User2 },
 ];
 

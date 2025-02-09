@@ -1,36 +1,27 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { useForm, Controller } from "react-hook-form";
-import classNames from "classnames";
-import { CreateButton } from "../create-button";
-import { useEffect, useState } from "react";
-import { Catalog, Category, CategoryRequest } from "@/types";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useCreateCategory, useCurrentColor, useGetSubCatalogs } from "@/hooks";
 import { X } from "lucide-react";
+import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState } from "react";
+import classNames from "classnames";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from "../ui/dialog";
+import { CreateButton } from "../create-button";
+import { Catalog, Category, CategoryRequest, SubCatalog } from "@/types";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { useCreateCategory, useCurrentColor, useUpdateCategory } from "@/hooks";
 
 interface CategoriesModalProps {
   isOpen: boolean;
   handleOpen: (elementOrIsOpen?: boolean | Category) => void;
   element: Partial<Category>;
   catalogs: Catalog[];
+  subCatalogs: SubCatalog[];
 }
 
 export const CategoriesModal = ({
   isOpen,
   handleOpen,
   catalogs,
+  subCatalogs,
   element,
 }: CategoriesModalProps) => {
   const {
@@ -41,15 +32,39 @@ export const CategoriesModal = ({
     formState: { errors },
   } = useForm<CategoryRequest>();
 
+  const theme = useCurrentColor();
+  const { mutate: createCategory } = useCreateCategory();
+  const { mutate: updateCategory } = useUpdateCategory();
+
   const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
-    catalogs.length > 0 ? catalogs[0].id : null
+    element?.subCatalogId
+      ? subCatalogs.find((sc) => sc.id === element.subCatalogId)?.catalogId ||
+          null
+      : catalogs.length > 0
+      ? catalogs[0].id
+      : null
   );
 
-  const theme = useCurrentColor();
-  const { data: subCatalogs = [] } = useGetSubCatalogs(selectedCatalogId);
-  const { mutate: createCategory } = useCreateCategory();
+  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<
+    string | null
+  >(element?.subCatalogId || "");
+
+  const filteredSubCatalogs = subCatalogs.filter(
+    (sc) => sc.catalogId === selectedCatalogId
+  );
 
   const onSubmit = (data: CategoryRequest) => {
+    if (element?.id) {
+      updateCategory(
+        { id: element.id, data },
+        {
+          onSuccess: () => {
+            handleOpen(false);
+            reset();
+          },
+        }
+      );
+    }
     createCategory(
       {
         ...data,
@@ -73,18 +88,26 @@ export const CategoriesModal = ({
         subCatalogId: element?.subCatalogId || "",
       });
 
-      setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
+      if (element?.subCatalogId) {
+        setSelectedSubCatalogId(element.subCatalogId);
+        const relatedCatalog = subCatalogs.find(
+          (sc) => sc.id === element.subCatalogId
+        )?.catalogId;
+        if (relatedCatalog) {
+          setSelectedCatalogId(relatedCatalog);
+        }
+      } else {
+        setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
+      }
     }
-  }, [isOpen, element, catalogs, reset]);
+  }, [isOpen, element, catalogs, subCatalogs, reset]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
-            {Object.keys(element).length === 0
-              ? "Create Category"
-              : "Update Category"}{" "}
+            {element?.id ? "Update Category" : "Create Category"}
           </DialogTitle>
         </DialogHeader>
         <button onClick={() => handleOpen(false)}>
@@ -99,6 +122,7 @@ export const CategoriesModal = ({
             <Select
               onValueChange={(value) => {
                 setSelectedCatalogId(value);
+                setSelectedSubCatalogId(null);
                 reset({ subCatalogId: "" });
               }}
               value={selectedCatalogId || ""}
@@ -116,6 +140,7 @@ export const CategoriesModal = ({
             </Select>
           </div>
 
+          {/* Subcatalog  */}
           <div className="mb-4">
             <label className={`block mb-1 ${theme.text}`}>
               Select Subcatalog
@@ -126,8 +151,11 @@ export const CategoriesModal = ({
               rules={{ required: "Subcatalog is required" }}
               render={({ field }) => (
                 <Select
-                  onValueChange={field.onChange}
-                  value={field.value || ""}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setSelectedSubCatalogId(value);
+                  }}
+                  value={selectedSubCatalogId || ""}
                   disabled={!selectedCatalogId}
                 >
                   <SelectTrigger
@@ -139,7 +167,7 @@ export const CategoriesModal = ({
                     <SelectValue placeholder="Select Subcatalog" />
                   </SelectTrigger>
                   <SelectContent className={`${theme.bg} ${theme.text}`}>
-                    {subCatalogs.map((subcatalog) => (
+                    {filteredSubCatalogs.map((subcatalog) => (
                       <SelectItem key={subcatalog.id} value={subcatalog.id}>
                         {subcatalog.title || "Create Subcatalog"}
                       </SelectItem>
@@ -155,6 +183,7 @@ export const CategoriesModal = ({
             )}
           </div>
 
+          {/* Title */}
           <div>
             <input
               type="text"
@@ -171,6 +200,8 @@ export const CategoriesModal = ({
               <span className="text-red-500">{errors.title.message}</span>
             )}
           </div>
+
+          {/* Path */}
           <div className="mt-4">
             <input
               type="text"
@@ -181,19 +212,20 @@ export const CategoriesModal = ({
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"
               )}
-              placeholder="Category Title"
+              placeholder="Path"
             />
             {errors.path && (
               <span className="text-red-500">{errors.path.message}</span>
             )}
           </div>
 
+          {/* Tugmalar */}
           <div className="flex justify-end gap-4 mt-4">
             <CreateButton type="button" onClick={() => handleOpen(false)}>
               Cancel
             </CreateButton>
             <CreateButton type="submit">
-              {Object.keys(element).length === 0 ? "Create" : "Update"}
+              {element?.id ? "Update" : "Create"}
             </CreateButton>
           </div>
         </form>

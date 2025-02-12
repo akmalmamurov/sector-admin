@@ -31,7 +31,7 @@ interface SubCatalogRequest {
 
 interface SubCatalogModalProps {
   isOpen: boolean;
-  handleOpen: (elementOrIsOpen?: SubCatalog | boolean) => void;
+  handleOpen: () => void;
   element: Partial<SubCatalog>;
   catalogs: Catalog[];
 }
@@ -59,7 +59,7 @@ export const SubCatalogModal = ({
         { id: element.id, data },
         {
           onSuccess: () => {
-            handleOpen(false);
+            handleOpen();
             reset();
           },
         }
@@ -72,7 +72,7 @@ export const SubCatalogModal = ({
         },
         {
           onSuccess: () => {
-            handleOpen(false);
+            handleOpen();
             reset();
           },
         }
@@ -102,7 +102,7 @@ export const SubCatalogModal = ({
               ? "Create Subcatalog"
               : "Update Subcatalog"}
           </DialogTitle>
-          <button onClick={() => handleOpen(false)}>
+          <button onClick={() => handleOpen()}>
             <X
               className={classNames(
                 theme.text,
@@ -126,7 +126,11 @@ export const SubCatalogModal = ({
               </SelectTrigger>
               <SelectContent className={theme.bg}>
                 {catalogs.map((catalog) => (
-                  <SelectItem key={catalog.id} value={catalog.id} className={`${theme.text} cursor-pointer`}>
+                  <SelectItem
+                    key={catalog.id}
+                    value={catalog.id}
+                    className={`${theme.text} cursor-pointer`}
+                  >
                     {catalog.title}
                   </SelectItem>
                 ))}
@@ -152,7 +156,7 @@ export const SubCatalogModal = ({
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen(false)}>
+            <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel
             </CreateButton>
             <CreateButton type="submit">

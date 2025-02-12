@@ -15,7 +15,7 @@ export const CatalogList = () => {
 
   const handleOpen = (element?: Catalog) => {
     setTableElement(element || {});
-    setIsOpen(true);
+    setIsOpen(!isOpen);
   };
 
   const { data: catalogData = [], isLoading, error } = useGetCatalog();

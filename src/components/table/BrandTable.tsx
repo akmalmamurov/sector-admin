@@ -1,12 +1,5 @@
 import classNames from "classnames";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../ui/table";
 import { useCurrentColor, useDeleteBrand } from "@/hooks";
 import { Brand } from "@/types";
 import { UpDelete } from "../menu";

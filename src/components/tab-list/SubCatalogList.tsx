@@ -1,7 +1,13 @@
 import { useState } from "react";
 import { CreateButton } from "../create-button";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useCurrentColor, useGetCatalog, useGetSubCatalogs } from "@/hooks";
 import { SubCatalogModal } from "../modal";
 import { SubCatalogTable } from "../table";
@@ -11,20 +17,18 @@ import { TableTitle } from "../title";
 
 export const SubCatalogList = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableElement, setTableElement] = useState<Partial<SubCatalog>>({});
+  const [tableElement, setTableElement] = useState({});
   const { data: catalogData = [] } = useGetCatalog();
-  const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>( catalogData[0]?.id);
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
+    catalogData[0]?.id
+  );
   const theme = useCurrentColor();
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
 
-  const handleOpen = (elementOrIsOpen?: boolean | SubCatalog) => {
-    if (typeof elementOrIsOpen === "boolean") {
-      setIsOpen(elementOrIsOpen);
-    } else {
-      setTableElement(elementOrIsOpen || {});
-      setIsOpen(true);
-    }
+  const handleOpen = (element?: SubCatalog) => {
+    setTableElement(element || {});
+    setIsOpen(!isOpen);
   };
 
   return (

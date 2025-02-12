@@ -6,6 +6,7 @@ import { Section } from "../section";
 import { TableTitle } from "../title";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCatalogSelection, useModal, useSubCatalogSelection } from "@/helpers";
+import { Category } from "@/types";
 
 export const CategoriesList = () => {
   const { data: catalogData = [] } = useGetCatalog();
@@ -80,7 +81,7 @@ export const CategoriesList = () => {
       <CategoriesModal
         isOpen={isOpen}
         handleOpen={handleOpen}
-        element={tableElement}
+        element={tableElement as Category}
         catalogs={catalogData}
         subCatalogs={subCatalogData}
       />

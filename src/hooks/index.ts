@@ -17,3 +17,5 @@ export * from "./brand/create-brand";
 export * from "./brand/delete-brand";
 export * from "./brand/update-brand";
 export * from "./brand/get-brand";
+export * from "./filter/create-filter";
+export * from "./filter/get-filter"

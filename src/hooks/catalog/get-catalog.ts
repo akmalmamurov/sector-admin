@@ -1,14 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "@/services";
-import { Catalog, PageInterface } from "@/types";
-
-
+import { Catalog, CatalogResponse } from "@/types";
 
 export const useGetCatalog = () => {
   return useQuery<Catalog[], Error>({
     queryKey: ["catalog"],
     queryFn: async () => {
-      const res = await request.get<PageInterface<Catalog[]>>(
+      const res = await request.get<CatalogResponse>(
         "/catalog/with-subcatalogs"
       );
       return res.data.data;

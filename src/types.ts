@@ -27,10 +27,13 @@ export interface UserLogin {
   email: string;
   password: string;
 }
+export interface CatalogResponse {
+  data: Catalog[];
+}
 export interface Catalog {
   id: string;
   title: string;
-  subcatalogs?: Catalog[];
+  subcatalogs?: SubCatalog[];
 }
 
 export interface CatalogRequest {
@@ -55,11 +58,10 @@ export interface SubCatalogRequest {
 }
 // category
 export interface Category {
-  length: number;
   id: string;
-  title: string;
   path: string;
   subCatalogId: string;
+  title: string;
 }
 
 export interface CategoryResponse {
@@ -82,4 +84,33 @@ export interface Brand {
   id: string;
   title: string;
   path: string;
+}
+
+export interface FilterOption {
+  name: string;
+  title: string;
+}
+
+export interface FilterRequest {
+  name: string;
+  title: string;
+  icon: string;
+  withSearch: boolean;
+  type: string;
+  options: FilterOption[];
+}
+
+export interface FilterFormData {
+  data: FilterRequest[];
+  subCatalogId: string;
+  categoryId?: string;
+}
+
+export interface FilterResponse {
+  name: string;
+  title: string;
+  icon: string;
+  withSearch: boolean;
+  type: string;
+  data: FilterOption[];
 }

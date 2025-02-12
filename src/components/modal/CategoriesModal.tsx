@@ -2,17 +2,28 @@ import { X } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { useEffect, useState } from "react";
 import classNames from "classnames";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { CreateButton } from "../create-button";
 import { Catalog, Category, CategoryRequest, SubCatalog } from "@/types";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { useCreateCategory, useCurrentColor, useUpdateCategory } from "@/hooks";
 
 interface CategoriesModalProps {
   isOpen: boolean;
-  handleOpen: (elementOrIsOpen?: boolean | Category) => void;
-  element: Partial<Category>;
+  handleOpen: () => void;
+  element?: Category;
   catalogs: Catalog[];
   subCatalogs: SubCatalog[];
 }
@@ -35,6 +46,7 @@ export const CategoriesModal = ({
   const theme = useCurrentColor();
   const { mutate: createCategory } = useCreateCategory();
   const { mutate: updateCategory } = useUpdateCategory();
+  console.log(element);
 
   const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
     element?.subCatalogId
@@ -59,25 +71,26 @@ export const CategoriesModal = ({
         { id: element.id, data },
         {
           onSuccess: () => {
-            handleOpen(false);
+            handleOpen();
+            reset();
+          },
+        }
+      );
+    } else {
+      createCategory(
+        {
+          ...data,
+          title: data.title.trim(),
+          path: data.path.trim(),
+        },
+        {
+          onSuccess: () => {
+            handleOpen();
             reset();
           },
         }
       );
     }
-    createCategory(
-      {
-        ...data,
-        title: data.title.trim(),
-        path: data.path.trim(),
-      },
-      {
-        onSuccess: () => {
-          handleOpen(false);
-          reset();
-        },
-      }
-    );
   };
 
   useEffect(() => {
@@ -110,7 +123,7 @@ export const CategoriesModal = ({
             {element?.id ? "Update Category" : "Create Category"}
           </DialogTitle>
         </DialogHeader>
-        <button onClick={() => handleOpen(false)}>
+        <button onClick={() => handleOpen()}>
           <X
             className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")}
           />
@@ -221,7 +234,7 @@ export const CategoriesModal = ({
 
           {/* Tugmalar */}
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen(false)}>
+            <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel
             </CreateButton>
             <CreateButton type="submit">

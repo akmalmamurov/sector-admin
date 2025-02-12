@@ -7,6 +7,7 @@ import SignIn from "@/pages/sign-in/SignIn";
 import useStore from "@/context/store";
 import UsersPage from "@/pages/user/UsersPage";
 import BrandPage from "./pages/brand/BrandPage";
+import FilterPage from "./pages/filter/FilterPage";
 
 function App() {
   const { auth } = useStore();
@@ -26,6 +27,7 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/brands" element={<BrandPage />} />
+            <Route path="/filter" element={<FilterPage />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

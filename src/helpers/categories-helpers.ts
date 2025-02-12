@@ -38,15 +38,11 @@ export const useSubCatalogSelection = (
 
 export const useModal = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableElement, setTableElement] = useState<Partial<Category>>({});
+  const [tableElement, setTableElement] = useState({});
 
-  const handleOpen = (elementOrIsOpen?: boolean | Category) => {
-    if (typeof elementOrIsOpen === "boolean") {
-      setIsOpen(elementOrIsOpen);
-    } else {
-      setTableElement(elementOrIsOpen || {});
-      setIsOpen(true);
-    }
+  const handleOpen = (element?: Category) => {
+    setTableElement(element || {});
+    setIsOpen(!isOpen);
   };
 
   return { isOpen, setIsOpen, tableElement, handleOpen };

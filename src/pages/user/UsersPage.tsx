@@ -1,10 +1,13 @@
 import CreateButton from "@/components/create-button/CreateButton";
+import { Section } from "@/components/section";
 
 const UsersPage = () => {
   return (
-    <div>
-      <CreateButton>Create User</CreateButton>
-    </div>
+    <Section>
+      <div>
+        <CreateButton>Create User</CreateButton>
+      </div>
+    </Section>
   );
 };
 

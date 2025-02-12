@@ -21,7 +21,7 @@ interface CatalogRequest {
 
 interface CatalogModalProps {
   isOpen: boolean;
-  handleOpen: (elementOrIsOpen?: Catalog | boolean) => void;
+  handleOpen: () => void;
   element: Partial<Catalog>;
 }
 
@@ -51,7 +51,7 @@ export const CatalogModal = ({
         { id: element.id, data },
         {
           onSuccess: () => {
-            handleOpen(false);
+            handleOpen();
             reset();
           },
         }
@@ -64,7 +64,7 @@ export const CatalogModal = ({
         },
         {
           onSuccess: () => {
-            handleOpen(false);
+            handleOpen();
             reset();
           },
         }
@@ -89,8 +89,13 @@ export const CatalogModal = ({
               ? "Create Catalog"
               : "Update Catalog"}
           </DialogTitle>
-          <button onClick={() => handleOpen(false)}>
-            <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
+          <button onClick={() => handleOpen()}>
+            <X
+              className={classNames(
+                theme.text,
+                "w-6 h-6 absolute top-4 right-4"
+              )}
+            />
           </button>
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
@@ -113,7 +118,7 @@ export const CatalogModal = ({
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen(false)}>
+            <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel
             </CreateButton>
             <CreateButton type="submit">

@@ -12,7 +12,7 @@ import classNames from "classnames";
 import { UpDelete } from "../menu";
 interface Props {
   categoriesData: Category[];
-  handleOpen: (elementOrIsOpen?: boolean | Category) => void;
+  handleOpen: () => void;
 }
 export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
   const theme = useCurrentColor();

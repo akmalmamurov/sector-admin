@@ -8,7 +8,7 @@ import {
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { useCurrentColor } from "@/hooks";
-import { Brand, Catalog, Category, SubCatalog,  } from "@/types"; 
+import { Brand, Catalog, Category, SubCatalog } from "@/types";
 
 type ItemType = Catalog | SubCatalog | Category | Brand;
 
@@ -16,14 +16,12 @@ interface UpDeleteProps<T extends ItemType> {
   item: T;
   handleOpen: (item: T) => void;
   handleDelete: (id: string) => void;
-  label?: string;
 }
 
 export const UpDelete = <T extends ItemType>({
   item,
   handleOpen,
   handleDelete,
-  label = "Item",
 }: UpDeleteProps<T>) => {
   const theme = useCurrentColor();
 
@@ -41,9 +39,7 @@ export const UpDelete = <T extends ItemType>({
             className="w-full flex justify-center items-center"
           >
             <Edit className="mr-2 w-4 h-4 text-blue-600" />
-            <span className={`min-w-[47px] ${theme.text}`}>
-              Edit {label}
-            </span>
+            <span className={`min-w-[47px] ${theme.text}`}>Edit</span>
           </button>
         </DropdownMenuItem>
         <DropdownMenuItem>
@@ -55,7 +51,7 @@ export const UpDelete = <T extends ItemType>({
             )}
           >
             <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
-            Delete {label}
+            Delete
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>

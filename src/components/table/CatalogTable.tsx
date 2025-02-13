@@ -61,7 +61,6 @@ export const CatalogTable = ({
                 handleOpen={handleOpen}
                 item={catalog}
                 handleDelete={handleDelete}
-                label="Catalog"
               />
             </TableCell>
           </TableRow>

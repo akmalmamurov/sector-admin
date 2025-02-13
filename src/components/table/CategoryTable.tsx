@@ -67,7 +67,6 @@ export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
                 item={category}
                 handleOpen={handleOpen}
                 handleDelete={handleDelete}
-                label="Category"
               />
             </TableCell>
           </TableRow>

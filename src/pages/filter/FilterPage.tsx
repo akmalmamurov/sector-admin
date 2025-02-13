@@ -3,7 +3,6 @@ import { CreateButton } from "@/components/create-button";
 import { Section } from "@/components/section";
 import { TableTitle } from "@/components/title";
 import { FilterModal } from "@/components/modal";
-import FilterTable from "@/components/table/FilterTable";
 import {
   useGetCatalog,
   useGetCategories,
@@ -17,25 +16,33 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
+import FilterTable from "@/components/table/FilterTable";
+import { FilterResponse } from "@/types";
+import useSettings from "@/context/settings";
 
 const FilterPage = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(null);
-  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState< string | null >(null);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>( null );
+  const {
+    selectedCatalogId,
+    selectedSubCatalogId,
+    selectedCategoryId,
+    setSelectedCatalogId,
+    setSelectedSubCatalogId,
+    setSelectedCategoryId,
+  } = useSettings();
   const [tableElement, setTableElement] = useState({});
 
   const { data: catalogData = [] } = useGetCatalog();
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
 
-  const { data: filterData = [] } = useGetFilter(
-    selectedCategoryId || selectedSubCatalogId
-  );
-  console.log(filterData);
-  
 
-  const handleOpen = (element?: any) => {
+  const { data: filterData = [] } = useGetFilter(selectedCategoryId || selectedSubCatalogId);
+  const formattedData: FilterResponse[] = Array.isArray(filterData)
+    ? filterData
+    : [filterData];
+
+  const handleOpen = (element?: FilterResponse) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
   };
@@ -45,12 +52,9 @@ const FilterPage = () => {
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Filter Table</TableTitle>
         <div className="flex gap-5">
-          {/* 📌 Catalog tanlash */}
           <Select
             onValueChange={(value) => {
               setSelectedCatalogId(value);
-              setSelectedSubCatalogId(null);
-              setSelectedCategoryId(null);
             }}
             value={selectedCatalogId || ""}
           >
@@ -74,7 +78,6 @@ const FilterPage = () => {
           <Select
             onValueChange={(value) => {
               setSelectedSubCatalogId(value);
-              setSelectedCategoryId(null);
             }}
             value={selectedSubCatalogId || ""}
             disabled={!selectedCatalogId}
@@ -97,7 +100,9 @@ const FilterPage = () => {
 
           {/* 📌 Categories tanlash */}
           <Select
-            onValueChange={(value) => setSelectedCategoryId(value)}
+            onValueChange={(value) => {
+              setSelectedCategoryId(value);
+            }}
             value={selectedCategoryId || ""}
             disabled={!selectedSubCatalogId}
           >
@@ -105,6 +110,9 @@ const FilterPage = () => {
               <SelectValue placeholder="Select Category (Optional)" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="null" className="text-header cursor-pointer">
+                No Category (Use SubCatalog)
+              </SelectItem>
               {categoriesData.map(({ id, title }) => (
                 <SelectItem
                   key={id}
@@ -117,20 +125,27 @@ const FilterPage = () => {
             </SelectContent>
           </Select>
         </div>
-        <CreateButton onClick={() => handleOpen({})}>
-          Create Filter
-        </CreateButton>
+        <CreateButton onClick={() => handleOpen()}>Create Filter</CreateButton>
       </div>
 
-      {/* 📌 FilterTable (Yangi formatda) */}
-      {/* <FilterTable filterData={filterData} handleOpen={handleOpen} /> */}
+      {formattedData.length === 0 ||
+      formattedData.every((item) => item.data.length === 0) ? (
+        <div className="p-4 text-center text-gray-500">
+          <p>No filter found </p>
+          <CreateButton onClick={() => handleOpen()} className="mt-3">
+            Create Filter
+          </CreateButton>
+        </div>
+      ) : (
+        <FilterTable filterData={formattedData} handleOpen={handleOpen} />
+      )}
 
       <FilterModal
         isOpen={isOpen}
         handleOpen={handleOpen}
         element={tableElement}
         catalog={catalogData}
-        
+        catalogApi={selectedCatalogId}
       />
     </Section>
   );

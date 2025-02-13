@@ -101,16 +101,26 @@ export interface FilterRequest {
 }
 
 export interface FilterFormData {
-  data: FilterRequest[];
-  subCatalogId: string;
+  subcatalogId: string;
   categoryId?: string;
+  data: FilterRequest[];
 }
 
 export interface FilterResponse {
-  name: string;
-  title: string;
-  icon: string;
-  withSearch: boolean;
-  type: string;
-  data: FilterOption[];
+  id: string;
+  subcatalog: string;
+  category: string | null;
+  data: FilterRequest[];
 }
+
+export type UpdateFilterProps = {
+  name: string; 
+  data: {
+    name: string; 
+    title: string;
+    icon: string;
+    withSearch: boolean;
+    type: string;
+    options: { name: string; title: string }[];
+  };
+};

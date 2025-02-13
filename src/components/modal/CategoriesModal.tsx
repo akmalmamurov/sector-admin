@@ -42,6 +42,7 @@ export const CategoriesModal = ({
     reset,
     formState: { errors },
   } = useForm<CategoryRequest>();
+  
 
   const theme = useCurrentColor();
   const { mutate: createCategory } = useCreateCategory();

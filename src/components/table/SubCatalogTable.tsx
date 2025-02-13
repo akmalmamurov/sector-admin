@@ -54,7 +54,6 @@ export const SubCatalogTable = ({ subCatalogData, handleOpen }: Props) => {
                 handleOpen={handleOpen}
                 item={sub}
                 handleDelete={handleDelete}
-                label="Subcatalog"
               />
             </TableCell>
           </TableRow>

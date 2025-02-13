@@ -5,7 +5,7 @@ import { Brand } from "@/types";
 import { UpDelete } from "../menu";
 import { DOMAIN } from "@/constants";
 export interface Props {
-  handleOpen: (elementOrIsOpen?: boolean | Brand) => void;
+  handleOpen: () => void;
   brandData: Brand[];
 }
 export const BrandTable = ({ handleOpen, brandData }: Props) => {
@@ -60,7 +60,6 @@ export const BrandTable = ({ handleOpen, brandData }: Props) => {
                 item={brand}
                 handleOpen={handleOpen}
                 handleDelete={handleDelete}
-                label="brand"
               />
             </TableCell>
           </TableRow>

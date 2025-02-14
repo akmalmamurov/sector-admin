@@ -20,3 +20,6 @@ export * from "./brand/get-brand";
 export * from "./filter/create-filter";
 export * from "./filter/get-filter";
 export * from "./filter/update-filter";
+export * from "./filter/delete-item";
+export * from "./filter/filter-delete-data";
+export * from "./useConfirmModal";

@@ -36,7 +36,6 @@ const FilterPage = () => {
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
 
-
   const { data: filterData = [] } = useGetFilter(selectedCategoryId || selectedSubCatalogId);
   const formattedData: FilterResponse[] = Array.isArray(filterData)
     ? filterData
@@ -47,15 +46,24 @@ const FilterPage = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleCatalogChange = (value: string) => {
+    setSelectedCatalogId(value);
+    setSelectedSubCatalogId(""); 
+    setSelectedCategoryId(""); 
+  };
+
+  const handleSubCatalogChange = (value: string) => {
+    setSelectedSubCatalogId(value);
+    setSelectedCategoryId(""); 
+  };
+
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Filter Table</TableTitle>
         <div className="flex gap-5">
           <Select
-            onValueChange={(value) => {
-              setSelectedCatalogId(value);
-            }}
+            onValueChange={handleCatalogChange}
             value={selectedCatalogId || ""}
           >
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[250px] text-sm font-semibold">
@@ -76,9 +84,7 @@ const FilterPage = () => {
 
           {/* 📌 SubCatalog tanlash */}
           <Select
-            onValueChange={(value) => {
-              setSelectedSubCatalogId(value);
-            }}
+            onValueChange={handleSubCatalogChange}
             value={selectedSubCatalogId || ""}
             disabled={!selectedCatalogId}
           >

@@ -114,26 +114,29 @@ export const CategoriesModal = ({
         title: element?.title || "",
         subCatalogId: element?.subCatalogId || "",
       });
+  
       if (element?.path) {
-        setPreview(`${DOMAIN}/${element.path}`); 
+        setPreview(`${DOMAIN}/${element.path}`);
       } else {
         setPreview(null);
       }
+  
       if (element?.subCatalogId) {
         setSelectedSubCatalogId(element.subCatalogId);
         const relatedCatalog = subCatalogs.find(
           (sc) => sc.id === element.subCatalogId
         )?.catalogId;
+  
         if (relatedCatalog) {
           setSelectedCatalogId(relatedCatalog);
         }
       } else {
-        setSelectedCatalogId(null);
+        setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
         setSelectedSubCatalogId(null);
-        reset()
       }
     }
-  }, [isOpen, element, catalogs, subCatalogs, reset]);
+  }, [isOpen, element, subCatalogs, catalogs, reset]);
+  
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

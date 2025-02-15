@@ -135,6 +135,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               onChange={handleImageChange}
               className="hidden"
               id="path-upload"
+              
             />
             <label
               htmlFor="path-upload"

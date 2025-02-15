@@ -128,7 +128,9 @@ export const CategoriesModal = ({
           setSelectedCatalogId(relatedCatalog);
         }
       } else {
-        setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
+        setSelectedCatalogId(null);
+        setSelectedSubCatalogId(null);
+        reset()
       }
     }
   }, [isOpen, element, catalogs, subCatalogs, reset]);

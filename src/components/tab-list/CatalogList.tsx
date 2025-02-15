@@ -20,6 +20,8 @@ export const CatalogList = () => {
 
   const { data: catalogData = [], isLoading, error } = useGetCatalog();
 
+  
+
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
@@ -33,7 +35,16 @@ export const CatalogList = () => {
         <p className="text-red-500">Error: {error.message}</p>
       ) : (
         <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          <CatalogTable catalogData={catalogData} handleOpen={handleOpen} />
+          {catalogData?.length > 0 ? (
+            <CatalogTable catalogData={catalogData} handleOpen={handleOpen} />
+          ) : (
+            <div className="p-4 text-center text-gray-500">
+              <p>No catalog found </p>
+              <CreateButton onClick={() => handleOpen()} className="mt-3">
+                Create Catalog
+              </CreateButton>
+            </div>
+          )}
         </div>
       )}
       <CatalogModal

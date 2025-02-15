@@ -93,7 +93,6 @@ export const FilterModal = ({
       ...(formData.categoryId && { categoryId: formData.categoryId }),
       data: formData.data,
     };
-    console.log(element);
     
 
     createFilter(transformedData, {
@@ -185,7 +184,7 @@ export const FilterModal = ({
             />
           </button>
         </DialogHeader>
-        <DialogDescription className="hidden">a</DialogDescription>
+        <DialogDescription className="hidden"></DialogDescription>
 
         <form onSubmit={handleSubmit(onSubmit)} className="pt-2 pb-10 h-full">
           <FilterTopSelect {...filterTopProps} />

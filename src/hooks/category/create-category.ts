@@ -11,7 +11,7 @@ const createCategory = async (data: CategoryRequest): Promise<Category> => {
 };
 
 export const useCreateCategory = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); 
 
   return useMutation<Category, AxiosError, CategoryRequest>({
     mutationFn: createCategory,

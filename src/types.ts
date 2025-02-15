@@ -114,9 +114,9 @@ export interface FilterResponse {
 }
 
 export type UpdateFilterProps = {
-  name: string; 
+  name: string;
   data: {
-    name: string; 
+    name: string;
     title: string;
     icon: string;
     withSearch: boolean;
@@ -124,3 +124,24 @@ export type UpdateFilterProps = {
     options: { name: string; title: string }[];
   };
 };
+export interface User {
+  id: string;
+  username: string;
+  role: string;
+  status: string;
+  password?: string;
+}
+export interface UsersProps {
+  data: User[];
+}
+
+export interface UserRequest {
+  username: string;
+  role: string;
+  status: string;
+}
+
+export interface UserCreateRequest {
+  username: string;
+  password: string;
+}

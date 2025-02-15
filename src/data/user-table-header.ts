@@ -1,0 +1,1 @@
+export const userTableHeader = ["username", "role", "status", "action"];

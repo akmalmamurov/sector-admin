@@ -10,10 +10,10 @@ import useStore from "@/context/store";
 const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Catalog", url: "/catalog", icon: Grid },
+  { title: "Filter", url: "/filter", icon: ListFilter },
   { title: "Products", url: "/products", icon: ShoppingBasket },
   { title: "Brands", url: "/brands", icon: Earth },
   { title: "Users", url: "/users", icon: User2 },
-  { title: "Filter", url: "/filter", icon: ListFilter },
 ];
 
 export const SidebarDemo = ({ open }: { open: boolean }) => {

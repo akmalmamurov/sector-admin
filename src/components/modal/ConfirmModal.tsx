@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import { Button } from "../ui/button";
 
 interface ConfirmModalProps {
@@ -20,6 +26,7 @@ export const ConfirmModal = ({
         <DialogHeader>
           <DialogTitle>Confirm Action</DialogTitle>
         </DialogHeader>
+        <DialogDescription className="hidden">asd</DialogDescription>
         <p className="text-gray-600">{message}</p>
         <div className="flex justify-center gap-4 mt-6">
           <Button variant="secondary" onClick={closeModal}>

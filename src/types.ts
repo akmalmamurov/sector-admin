@@ -71,7 +71,7 @@ export interface CategoryResponse {
 }
 export interface CategoryRequest {
   title: string;
-  path: string;
+  categoryImage: File | null;
   subCatalogId: string;
 }
 

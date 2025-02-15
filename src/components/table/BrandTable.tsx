@@ -12,8 +12,7 @@ import { Brand } from "@/types";
 import { UpDelete } from "../menu";
 import { DOMAIN } from "@/constants";
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
-import { DialogDescription } from "@radix-ui/react-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle,DialogDescription } from "../ui/dialog";
 import { X } from "lucide-react";
 export interface Props {
   handleOpen: () => void;

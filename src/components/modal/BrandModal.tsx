@@ -36,7 +36,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     formState: { errors },
   } = useForm<BrandRequest>();
 
-  console.log(element);
 
   const onSubmit = async (data: BrandRequest) => {
     const formData = new FormData();

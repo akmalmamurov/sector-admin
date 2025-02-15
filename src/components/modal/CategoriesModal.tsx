@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useCreateCategory, useCurrentColor, useUpdateCategory } from "@/hooks";
+import { DOMAIN } from "@/constants";
 
 interface CategoriesModalProps {
   isOpen: boolean;
@@ -39,15 +40,17 @@ export const CategoriesModal = ({
     control,
     register,
     handleSubmit,
+    setError,
+    clearErrors,
     reset,
     formState: { errors },
   } = useForm<CategoryRequest>();
-  
 
   const theme = useCurrentColor();
   const { mutate: createCategory } = useCreateCategory();
   const { mutate: updateCategory } = useUpdateCategory();
-  console.log(element);
+  const [preview, setPreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
     element?.subCatalogId
@@ -66,31 +69,42 @@ export const CategoriesModal = ({
     (sc) => sc.catalogId === selectedCatalogId
   );
 
-  const onSubmit = (data: CategoryRequest) => {
+
+  const onSubmit = async (data: CategoryRequest) => {
+    const formData = new FormData();
+    formData.append("title", data.title.trim());
+    formData.append("subCatalogId", data.subCatalogId);
+
+    if (file) {
+      formData.append("categoryImage", file); 
+    } else if (element?.path) {
+      formData.append("categoryImage", element.path);
+    } else {
+      setError("categoryImage", { type: "manual", message: "Image is required" }); 
+      return;
+    }
+
     if (element?.id) {
       updateCategory(
-        { id: element.id, data },
+        { id: element.id, data: formData },
         {
           onSuccess: () => {
             handleOpen();
             reset();
+            setPreview(null);
+            setFile(null);
           },
         }
       );
     } else {
-      createCategory(
-        {
-          ...data,
-          title: data.title.trim(),
-          path: data.path.trim(),
+      createCategory(formData, {
+        onSuccess: () => {
+          handleOpen();
+          reset();
+          setPreview(null);
+          setFile(null);
         },
-        {
-          onSuccess: () => {
-            handleOpen();
-            reset();
-          },
-        }
-      );
+      });
     }
   };
 
@@ -98,10 +112,13 @@ export const CategoriesModal = ({
     if (isOpen) {
       reset({
         title: element?.title || "",
-        path: element?.path || "",
         subCatalogId: element?.subCatalogId || "",
       });
-
+      if (element?.path) {
+        setPreview(`${DOMAIN}/${element.path}`); 
+      } else {
+        setPreview(null);
+      }
       if (element?.subCatalogId) {
         setSelectedSubCatalogId(element.subCatalogId);
         const relatedCatalog = subCatalogs.find(
@@ -115,7 +132,16 @@ export const CategoriesModal = ({
       }
     }
   }, [isOpen, element, catalogs, subCatalogs, reset]);
-
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(file);
+      clearErrors("categoryImage");
+      const reader = new FileReader();
+      reader.onloadend = () => setPreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
@@ -215,21 +241,26 @@ export const CategoriesModal = ({
             )}
           </div>
 
-          {/* Path */}
           <div className="mt-4">
             <input
-              type="text"
-              {...register("path", { required: "Path is required" })}
-              className={classNames(
-                `inputs ${theme.sidebar} ${theme.text}`,
-                errors.path
-                  ? "ring-red-500 focus:ring-red-500"
-                  : "focus:ring-activeInput"
-              )}
-              placeholder="Path"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+              id="categoryImage-upload"
             />
-            {errors.path && (
-              <span className="text-red-500">{errors.path.message}</span>
+            <label
+              htmlFor="categoryImage-upload"
+              className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
+            >
+              Upload Image
+            </label>
+            {preview && (
+              <img
+                src={preview}
+                alt="Category Preview"
+                className="mt-2 max-h-32 mx-auto"
+              />
             )}
           </div>
 

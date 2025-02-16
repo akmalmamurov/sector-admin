@@ -26,7 +26,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   const { mutate: updateBrand } = useUpdateBrand();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-
+  const [isImageUpdated, setIsImageUpdated] = useState(false);
   const {
     register,
     handleSubmit,
@@ -34,11 +34,12 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     setError,
     clearErrors,
     watch,
-    formState: { errors,isDirty },
+    formState: { errors, isDirty },
   } = useForm<BrandRequest>();
 
   const watchedValues = watch();
-  const isCreateDisabled = !watchedValues.logo || !watchedValues.title.trim();
+  const isCreateDisabled = !watchedValues.title || !watchedValues.title.trim();
+  const isUpdateDisabled = !isDirty && !isImageUpdated;
   const onSubmit = async (data: BrandRequest) => {
     const formData = new FormData();
     formData.append("title", data.title.trim());
@@ -61,6 +62,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
             reset();
             setPreview(null);
             setFile(null);
+            setIsImageUpdated(false);
           },
         }
       );
@@ -71,6 +73,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
           reset();
           setPreview(null);
           setFile(null);
+          setIsImageUpdated(false);
         },
       });
     }
@@ -87,7 +90,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       } else {
         setPreview(null);
       }
-
+      setIsImageUpdated(false);
       setFile(null);
     }
   }, [isOpen, element, reset]);
@@ -96,6 +99,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
+      setIsImageUpdated(true);
       clearErrors("logo");
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
@@ -168,11 +172,19 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
 
           <div className="flex justify-end gap-4 mt-4">
             {Object.keys(element).length === 0 ? (
-              <Button type="submit" className="w-full py-5 font-bold" disabled={isCreateDisabled}>
+              <Button
+                type="submit"
+                className="w-full py-5 font-bold"
+                disabled={isCreateDisabled || file === null}
+              >
                 Create
               </Button>
             ) : (
-              <Button type="submit" className="w-full py-5 font-bold" disabled={!isDirty}>
+              <Button
+                type="submit"
+                className="w-full py-5 font-bold"
+                disabled={isUpdateDisabled}
+              >
                 Update
               </Button>
             )}

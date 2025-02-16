@@ -145,3 +145,19 @@ export interface UserCreateRequest {
   username: string;
   password: string;
 }
+export interface Product {
+  id: string;
+  title: string;
+}
+
+export interface ProductRequest {
+  catalogId: string;
+  subcatalogId: string;
+  categoryId?: string;
+  title: string;
+  articul: string;
+  productCode: string;
+  inStock: boolean;
+  price: number;
+  description: string;
+}

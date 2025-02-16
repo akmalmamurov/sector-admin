@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { X, Eye, EyeOff } from "lucide-react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 
 import { Button } from "../ui/button";
@@ -18,7 +18,7 @@ interface UserModalProps {
 export const UserModal = ({ isOpen, handleOpen, element }: UserModalProps) => {
   const theme = useCurrentColor();
   const [showPassword, setShowPassword] = useState(false);
-  const { control, handleSubmit, reset, register, watch, formState: { errors }, } = useForm({
+  const { control, handleSubmit, reset, register, watch, formState: { errors,isDirty }, } = useForm({
     defaultValues: {
       username: "",
       password: "",
@@ -30,10 +30,6 @@ export const UserModal = ({ isOpen, handleOpen, element }: UserModalProps) => {
   const { mutate: updateUser } = useUpdateUser();
   const watchedValues = watch();
 
-  const isUpdateDisabled = useMemo(() => {
-    if (!element) return true;
-    return JSON.stringify(watchedValues) === JSON.stringify(element);
-  }, [watchedValues, element]);
 
   const isCreateDisabled =
     !watchedValues.username?.trim() || !watchedValues.password?.trim();
@@ -239,7 +235,7 @@ export const UserModal = ({ isOpen, handleOpen, element }: UserModalProps) => {
             <Button
               type="submit"
               className="w-full mt-2"
-              disabled={isUpdateDisabled}
+              disabled={!isDirty}
             >
               Update User
             </Button>

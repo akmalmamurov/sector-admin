@@ -73,12 +73,27 @@ export const FilterModal = ({
   const { data: subCatalogData = [] } = useGetSubCatalogs(catalogId);
   const { data: categoriesData = [] } = useGetCategories(subCatalogId);
   const watchedFields = watch("data") || [];
+  const watchedSubCatalogId = watch("subcatalogId");
+  const watchedCategoryId = watch("categoryId");
+  
   const isDirtyArray = watchedFields.map((item, index) =>
     element.data && element.data[index]
       ? JSON.stringify(item) !== JSON.stringify(element.data[index])
       : false
   );
-
+  
+  const isSubCatalogDirty = element.subcatalog
+    ? watchedSubCatalogId !== element.subcatalog
+    : Boolean(watchedSubCatalogId); 
+  
+  const isCategoryDirty = element.category
+    ? watchedCategoryId !== element.category
+    : Boolean(watchedCategoryId); 
+  
+  const isDirty =
+    isDirtyArray.some(Boolean) || isSubCatalogDirty || isCategoryDirty;
+  
+  
   const {
     fields: data,
     append,
@@ -93,7 +108,6 @@ export const FilterModal = ({
       ...(formData.categoryId && { categoryId: formData.categoryId }),
       data: formData.data,
     };
-    
 
     createFilter(transformedData, {
       onSuccess: () => {
@@ -104,23 +118,22 @@ export const FilterModal = ({
   };
   const handleSave = (index: number) => {
     if (!element?.id) {
-      console.error("Error: Element ID not found!");
       return;
     }
-  
+
     const oldName = element.data[index]?.name || "undefined";
-  
-    const updatedFilter = getValues(`data.${index}`); 
-  
+
+    const updatedFilter = getValues(`data.${index}`);
+
     if (!updatedFilter) {
       console.error("Error: Updated data is missing!");
       return;
     }
-  
+
     const payload: UpdateFilterProps = {
-      name: oldName, 
+      name: oldName,
       data: {
-        name: updatedFilter.name, 
+        name: updatedFilter.name,
         title: updatedFilter.title,
         icon: updatedFilter.icon,
         withSearch: updatedFilter.withSearch,
@@ -128,11 +141,9 @@ export const FilterModal = ({
         options: updatedFilter.options,
       },
     };
-  
-  
-    updateFilter({ id: element.id, data: payload }); 
+
+    updateFilter({ id: element.id, data: payload });
   };
-  
 
   useEffect(() => {
     if (isOpen) {
@@ -140,16 +151,41 @@ export const FilterModal = ({
         setCatalogId(catalogApi ?? null);
         setCategoryId(element.category);
         reset({
-          subcatalogId: element.subcatalog,
-          categoryId: element.category,
-          data: element.data,
+          subcatalogId: element.subcatalog || "", 
+          categoryId: element.category || "",
+          data: element.data || [
+            {
+              name: "",
+              title: "",
+              icon: "",
+              withSearch: false,
+              type: "",
+              options: [],
+            },
+          ],
         });
       } else {
-        reset();
+        reset({
+          subcatalogId: "", 
+          categoryId: "",
+          data: [
+            {
+              name: "",
+              title: "",
+              icon: "",
+              withSearch: false,
+              type: "",
+              options: [],
+            },
+          ],
+        });
         setCatalogId(null);
+        setSubCatalogId(null);
+        setCategoryId(null);
       }
     }
-  }, [isOpen, element, reset]);
+  }, [isOpen, element]); 
+  
 
   const filterTopProps = {
     catalog,
@@ -224,6 +260,13 @@ export const FilterModal = ({
             {Object.keys(element).length === 0 && (
               <CreateButton type="submit">Create</CreateButton>
             )}
+            {
+              isDirty && Object.keys(element).length > 0 && (
+                <CreateButton type="button" onClick={() => handleSave(0)}>
+                  Update Filter
+                </CreateButton>
+              )
+            }
           </div>
         </form>
       </DialogContent>

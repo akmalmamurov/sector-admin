@@ -23,13 +23,13 @@ export const SubCatalogTable = ({ subCatalogData, handleOpen }: Props) => {
   };
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className={`${theme.header} `}>
         <TableRow>
           {subCatalogTableData.map((el) => (
             <TableHead
               key={el}
               className={classNames(
-                "font-medium text-sm uppercase px-5",
+                "font-bold text-sm uppercase px-5 last:text-right",
                 theme.text
               )}
             >

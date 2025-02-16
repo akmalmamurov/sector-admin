@@ -8,11 +8,11 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import classNames from "classnames";
-import { CreateButton } from "../create-button";
 import { useCreateBrand, useCurrentColor, useUpdateBrand } from "@/hooks";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DOMAIN } from "@/constants";
+import { Button } from "../ui/button";
 
 interface Props {
   isOpen: boolean;
@@ -32,21 +32,23 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     handleSubmit,
     reset,
     setError,
-    clearErrors, 
-    formState: { errors },
+    clearErrors,
+    watch,
+    formState: { errors,isDirty },
   } = useForm<BrandRequest>();
 
-
+  const watchedValues = watch();
+  const isCreateDisabled = !watchedValues.logo || !watchedValues.title.trim();
   const onSubmit = async (data: BrandRequest) => {
     const formData = new FormData();
     formData.append("title", data.title.trim());
 
     if (file) {
-      formData.append("logo", file); 
+      formData.append("logo", file);
     } else if (element?.path) {
       formData.append("logo", element.path);
     } else {
-      setError("logo", { type: "manual", message: "Image is required" }); 
+      setError("logo", { type: "manual", message: "Image is required" });
       return;
     }
 
@@ -81,7 +83,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       });
 
       if (element?.path) {
-        setPreview(`${DOMAIN}/${element.path}`); 
+        setPreview(`${DOMAIN}/${element.path}`);
       } else {
         setPreview(null);
       }
@@ -94,7 +96,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      clearErrors("logo"); 
+      clearErrors("logo");
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
@@ -106,10 +108,17 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
-            {Object.keys(element).length === 0 ? "Create Catalog" : "Update Catalog"}
+            {Object.keys(element).length === 0
+              ? "Create Catalog"
+              : "Update Catalog"}
           </DialogTitle>
           <button onClick={() => handleOpen(false)}>
-            <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
+            <X
+              className={classNames(
+                theme.text,
+                "w-6 h-6 absolute top-4 right-4"
+              )}
+            />
           </button>
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
@@ -120,11 +129,15 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               {...register("title", { required: "Title is required" })}
               className={classNames(
                 `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                errors.title ? "ring-red-500 focus:ring-red-500" : "focus:ring-activeInput"
+                errors.title
+                  ? "ring-red-500 focus:ring-red-500"
+                  : "focus:ring-activeInput"
               )}
               placeholder="Brand Title"
             />
-            {errors.title && <span className="text-red-500">{errors.title.message}</span>}
+            {errors.title && (
+              <span className="text-red-500">{errors.title.message}</span>
+            )}
           </div>
 
           <div className="mt-4">
@@ -134,7 +147,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               onChange={handleImageChange}
               className="hidden"
               id="path-upload"
-              
             />
             <label
               htmlFor="path-upload"
@@ -149,16 +161,21 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
                 className="mt-2 max-h-32 mx-auto"
               />
             )}
-            {errors.logo && <span className="text-red-500">{errors.logo.message}</span>}
+            {errors.logo && (
+              <span className="text-red-500">{errors.logo.message}</span>
+            )}
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen(false)}>
-              Cancel
-            </CreateButton>
-            <CreateButton type="submit">
-              {Object.keys(element).length === 0 ? "Create" : "Update"}
-            </CreateButton>
+            {Object.keys(element).length === 0 ? (
+              <Button type="submit" className="w-full py-5 font-bold" disabled={isCreateDisabled}>
+                Create
+              </Button>
+            ) : (
+              <Button type="submit" className="w-full py-5 font-bold" disabled={!isDirty}>
+                Update
+              </Button>
+            )}
           </div>
         </form>
       </DialogContent>

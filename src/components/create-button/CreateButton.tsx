@@ -6,13 +6,21 @@ interface Props {
   onClick?: () => void;
   children: React.ReactNode;
   type?: "button" | "submit" | "reset" | undefined;
+  disabled?: boolean;
 }
-export const CreateButton = ({ children, className, onClick,type }: Props) => {
+export const CreateButton = ({
+  children,
+  className,
+  onClick,
+  type,
+  disabled,
+}: Props) => {
   const theme = useCurrentColor();
   return (
     <Button
       type={type}
       onClick={onClick}
+      disabled={disabled}
       className={cn(
         `h-[42px] border border-header  rounded-[8px] font-semibold text-header ${theme.bg}`,
         className

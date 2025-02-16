@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { useCreateCategory, useCurrentColor, useUpdateCategory } from "@/hooks";
 import { DOMAIN } from "@/constants";
+import { Button } from "../ui/button";
 
 interface CategoriesModalProps {
   isOpen: boolean;
@@ -43,7 +44,7 @@ export const CategoriesModal = ({
     setError,
     clearErrors,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<CategoryRequest>();
 
   const theme = useCurrentColor();
@@ -64,23 +65,23 @@ export const CategoriesModal = ({
   const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<
     string | null
   >(element?.subCatalogId || "");
-
   const filteredSubCatalogs = subCatalogs.filter(
     (sc) => sc.catalogId === selectedCatalogId
   );
-
-
   const onSubmit = async (data: CategoryRequest) => {
     const formData = new FormData();
     formData.append("title", data.title.trim());
     formData.append("subCatalogId", data.subCatalogId);
 
     if (file) {
-      formData.append("categoryImage", file); 
+      formData.append("categoryImage", file);
     } else if (element?.path) {
       formData.append("categoryImage", element.path);
     } else {
-      setError("categoryImage", { type: "manual", message: "Image is required" }); 
+      setError("categoryImage", {
+        type: "manual",
+        message: "Image is required",
+      });
       return;
     }
 
@@ -114,29 +115,29 @@ export const CategoriesModal = ({
         title: element?.title || "",
         subCatalogId: element?.subCatalogId || "",
       });
-  
+
       if (element?.path) {
         setPreview(`${DOMAIN}/${element.path}`);
       } else {
         setPreview(null);
       }
-  
+
       if (element?.subCatalogId) {
         setSelectedSubCatalogId(element.subCatalogId);
         const relatedCatalog = subCatalogs.find(
           (sc) => sc.id === element.subCatalogId
         )?.catalogId;
-  
+
         if (relatedCatalog) {
           setSelectedCatalogId(relatedCatalog);
         }
       } else {
-        setSelectedCatalogId(catalogs.length > 0 ? catalogs[0].id : null);
+        setSelectedCatalogId(null);
         setSelectedSubCatalogId(null);
       }
     }
-  }, [isOpen, element, subCatalogs, catalogs, reset]);
-  
+  }, [isOpen, element, catalogs, subCatalogs, reset]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -267,6 +268,11 @@ export const CategoriesModal = ({
                 className="mt-2 max-h-32 mx-auto"
               />
             )}
+            {errors.categoryImage && (
+              <span className="text-red-500">
+                {errors.categoryImage.message}
+              </span>
+            )}
           </div>
 
           {/* Tugmalar */}
@@ -274,9 +280,23 @@ export const CategoriesModal = ({
             <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel
             </CreateButton>
-            <CreateButton type="submit">
-              {element?.id ? "Update" : "Create"}
-            </CreateButton>
+            {!element?.id ? (
+              <Button
+                type="submit"
+                className="h-[42px] px-10 "
+                disabled={!isDirty}
+              >
+                Create
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="h-[42px] px-10 "
+                disabled={!isDirty}
+              >
+                Update
+              </Button>
+            )}
           </div>
         </form>
       </DialogContent>

@@ -41,13 +41,13 @@ export const UserTable = ({ userData, handleOpen }: Props) => {
   };
   return (
     <Table>
-      <TableHeader>
+      <TableHeader  className={`${theme.header}`}>
         <TableRow>
           {userTableHeader.map((el) => (
             <TableHead
               key={el}
               className={classNames(
-                "font-medium text-sm uppercase px-5 last:text-right",
+                "font-bold text-sm uppercase px-5 last:text-right",
                 theme.text
               )}
             >
@@ -75,7 +75,7 @@ export const UserTable = ({ userData, handleOpen }: Props) => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-8 w-8 p-0">
                     <MoreHorizontal
-                      className={classNames("w-4 h-4", theme.text)}
+                      className={classNames("w-4 h-4 text-header")}
                     />
                   </Button>
                 </DropdownMenuTrigger>

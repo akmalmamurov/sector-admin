@@ -47,40 +47,40 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
 
   return (
     <>
-      <Table>
-        <TableHeader>
+      <Table className="table-auto min-w-[800px] w-full">
+        <TableHeader className={`${theme.header}`}>
           <TableRow>
-            <TableHead className="px-4 py-2">Name</TableHead>
-            <TableHead className="px-4 py-2">Type</TableHead>
-            <TableHead className="px-4 py-2 text-right">Action</TableHead>
+            <TableHead className={`px-4 py-2 uppercase font-bold text-sm ${theme.text}`}>Name</TableHead>
+            {/* <TableHead className="px-4 py-2">Type</TableHead> */}
+            <TableHead className={`px-4 py-2 uppercase font-bold text-sm text-right ${theme.text}`}>Action</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
+        <TableBody className="overflow-x-auto">
           {filterData?.map((item, index) => (
-            <TableRow key={item.id || index}>
-              <TableCell className="flex gap-1 ">
+            <TableRow key={item.id || index} className="overflow-x-auto">
+              <TableCell className="flex gap-1 text-sm">
                 {item.data.map((filterItem, idx) => (
                   <div key={`${item.id}-data-${idx}`} className="flex gap-1 ">
                     <span className="text-header font-bold"> {idx + 1}. </span>
-                    <p className={theme.text}>{filterItem.name}</p>
+                    <p className={theme.text}>{filterItem.title}</p>
                   </div>
                 ))}
               </TableCell>
 
-              <TableCell>
+              {/* <TableCell>
                 {item.data.map((filterItem, idx) => (
                   <div key={`${item.id}-data-${idx}`} className="mb-2">
                     <span className={theme.text}>{filterItem.type}</span>
                   </div>
                 ))}
-              </TableCell>
+              </TableCell> */}
 
-              <TableCell className="px-4 py-2 text-right flex items-start justify-end">
+              <TableCell className="px-4 py-2 text-right ">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">
                       <MoreHorizontal
-                        className={classNames("w-4 h-4", theme.text)}
+                        className={classNames("w-4 h-4 text-header")}
                       />
                     </Button>
                   </DropdownMenuTrigger>

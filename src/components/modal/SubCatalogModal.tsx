@@ -7,7 +7,6 @@ import {
 } from "../ui/dialog";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
-import { CreateButton } from "../create-button";
 import { useEffect } from "react";
 import { Catalog, SubCatalog } from "@/types";
 import {
@@ -23,6 +22,7 @@ import {
   useUpdateSubCatalog,
 } from "@/hooks";
 import { X } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface SubCatalogRequest {
   title: string;
@@ -47,11 +47,16 @@ export const SubCatalogModal = ({
     handleSubmit,
     reset,
     setValue,
-    formState: { errors },
+    watch,
+    formState: { errors, isDirty },
   } = useForm<SubCatalogRequest>();
 
   const { mutate: createSubCatalog } = useCreateSubCatalog();
   const { mutate: updateSubCatalog } = useUpdateSubCatalog();
+  const watchedValues = watch();
+
+  const isCreateDisabled =
+    !watchedValues.catalogId?.trim() || !watchedValues.title?.trim();
   const theme = useCurrentColor();
   const onSubmit = (data: SubCatalogRequest) => {
     if (element?.id) {
@@ -156,12 +161,23 @@ export const SubCatalogModal = ({
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen()}>
-              Cancel
-            </CreateButton>
-            <CreateButton type="submit">
-              {Object.keys(element).length === 0 ? "Create" : "Update"}
-            </CreateButton>
+            {Object.keys(element).length === 0 ? (
+              <Button
+                type="submit"
+                className="w-full py-2 font-medium"
+                disabled={isCreateDisabled}
+              >
+                Create
+              </Button>
+            ) : (
+              <Button
+                type="submit"
+                className="w-full py-2 font-medium"
+                disabled={!isDirty}
+              >
+                Update
+              </Button>
+            )}
           </div>
         </form>
       </DialogContent>

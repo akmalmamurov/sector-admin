@@ -33,11 +33,11 @@ export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
   };
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className={`${theme.header} `}>
         <TableRow>
           <TableHead
             className={classNames(
-              "font-medium text-sm uppercase px-5",
+              "font-bold text-sm uppercase px-5",
               theme.text
             )}
           >
@@ -45,7 +45,7 @@ export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
           </TableHead>
           <TableHead
             className={classNames(
-              "font-medium text-sm uppercase px-5",
+              "font-bold text-sm uppercase px-5",
               theme.text
             )}
           >
@@ -53,7 +53,7 @@ export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
           </TableHead>
           <TableHead
             className={classNames(
-              "font-medium text-sm uppercase px-5 text-right",
+              "font-bold text-sm uppercase px-5 text-right",
               theme.text
             )}
           >

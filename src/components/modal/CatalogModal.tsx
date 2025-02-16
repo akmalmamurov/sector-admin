@@ -7,13 +7,13 @@ import {
 } from "../ui/dialog";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
-import { CreateButton } from "../create-button";
 import { useEffect } from "react";
 import { Catalog } from "@/types";
 import { useCreateCatalog } from "@/hooks/catalog/create-catalog";
 import { useUpdateCatalog } from "@/hooks/catalog/update-catalog";
 import { useCurrentColor } from "@/hooks";
 import { X } from "lucide-react";
+import { Button } from "../ui/button";
 
 interface CatalogRequest {
   title: string;
@@ -34,7 +34,7 @@ export const CatalogModal = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<CatalogRequest>({
     defaultValues: {
       title: element?.title || "",
@@ -118,12 +118,10 @@ export const CatalogModal = ({
           </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <CreateButton type="button" onClick={() => handleOpen()}>
-              Cancel
-            </CreateButton>
-            <CreateButton type="submit">
+       
+            <Button className="w-full" type="submit" disabled={!isDirty}>
               {Object.keys(element).length === 0 ? "Create" : "Update"}
-            </CreateButton>
+            </Button>
           </div>
         </form>
       </DialogContent>

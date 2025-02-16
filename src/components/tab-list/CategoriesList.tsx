@@ -19,6 +19,7 @@ export const CategoriesList = () => {
   const { isOpen, handleOpen, tableElement } = useModal();
 
   const theme = useCurrentColor();
+  
 
   return (
     <Section>

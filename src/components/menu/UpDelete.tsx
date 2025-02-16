@@ -43,8 +43,8 @@ export const UpDelete = <T extends ItemType>({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <MoreHorizontal className={classNames("w-4 h-4", theme.text)} />
+          <Button variant="ghost" className="h-8 w-8 p-0 ">
+            <MoreHorizontal className={classNames("w-4 h-4 text-header")} />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className={classNames(theme.bg)}>

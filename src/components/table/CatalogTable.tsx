@@ -30,13 +30,13 @@ export const CatalogTable = ({
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className={`${theme.header}`}>
         <TableRow>
           {catalogTableData.map((el) => (
             <TableHead
               key={el}
               className={classNames(
-                "font-medium text-sm uppercase px-5 last:text-right",
+                "font-bold text-sm uppercase px-5 last:text-right",
                 theme.text
               )}
             >

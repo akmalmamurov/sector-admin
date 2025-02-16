@@ -266,22 +266,18 @@ export const FilterForm = ({
                 )}
               />
             </div>
-            <div className="flex justify-end items-end">
               {Object.keys(element).length > 0 && (
+            <div className="flex justify-end items-end ml-14">
                 <Button
                   type="button"
                   disabled={!isDirtyArray[filterIndex]}
-                  className={` px-7 ${
-                    isDirtyArray[filterIndex]
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-gray-500"
-                  }`}
+                  className={` px-7 `}
                   onClick={() => handleSave(filterIndex)}
                 >
                   Save
                 </Button>
-              )}
             </div>
+              )}
           </div>
         </div>
       ))}

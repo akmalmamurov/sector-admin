@@ -145,26 +145,6 @@ export interface UserCreateRequest {
   username: string;
   password: string;
 }
-
-export interface Product {
-  id: string;
-  title: string;
-}
-
-export interface ProductRequest {
-  catalogId: string;
-  subcatalogId: string;
-  categoryId?: string;
-  title: string;
-  articul: string;
-  productCode: string;
-  inStock: boolean;
-  price: number;
-  description: string;
-  brandId?: string;
-  fullDescription?: string;
-}
-
 export interface Condition {
   id: string;
   title: string;
@@ -188,4 +168,47 @@ export interface RelevanceResponse {
 export interface RelevanceRequest {
   title: string;
   name: string;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+}
+export interface Characteristic {
+  name: string;
+  value: string;
+}
+export interface ProductRequest {
+  catalogId: string;
+  subcatalogId: string;
+  categoryId?: string;
+  title: string;
+  articul: string;
+  productCode: string;
+  inStock: boolean;
+  price: number;
+  description: string;
+  brandId?: string;
+  fullDescription?: string;
+  conditionId?: string;
+  relevanceId?: string;
+  characteristics?: Characteristic[];
+  productImages?: File[];
+}
+export interface ProductData {
+  catalogId: string;
+  subcatalogId: string;
+  categoryId?: string;
+  title: string;
+  articul: string;
+  productCode: string;
+  inStock: boolean;
+  price: number;
+  description: string;
+  brandId?: string;
+  fullDescription?: string;
+  conditionId?: string;
+  relevanceId?: string;
+  characteristics?: Characteristic[];
+  path?: string;
 }

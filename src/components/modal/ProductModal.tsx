@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useCurrentColor } from "@/hooks";
+import { useEffect, useState } from "react";
+import { useCreateProduct, useCurrentColor } from "@/hooks";
 import {
   Dialog,
   DialogContent,
@@ -11,9 +11,14 @@ import { ProductRequest } from "@/types";
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
-import { ProductCatalogs, ProductStepTwo } from "../product-steps";
+import {
+  ProductCatalogs,
+  ProductCharacter,
+  ProductImage,
+  ProductStepTwo,
+} from "../product-steps";
 import ProductStepThree from "../product-steps/ProductStepThree";
-import ProductStepFour from "../product-steps/ProductStepFinal";
+import ProductStepFinal from "../product-steps/ProductStepFinal";
 
 interface Props {
   isOpen: boolean;
@@ -27,11 +32,12 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
     handleSubmit,
     register,
     watch,
+    reset,
     setValue,
     formState: { errors },
   } = useForm<ProductRequest>();
   const [activeStep, setActiveStep] = useState(0);
-
+  const { mutate: createProduct } = useCreateProduct();
   const steps = [
     "Catalogs",
     "Title, Articul, Code, Description, Price, InStock",
@@ -53,7 +59,33 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
     }
   };
   const onSubmit = (data: ProductRequest) => {
-    console.log(data);
+    const formData = new FormData();
+
+    Object.entries(data).forEach(([key, value]) => {
+      if (value === undefined || key === "productImages") return;
+
+      if (typeof value === "object") {
+        formData.append(key, JSON.stringify(value));
+      } else {
+        formData.append(key, value.toString());
+      }
+    });
+
+    if (data.productImages?.length) {
+      data.productImages.forEach((file) => {
+        formData.append(`productImages`, file);
+      });
+    }
+
+    createProduct(formData, {
+      onSuccess: () => {
+        handleOpen();
+        reset();
+      },
+      onError: (error) => {
+        console.error("Creation failed:", error);
+      },
+    });
   };
 
   const catalogsProps = {
@@ -62,6 +94,12 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
     setValue,
     watch,
   };
+  useEffect(() => {
+    if (isOpen) {
+      setActiveStep(0);
+      reset();
+    }
+  }, [isOpen, reset]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
@@ -114,11 +152,24 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
                 control={control}
                 handleNext={handleNext}
                 handleBack={handleBack}
+                watch={watch}
               />
             )}
-            {activeStep === 3 && <ProductStepFour setValue={setValue} />}
-            {activeStep === 4 && <ProductStepFour setValue={setValue} />}
-            {activeStep === 5 && <ProductStepFour setValue={setValue} />}
+            {activeStep === 3 && (
+              <ProductCharacter
+                control={control}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
+            )}
+            {activeStep === 4 && (
+              <ProductImage
+                setValue={(files) => setValue("productImages", files)}
+                handleBack={handleBack}
+                handleNext={handleNext}
+              />
+            )}
+            {activeStep === 5 && <ProductStepFinal setValue={setValue} />}
           </form>
         </div>
       </DialogContent>

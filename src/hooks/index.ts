@@ -35,3 +35,4 @@ export * from "./relevance/get-relevance";
 export * from "./relevance/delete-relevance";
 export * from "./relevance/create-relevance";
 export * from "./relevance/update-relevance";
+export * from "./product/create-product"

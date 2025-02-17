@@ -165,12 +165,17 @@ export interface ProductRequest {
   fullDescription?: string;
 }
 
-export interface ConditionResponse {
+export interface Condition {
   id: string;
   title: string;
+  name: string;
+}
+export interface ConditionResponse {
+  data: Condition[];
 }
 export interface ConditionRequest {
   title: string;
+  name: string;
 }
 export interface RelevanceResponse {
   id: string;

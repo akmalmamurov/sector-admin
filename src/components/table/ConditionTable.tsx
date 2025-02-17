@@ -1,4 +1,4 @@
-import { useCurrentColor } from "@/hooks";
+import { useConfirmModal, useCurrentColor, useDeleteCondition } from "@/hooks";
 import {
   Table,
   TableBody,
@@ -16,13 +16,30 @@ import {
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import classNames from "classnames";
-import { ConditionResponse } from "@/types";
+import { Condition } from "@/types";
+import { ConfirmModal } from "../modal";
 interface ConditionTableProps {
-  conditionData: ConditionResponse[];
-  handleOpen: (element: ConditionResponse) => void;
+  conditionData: Condition[];
+  handleOpen: (element: Condition) => void;
 }
-export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProps) => {
+export const ConditionTable = ({
+  conditionData,
+  handleOpen,
+}: ConditionTableProps) => {
   const theme = useCurrentColor();
+  const { mutate: deleteCondition } = useDeleteCondition();
+  const {
+    isOpen: isConfirmOpen,
+    message,
+    openModal,
+    closeModal,
+    onConfirm,
+  } = useConfirmModal();
+  const handleDeleteClick = (id: string) => {
+    openModal("Are you sure you want to delete this user?", () => {
+      deleteCondition({ id });
+    });
+  };
   return (
     <Table>
       <TableHeader>
@@ -33,7 +50,15 @@ export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProp
               theme.text
             )}
           >
-            name
+            Name
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            Title
           </TableHead>
           <TableHead
             className={classNames(
@@ -41,7 +66,7 @@ export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProp
               theme.text
             )}
           >
-            action
+            Action
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -49,9 +74,11 @@ export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProp
         {conditionData?.map((item) => (
           <TableRow key={item.id}>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              {item.name}
+            </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {item.title}
             </TableCell>
-
             <TableCell
               className={classNames("text-sm px-6 py-1 text-end", theme.text)}
             >
@@ -78,6 +105,7 @@ export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProp
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <button
+                      onClick={() => handleDeleteClick(item.id)}
                       className={classNames(
                         "w-full flex justify-center items-center",
                         theme.text
@@ -93,6 +121,12 @@ export const ConditionTable = ({ conditionData, handleOpen }: ConditionTableProp
           </TableRow>
         ))}
       </TableBody>
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        message={message}
+        onConfirm={onConfirm}
+        closeModal={closeModal}
+      />
     </Table>
   );
 };

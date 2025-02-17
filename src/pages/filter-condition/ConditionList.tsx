@@ -3,29 +3,23 @@ import { ConditionModal } from "@/components/modal";
 import { Section } from "@/components/section";
 import { ConditionTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
-import { ConditionResponse } from "@/types";
+import { useGetCondition } from "@/hooks";
+import { Condition } from "@/types";
 import { useState } from "react";
-const conditionData = [
-  {
-    id: "1",
-    title: "Condition 1",
-  },
-  {
-    id: "2",
-    title: "Condition 2",
-  },
-  {
-    id: "3",
-    title: "Condition 3",
-  },
-];
+
 const ConditionList = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableElement, setTableElement] = useState({});
-  const handleOpen = (element?: ConditionResponse) => {
+  const [tableElement, setTableElement] = useState<Partial<Condition>>({});
+  const { data: responseData } = useGetCondition();
+
+  const conditionData = responseData?.data || [];
+
+  const handleOpen = (element?: Condition) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
   };
+
+  console.log("Fetched Condition Data:", conditionData);
 
   return (
     <Section>
@@ -36,21 +30,19 @@ const ConditionList = () => {
         </CreateButton>
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          {conditionData?.length > 0 ? (
-            <ConditionTable
-              conditionData={conditionData}
-              handleOpen={handleOpen}
-            />
-          ) : (
-            <div className="p-4 text-center text-gray-500">
-              <p>No Condition available </p>
-              <CreateButton onClick={() => handleOpen()} className="mt-3">
-                Create Condition
-              </CreateButton>
-            </div>
-          )}
-        </div>
+        {conditionData.length > 0 ? (
+          <ConditionTable
+            conditionData={conditionData}
+            handleOpen={handleOpen}
+          />
+        ) : (
+          <div className="p-4 text-center text-gray-500">
+            <p>No Condition available</p>
+            <CreateButton onClick={() => handleOpen()} className="mt-3">
+              Create Condition
+            </CreateButton>
+          </div>
+        )}
       </div>
 
       <ConditionModal

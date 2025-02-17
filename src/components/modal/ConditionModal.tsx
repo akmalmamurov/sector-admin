@@ -1,4 +1,8 @@
-import { useCurrentColor } from "@/hooks";
+import {
+  useCreateCondition,
+  useCurrentColor,
+  useUpdateCondition,
+} from "@/hooks";
 import { useEffect } from "react";
 import {
   Dialog,
@@ -11,38 +15,66 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
-import { ConditionRequest, ConditionResponse } from "@/types";
+import { Condition, ConditionRequest } from "@/types";
 
 interface Props {
   isOpen: boolean;
   handleOpen: () => void;
-  element?: Partial<ConditionResponse>;
+  element?: Partial<Condition>;
 }
+
 export const ConditionModal = ({ isOpen, handleOpen, element }: Props) => {
   const {
     register,
     handleSubmit,
+    watch,
     reset,
     formState: { errors, isDirty },
   } = useForm<ConditionRequest>();
+
   const theme = useCurrentColor();
+  const { mutate: updateCondition } = useUpdateCondition();
+  const { mutate: createCondition } = useCreateCondition();
+  const watchedValues = watch();
+  const createDisabled =
+    !watchedValues.title?.trim() || !watchedValues.name?.trim();
 
   const onSubmit = (data: ConditionRequest) => {
+    const trimmedData = {
+      title: data.title.trim(),
+      name: data.name.trim(),
+    };
+
     if (element?.id) {
-      const updatedCondition: ConditionResponse = {
-        id: element.id,
-        title: data.title, 
-      };
-      console.log("update", updatedCondition);
+      updateCondition(
+        {
+          id: element.id,
+          data: trimmedData,
+        },
+        {
+          onSuccess: () => {
+            handleOpen();
+            reset();
+          },
+          onError: (error) => console.error("Update failed:", error),
+        }
+      );
     } else {
-      console.log("create", data);
+      createCondition(trimmedData, {
+        onSuccess: () =>{
+          handleOpen();
+          reset();
+        },
+        onError: (error) => console.error("Creation failed:", error),
+      });
     }
   };
-  
+
   useEffect(() => {
     if (isOpen) {
       reset({
         title: element?.title || "",
+        name: element?.name || "",
       });
     }
   }, [isOpen, element, reset]);
@@ -54,7 +86,7 @@ export const ConditionModal = ({ isOpen, handleOpen, element }: Props) => {
           <DialogTitle className={theme.text}>
             {!element?.id ? "Create Condition" : "Update Condition"}
           </DialogTitle>
-          <button onClick={() => handleOpen()}>
+          <button onClick={handleOpen}>
             <X
               className={classNames(
                 theme.text,
@@ -65,7 +97,7 @@ export const ConditionModal = ({ isOpen, handleOpen, element }: Props) => {
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
-          <div>
+          <div className="mb-5">
             <input
               type="text"
               {...register("title", { required: "Title is required" })}
@@ -81,9 +113,29 @@ export const ConditionModal = ({ isOpen, handleOpen, element }: Props) => {
               <span className="text-red-500">{errors.title.message}</span>
             )}
           </div>
+          <div>
+            <input
+              type="text"
+              {...register("name", { required: "Name is required" })}
+              className={classNames(
+                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
+                errors.name
+                  ? "ring-red-500 focus:ring-red-500"
+                  : "focus:ring-activeInput"
+              )}
+              placeholder="Condition Name"
+            />
+            {errors.name && (
+              <span className="text-red-500">{errors.name.message}</span>
+            )}
+          </div>
 
           <div className="flex justify-end gap-4 mt-4">
-            <Button className="w-full" type="submit" disabled={!isDirty}>
+            <Button
+              className="w-full"
+              type="submit"
+              disabled={!isDirty || createDisabled}
+            >
               {!element?.id ? "Create" : "Update"}
             </Button>
           </div>

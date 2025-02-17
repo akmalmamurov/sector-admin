@@ -10,16 +10,12 @@ import { useState } from "react";
 const ConditionList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableElement, setTableElement] = useState<Partial<Condition>>({});
-  const { data: responseData } = useGetCondition();
-
-  const conditionData = responseData?.data || [];
+  const { data: conditionData = [] } = useGetCondition();
 
   const handleOpen = (element?: Condition) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
   };
-
-  console.log("Fetched Condition Data:", conditionData);
 
   return (
     <Section>
@@ -30,7 +26,7 @@ const ConditionList = () => {
         </CreateButton>
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        {conditionData.length > 0 ? (
+        {conditionData?.length > 0 ? (
           <ConditionTable
             conditionData={conditionData}
             handleOpen={handleOpen}

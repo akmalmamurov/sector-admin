@@ -1,15 +1,17 @@
-import request from "@/services";
-import { ConditionResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
+import request from "@/services";
+import { Condition, ConditionResponse } from "@/types";
 
-const fetchCondition = async (): Promise<ConditionResponse> => {
-  const res = await request("product-detail/condition/all");
-  return res.data;
+const fetchData = async (): Promise<Condition[]> => {
+  const res = await request.get<ConditionResponse>(
+    "/product-detail/condition/all"
+  );
+  return res.data.data;
 };
 
 export const useGetCondition = () => {
-  return useQuery<ConditionResponse, Error>({
+  return useQuery<Condition[], Error>({
     queryKey: ["condition"],
-    queryFn: fetchCondition,
+    queryFn: fetchData,
   });
 };

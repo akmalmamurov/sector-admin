@@ -30,4 +30,8 @@ export * from "./users/delete-user";
 export * from "./condition/get-condition";
 export * from "./condition/create-condition";
 export * from "./condition/update-condition";
-export * from "./condition/delete-condition"
+export * from "./condition/delete-condition";
+export * from "./relevance/get-relevance";
+export * from "./relevance/delete-relevance";
+export * from "./relevance/create-relevance";
+export * from "./relevance/update-relevance";

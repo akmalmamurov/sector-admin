@@ -1,28 +1,20 @@
 import { CreateButton } from "@/components/create-button";
-import { ConditionModal } from "@/components/modal";
+import { RelevanceModal } from "@/components/modal";
 import { Section } from "@/components/section";
-import {  RelevanceTable } from "@/components/table";
+import { RelevanceTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
-import { RelevanceResponse } from "@/types";
+import { useGetRelevance } from "@/hooks";
+import { Relevance } from "@/types";
 import { useState } from "react";
-const relevanceData = [
-  {
-    id: "1",
-    title: "Relevance 1",
-  },
-  {
-    id: "2",
-    title: "Relevance 2",
-  },
-  {
-    id: "3",
-    title: "Relevance 3",
-  },
-];
-const RelevanceList = () => {
+
+const ConditionList = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [tableElement, setTableElement] = useState({});
-  const handleOpen = (element?: RelevanceResponse) => {
+  const [tableElement, setTableElement] = useState<Partial<Relevance>>({});
+  const { data: responseData } = useGetRelevance();
+
+  const relevanceData = responseData?.data || [];
+
+  const handleOpen = (element?: Relevance) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
   };
@@ -30,30 +22,28 @@ const RelevanceList = () => {
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
-        <TableTitle>Relevance Table</TableTitle>
+        <TableTitle>Condition Table</TableTitle>
         <CreateButton onClick={() => handleOpen()}>
           Create Relevance
         </CreateButton>
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          {relevanceData?.length > 0 ? (
-            <RelevanceTable
+        {relevanceData?.length > 0 ? (
+          <RelevanceTable
             relevanceData={relevanceData}
-              handleOpen={handleOpen}
-            />
-          ) : (
-            <div className="p-4 text-center text-gray-500">
-              <p>No Condition available </p>
-              <CreateButton onClick={() => handleOpen()} className="mt-3">
-                Create Condition
-              </CreateButton>
-            </div>
-          )}
-        </div>
+            handleOpen={handleOpen}
+          />
+        ) : (
+          <div className="p-4 text-center text-gray-500">
+            <p>No Relevance available</p>
+            <CreateButton onClick={() => handleOpen()} className="mt-3">
+              Create Relevance
+            </CreateButton>
+          </div>
+        )}
       </div>
 
-      <ConditionModal
+      <RelevanceModal
         isOpen={isOpen}
         handleOpen={handleOpen}
         element={tableElement}
@@ -62,4 +52,4 @@ const RelevanceList = () => {
   );
 };
 
-export default RelevanceList;
+export default ConditionList;

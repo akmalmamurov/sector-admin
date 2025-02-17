@@ -14,10 +14,9 @@ export const useCreateCondition = () => {
 
   return useMutation<ConditionResponse, AxiosError, ConditionRequest>({
     mutationFn: createCondition,
-    onSuccess: (res) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["condition"] });
       toast.success("Created successfully!");
-      console.log("create", res);
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);

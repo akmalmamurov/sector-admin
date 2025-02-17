@@ -16,11 +16,11 @@ import {
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import classNames from "classnames";
-import { Relevance } from "@/types";
 import { ConfirmModal } from "../modal";
+import { Relevance } from "@/types";
 interface RelevanceTableProps {
-  relevanceData: Relevance[];
   handleOpen: (element: Relevance) => void;
+  relevanceData: Relevance[];
 }
 export const RelevanceTable = ({
   relevanceData,

@@ -15,7 +15,7 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 import { X } from "lucide-react";
 import { Button } from "../ui/button";
-import {  Relevance, RelevanceRequest } from "@/types";
+import {  Relevance, RelevanceRequest, } from "@/types";
 
 interface Props {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export const RelevanceModal = ({ isOpen, handleOpen, element }: Props) => {
     watch,
     reset,
     formState: { errors, isDirty },
-  } = useForm<RelevanceRequest>();
+  } = useForm<Relevance>();
 
   const theme = useCurrentColor();
   const { mutate: updateData } = useUpdateRelevance();

@@ -177,17 +177,15 @@ export interface ConditionRequest {
   title: string;
   name: string;
 }
-
 export interface Relevance {
   id: string;
   title: string;
   name: string;
 }
 export interface RelevanceResponse {
-  data: Condition[];
+  data: Relevance[];
 }
 export interface RelevanceRequest {
   title: string;
   name: string;
 }
-

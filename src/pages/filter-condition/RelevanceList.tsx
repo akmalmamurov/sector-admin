@@ -7,12 +7,11 @@ import { useGetRelevance } from "@/hooks";
 import { Relevance } from "@/types";
 import { useState } from "react";
 
-const ConditionList = () => {
+const RelevanceList = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableElement, setTableElement] = useState<Partial<Relevance>>({});
-  const { data: responseData } = useGetRelevance();
+  const { data: relevanceData = [] } = useGetRelevance();
 
-  const relevanceData = responseData?.data || [];
 
   const handleOpen = (element?: Relevance) => {
     setTableElement(element || {});
@@ -30,7 +29,7 @@ const ConditionList = () => {
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
         {relevanceData?.length > 0 ? (
           <RelevanceTable
-            relevanceData={relevanceData}
+            relevanceData={relevanceData as Relevance[]}
             handleOpen={handleOpen}
           />
         ) : (
@@ -52,4 +51,4 @@ const ConditionList = () => {
   );
 };
 
-export default ConditionList;
+export default RelevanceList;

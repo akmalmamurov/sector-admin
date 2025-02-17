@@ -145,6 +145,7 @@ export interface UserCreateRequest {
   username: string;
   password: string;
 }
+
 export interface Product {
   id: string;
   title: string;
@@ -160,4 +161,12 @@ export interface ProductRequest {
   inStock: boolean;
   price: number;
   description: string;
+}
+
+export interface ConditionResponse {
+  id: string;
+  title: string;
+}
+export interface ConditionRequest {
+  title: string;
 }

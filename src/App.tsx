@@ -7,7 +7,7 @@ import SignIn from "@/pages/sign-in/SignIn";
 import useStore from "@/context/store";
 import UsersPage from "@/pages/user/UsersPage";
 import BrandPage from "./pages/brand/BrandPage";
-import FilterPage from "./pages/filter/FilterPage";
+import FilterPage from "./pages/filter-condition/FilterConditionPage";
 
 function App() {
   const { auth } = useStore();

@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { FilterResponse } from "@/types";
 import { useCurrentColor, useDeleteFilterItem } from "@/hooks";
 import classNames from "classnames";
+import { CreateButton } from "../create-button";
 
 interface DeleteFilterModalProps {
   isOpen: boolean;
@@ -78,9 +79,9 @@ const {mutate: deleteItem} = useDeleteFilterItem();
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button variant="secondary" onClick={handleClose}>
+          <CreateButton  onClick={handleClose}>
             Close
-          </Button>
+          </CreateButton>
         </div>
       </DialogContent>
 

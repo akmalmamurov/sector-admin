@@ -170,3 +170,10 @@ export interface ConditionResponse {
 export interface ConditionRequest {
   title: string;
 }
+export interface RelevanceResponse {
+  id: string;
+  title: string;
+}
+export interface RelevanceRequest {
+  title: string;
+}

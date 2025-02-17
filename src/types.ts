@@ -161,6 +161,8 @@ export interface ProductRequest {
   inStock: boolean;
   price: number;
   description: string;
+  brandId?: string;
+  fullDescription?: string;
 }
 
 export interface ConditionResponse {

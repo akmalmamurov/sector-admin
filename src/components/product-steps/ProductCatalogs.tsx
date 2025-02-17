@@ -1,4 +1,9 @@
-import { Controller, Control, FieldErrors } from "react-hook-form";
+import {
+  Controller,
+  Control,
+  UseFormWatch,
+  UseFormSetValue,
+} from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -6,37 +11,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Catalog, Category, ProductRequest, SubCatalog } from "@/types";
+import { ProductRequest } from "@/types";
 import { Button } from "../ui/button";
+import { useGetCatalog, useGetCategories, useGetSubCatalogs } from "@/hooks";
 
 interface Props {
-  catalogData: Catalog[];
-  subCatalogData: SubCatalog[];
-  categoriesData: Category[];
-  catalogId: string | null;
-  setCatalogId: (value: string) => void;
-  subCatalogId: string | null;
-  setSubCatalogId: (value: string) => void;
-  setCategoryId: (value: string) => void;
   control: Control<ProductRequest>;
-  errors: FieldErrors<ProductRequest>;
+  setValue: UseFormSetValue<ProductRequest>;
+  watch: UseFormWatch<ProductRequest>;
   handleNext: () => void;
 }
 
 export const ProductCatalogs = ({
   control,
-  catalogData,
-  subCatalogData,
-  categoriesData,
-  catalogId,
-  setCatalogId,
-  subCatalogId,
-  setSubCatalogId,
-  setCategoryId,
+  setValue,
+  watch,
   handleNext,
 }: Props) => {
-  const isNextDisabled = !subCatalogId && !categoriesData.length;
-
+  const catalogId = watch("catalogId");
+  const subCatalogId = watch("subcatalogId");
+  const categoryId = watch("categoryId");
+  const { data: catalogData = [] } = useGetCatalog();
+  const { data: subCatalogData = [] } = useGetSubCatalogs(catalogId);
+  const { data: categoriesData = [] } = useGetCategories(subCatalogId);
+  const isNextDisabled = !subCatalogId && !categoryId;
   return (
     <div className="grid grid-cols-3 gap-5 pb-2 ">
       <div className="flex flex-col gap-1">
@@ -46,7 +44,10 @@ export const ProductCatalogs = ({
         >
           Catalog
         </label>
-        <Select onValueChange={setCatalogId} value={catalogId || ""}>
+        <Select
+          onValueChange={(value) => setValue("catalogId", value)}
+          value={catalogId || ""}
+        >
           <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header text-sm font-semibold h-11">
             <SelectValue placeholder="Select Catalog" />
           </SelectTrigger>
@@ -78,7 +79,7 @@ export const ProductCatalogs = ({
           render={({ field }) => (
             <Select
               onValueChange={(value) => {
-                setSubCatalogId(value);
+                setValue("subcatalogId", value);
                 field.onChange(value);
               }}
               value={field.value}
@@ -123,7 +124,7 @@ export const ProductCatalogs = ({
           render={({ field }) => (
             <Select
               onValueChange={(value) => {
-                setCategoryId(value);
+                setValue("categoryId", value);
                 field.onChange(value);
               }}
               value={field.value}
@@ -154,7 +155,7 @@ export const ProductCatalogs = ({
         />
       </div>
 
-      <div className="col-span-3 flex justify-end mt-4">
+      <div className="col-span-3 flex justify-end mt-10">
         <Button onClick={handleNext} disabled={isNextDisabled}>
           Next
         </Button>

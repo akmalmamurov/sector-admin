@@ -192,9 +192,11 @@ export interface ProductRequest {
   fullDescription?: string;
   conditionId?: string;
   relevanceId?: string;
-  characteristics?: Characteristic[];
+  characteristics?: { title: string; characteristics: Characteristic[] }[]; 
   productImages?: File[];
+  descriptionImage?: File;
 }
+
 export interface ProductData {
   catalogId: string;
   subcatalogId: string;

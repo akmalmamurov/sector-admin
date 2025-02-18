@@ -17,7 +17,7 @@ interface Props {
   watch: UseFormWatch<ProductRequest>;
 }
 
-const ProductStepThree = ({
+export const ProductBrandCondition = ({
   control,
   handleNext,
   handleBack,
@@ -156,4 +156,4 @@ const ProductStepThree = ({
   );
 };
 
-export default ProductStepThree;
+export default ProductBrandCondition;

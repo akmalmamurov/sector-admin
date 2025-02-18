@@ -34,7 +34,7 @@ export const ProductCatalogs = ({
   const { data: catalogData = [] } = useGetCatalog();
   const { data: subCatalogData = [] } = useGetSubCatalogs(catalogId);
   const { data: categoriesData = [] } = useGetCategories(subCatalogId);
-  const isNextDisabled = !subCatalogId && !categoryId;
+  const isNextDisabled = !subCatalogId || !categoryId;
   return (
     <div className="grid grid-cols-3 gap-5 pb-2 ">
       <div className="flex flex-col gap-1">

@@ -1,54 +1,79 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
 import ImageTool from "@editorjs/image";
 import Paragraph from "@editorjs/paragraph";
 import Underline from "@editorjs/underline";
-import { UseFormSetValue } from "react-hook-form";
+import { UseFormSetValue, UseFormGetValues } from "react-hook-form";
 import { ProductRequest } from "@/types";
-import { CreateButton } from "../create-button";
+import { Button } from "../ui/button";
 
 interface EditorProps {
   setValue: UseFormSetValue<ProductRequest>;
+  getValues: UseFormGetValues<ProductRequest>;
+  images: File[];
+  setImageFiles: (files: File[]) => void;
+  handleNext: () => void;
+  handleBack: () => void;
 }
 
-const Editor: React.FC<EditorProps> = ({  setValue }) => {
+const Editor: React.FC<EditorProps> = ({
+  setValue,
+  getValues,
+  handleNext,
+  handleBack,
+  images,
+  setImageFiles,
+}) => {
   const editorRef = useRef<EditorJS | null>(null);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    if (!editorRef.current) {
-      editorRef.current = new EditorJS({
-        holder: "editor-container",
-        autofocus: true,
-        tools: {
-          paragraph: Paragraph,
-          header: Header,
-          list: List,
-          underline: Underline,
-          image: {
-            class: ImageTool,
-            config: {
-              uploader: {
-                uploadByFile: async (file: File) => {
-                  const localURL = URL.createObjectURL(file);
-                  setImageFiles((prev) => [...prev, file]);
+    const initializeEditor = async () => {
+      if (!editorRef.current) {
+        const editor = new EditorJS({
+          holder: "editor-container",
+          autofocus: true,
+          tools: {
+            paragraph: Paragraph,
+            header: Header,
+            list: List,
+            underline: Underline,
+            image: {
+              class: ImageTool,
+              config: {
+                uploader: {
+                  uploadByFile: async (file: File) => {
+                    const localURL = URL.createObjectURL(file);
+                    setImageFiles([...images, file]);
 
-                  return {
-                    success: 1,
-                    file: {
-                      url: localURL,
-                    },
-                  };
+                    return {
+                      success: 1,
+                      file: { url: localURL },
+                    };
+                  },
                 },
               },
             },
           },
-        },
-        data: { blocks: [] },
-      });
-    }
+          data: (() => {
+            const fullDescription = getValues("fullDescription");
+            try {
+              return fullDescription
+                ? JSON.parse(fullDescription)
+                : { blocks: [] };
+            } catch (error) {
+              console.error("Invalid JSON format in fullDescription", error);
+              return { blocks: [] };
+            }
+          })(),
+        });
+
+        editorRef.current = editor;
+      }
+    };
+
+    initializeEditor();
 
     return () => {
       if (
@@ -59,7 +84,7 @@ const Editor: React.FC<EditorProps> = ({  setValue }) => {
         editorRef.current = null;
       }
     };
-  }, []);
+  }, [getValues, setImageFiles, images]);
 
   const handleSave = async () => {
     if (editorRef.current) {
@@ -77,7 +102,7 @@ const Editor: React.FC<EditorProps> = ({  setValue }) => {
       });
 
       setValue("fullDescription", JSON.stringify(content));
-      console.log(content);
+      handleNext();
     }
   };
 
@@ -86,18 +111,18 @@ const Editor: React.FC<EditorProps> = ({  setValue }) => {
       <div
         id="editor-container"
         style={{
-          minHeight: "300px",
+          minHeight: "200px",
           border: "1px solid #ddd",
-          padding: "10px",
+          padding: "1px",
         }}
       ></div>
 
       <div className="image-preview mt-4">
-        {imageFiles.length > 0 && (
-          <>
-            <h3 className="text-lg font-semibold">Image Previews:</h3>
+        <>
+          <h3 className="text-lg font-semibold">Image Previews:</h3>
+          {images.length > 0 && (
             <div className="flex gap-2 mt-2">
-              {imageFiles.map((file, index) => (
+              {images.map((file, index) => (
                 <img
                   key={index}
                   src={URL.createObjectURL(file)}
@@ -106,18 +131,17 @@ const Editor: React.FC<EditorProps> = ({  setValue }) => {
                 />
               ))}
             </div>
-          </>
-        )}
+          )}
+        </>
       </div>
 
-      <div className="flex justify-end">
-        <CreateButton
-          type="submit"
-          className="save-button mt-4"
-          onClick={handleSave}
-        >
-          CreateProduct
-        </CreateButton>
+      <div className="flex justify-end gap-5">
+        <Button type="button" className="save-button mt-4" onClick={handleBack}>
+          Back
+        </Button>
+        <Button type="button" className="save-button mt-4" onClick={handleSave}>
+          Next
+        </Button>
       </div>
     </div>
   );

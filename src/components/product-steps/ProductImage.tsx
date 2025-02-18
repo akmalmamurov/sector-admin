@@ -1,14 +1,13 @@
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { X } from "lucide-react";
+import { CreateButton } from "../create-button";
 
 interface ProductImageProps {
   setValue: (files: File[]) => void;
-  handleBack: () => void;
   handleNext: () => void;
 }
 
-export const ProductImage = ({ setValue, handleBack, handleNext }: ProductImageProps) => {
+export const ProductImage = ({ setValue, handleNext }: ProductImageProps) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -68,8 +67,7 @@ export const ProductImage = ({ setValue, handleBack, handleNext }: ProductImageP
       </div>
 
       <div className="flex justify-end gap-5 mt-6">
-        <Button type="button" onClick={handleBack}>Back</Button>
-        <Button type="button" onClick={handleNext}>Next</Button>
+        <CreateButton type="submit" onClick={handleNext}>Create Product</CreateButton>
       </div>
     </div>
   );

@@ -16,9 +16,9 @@ import {
   ProductCharacter,
   ProductImage,
   ProductStepTwo,
+  ProductBrandCondition,
+  ProductFullDescription,
 } from "../product-steps";
-import ProductStepThree from "../product-steps/ProductStepThree";
-import ProductStepFinal from "../product-steps/ProductStepFinal";
 
 interface Props {
   isOpen: boolean;
@@ -34,17 +34,19 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
     watch,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<ProductRequest>();
   const [activeStep, setActiveStep] = useState(0);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const { mutate: createProduct } = useCreateProduct();
   const steps = [
     "Catalogs",
     "Title, Articul, Code, Description, Price, InStock",
+    "Full Description",
     "Brand, Condition, Relavance",
     " Characteristics",
     "Images",
-    "Full Description",
   ];
 
   const handleNext = () => {
@@ -61,6 +63,10 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   const onSubmit = (data: ProductRequest) => {
     const formData = new FormData();
 
+    imageFiles.forEach((file) => {
+      formData.append(`descriptionImages`, file, file.name);
+    });
+
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || key === "productImages") return;
 
@@ -73,7 +79,7 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
 
     if (data.productImages?.length) {
       data.productImages.forEach((file) => {
-        formData.append(`productImages`, file);
+        formData.append("productImages", file, file.name);
       });
     }
 
@@ -148,28 +154,36 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
               />
             )}
             {activeStep === 2 && (
-              <ProductStepThree
+              <ProductFullDescription
+                setValue={setValue}
+                getValues={getValues}
+                handleNext={handleNext}
+                handleBack={handleBack}
+                images={imageFiles}
+                setImageFiles={setImageFiles}
+              />
+            )}
+            {activeStep === 3 && (
+              <ProductBrandCondition
                 control={control}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 watch={watch}
               />
             )}
-            {activeStep === 3 && (
+            {activeStep === 4 && (
               <ProductCharacter
                 control={control}
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
             )}
-            {activeStep === 4 && (
+            {activeStep === 5 && (
               <ProductImage
                 setValue={(files) => setValue("productImages", files)}
-                handleBack={handleBack}
                 handleNext={handleNext}
               />
             )}
-            {activeStep === 5 && <ProductStepFinal setValue={setValue} />}
           </form>
         </div>
       </DialogContent>

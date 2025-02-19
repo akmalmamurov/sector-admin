@@ -22,8 +22,6 @@ export const useLogin = () => {
   return useMutation<LoginResponse, AxiosError, UserLogin>({
     mutationFn: signIn,
     onSuccess: (response) => {
-      console.log("Login successful:", response);
-
       localStorage.setItem("access_token", response.token);
 
       setAuth(true, response.role, response.username);

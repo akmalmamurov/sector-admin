@@ -35,7 +35,6 @@ export const ProductCharacter = ({ control, handleNext, handleBack }: Props) => 
             />
 
             <div className="space-y-2">
-              {/* Nested Field Array for Characteristics */}
               <ProductCharacteristics control={control} titleIndex={titleIndex} />
             </div>
 
@@ -53,7 +52,7 @@ export const ProductCharacter = ({ control, handleNext, handleBack }: Props) => 
 
       <Button
         type="button"
-        onClick={() => appendTitle({ title: "", characteristics: [] })}
+        onClick={() => appendTitle({ title: "", options: [] })}
         className="mt-3"
       >
         + Add Title
@@ -70,7 +69,7 @@ export const ProductCharacter = ({ control, handleNext, handleBack }: Props) => 
 const ProductCharacteristics = ({ control, titleIndex }: { control: Control<ProductRequest>; titleIndex: number }) => {
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `characteristics.${titleIndex}.characteristics`,
+    name: `characteristics.${titleIndex}.options`,
   });
 
   return (
@@ -78,7 +77,7 @@ const ProductCharacteristics = ({ control, titleIndex }: { control: Control<Prod
       {fields.map((charField, charIndex) => (
         <div key={charField.id} className="flex items-center gap-3">
           <Controller
-            name={`characteristics.${titleIndex}.characteristics.${charIndex}.name`}
+            name={`characteristics.${titleIndex}.options.${charIndex}.name`}
             control={control}
             render={({ field }) => (
               <input
@@ -90,7 +89,7 @@ const ProductCharacteristics = ({ control, titleIndex }: { control: Control<Prod
           />
 
           <Controller
-            name={`characteristics.${titleIndex}.characteristics.${charIndex}.value`}
+            name={`characteristics.${titleIndex}.options.${charIndex}.value`}
             control={control}
             render={({ field }) => (
               <input

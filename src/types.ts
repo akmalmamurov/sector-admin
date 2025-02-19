@@ -174,7 +174,7 @@ export interface Product {
   id: string;
   title: string;
 }
-export interface Characteristic {
+export interface CharacterOption {
   name: string;
   value: string;
 }
@@ -192,9 +192,9 @@ export interface ProductRequest {
   fullDescription?: string;
   conditionId?: string;
   relevanceId?: string;
-  characteristics?: { title: string; characteristics: Characteristic[] }[]; 
+  characteristics?: { title: string; options: CharacterOption[] }[]; 
   productImages?: File[];
-  descriptionImage?: File;
+  descriptionImage?: File[];
 }
 
 export interface ProductData {
@@ -211,6 +211,6 @@ export interface ProductData {
   fullDescription?: string;
   conditionId?: string;
   relevanceId?: string;
-  characteristics?: Characteristic[];
+  characteristics?: CharacterOption[];
   path?: string;
 }

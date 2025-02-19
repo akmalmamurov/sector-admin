@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useRef, useEffect, useState } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
-import ImageTool from "@editorjs/image";
 import Paragraph from "@editorjs/paragraph";
 import Underline from "@editorjs/underline";
 import { UseFormSetValue, UseFormGetValues } from "react-hook-form";
@@ -27,10 +27,11 @@ const Editor: React.FC<EditorProps> = ({
   setImageFiles,
 }) => {
   const editorRef = useRef<EditorJS | null>(null);
+  const [_blocks, setBlocks] = useState<OutputData["blocks"]>([]);
 
   useEffect(() => {
-    const initializeEditor = async () => {
-      if (!editorRef.current) {
+    if (!editorRef.current) {
+      const initializeEditor = async () => {
         const editor = new EditorJS({
           holder: "editor-container",
           autofocus: true,
@@ -39,22 +40,6 @@ const Editor: React.FC<EditorProps> = ({
             header: Header,
             list: List,
             underline: Underline,
-            image: {
-              class: ImageTool,
-              config: {
-                uploader: {
-                  uploadByFile: async (file: File) => {
-                    const localURL = URL.createObjectURL(file);
-                    setImageFiles([...images, file]);
-
-                    return {
-                      success: 1,
-                      file: { url: localURL },
-                    };
-                  },
-                },
-              },
-            },
           },
           data: (() => {
             const fullDescription = getValues("fullDescription");
@@ -67,79 +52,82 @@ const Editor: React.FC<EditorProps> = ({
               return { blocks: [] };
             }
           })(),
+          onChange: async () => {
+            if (editorRef.current) {
+              const content = await editorRef.current.save();
+              setBlocks(content.blocks);
+            }
+          },
         });
 
         editorRef.current = editor;
-      }
-    };
-
-    initializeEditor();
-
-    return () => {
-      if (
-        editorRef.current &&
-        typeof editorRef.current.destroy === "function"
-      ) {
-        editorRef.current.destroy();
-        editorRef.current = null;
-      }
-    };
-  }, [getValues, setImageFiles, images]);
+      };
+      initializeEditor();
+    }
+  }, [getValues]);
 
   const handleSave = async () => {
     if (editorRef.current) {
       const content: OutputData = await editorRef.current.save();
-
-      content.blocks = content.blocks.map((block) => {
-        if (
-          block.type === "image" &&
-          block.data.file?.url?.startsWith("blob:")
-        ) {
-          block.data.file.url =
-            block.data.file.url.split("/").pop() || block.data.file.url;
-        }
-        return block;
-      });
-
       setValue("fullDescription", JSON.stringify(content));
       handleNext();
     }
   };
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      const newFiles = Array.from(files);
+      setImageFiles([...images, ...newFiles]);
+    }
+  };
+  
+
+  const handleRemoveImage = (index: number) => {
+    const updatedFiles = images.filter((_, i) => i !== index);
+    setImageFiles(updatedFiles);
+  };
+  
   return (
     <div className="editor-container">
-      <div
-        id="editor-container"
-        style={{
-          minHeight: "200px",
-          border: "1px solid #ddd",
-          padding: "1px",
-        }}
-      ></div>
+      <div id="editor-container"></div>
 
-      <div className="image-preview mt-4">
-        <>
-          <h3 className="text-lg font-semibold">Image Previews:</h3>
-          {images.length > 0 && (
-            <div className="flex gap-2 mt-2">
-              {images.map((file, index) => (
-                <img
-                  key={index}
-                  src={URL.createObjectURL(file)}
-                  alt="preview"
-                  className="w-20 h-20 object-cover rounded"
-                />
-              ))}
+      <div className="mt-4 flex gap-2 items-center">
+        <label className="cursor-pointer bg-blue-500 text-white px-3 py-2 rounded">
+          Image Upload
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+        </label>
+        <div className="flex flex-wrap mt-2 gap-2">
+          {images.map((image, index) => (
+            <div key={index} className="relative">
+              <img
+                src={URL.createObjectURL(image)}
+                alt="uploaded"
+                className="w-20 h-20 object-cover rounded"
+              />
+              <button
+                type="button"
+                onClick={() => handleRemoveImage(index)}
+                className="absolute top-0 right-0 bg-red-500 text-white px-1 rounded"
+              >
+                ✖
+              </button>
             </div>
-          )}
-        </>
+          ))}
+        </div>
       </div>
 
-      <div className="flex justify-end gap-5">
-        <Button type="button" className="save-button mt-4" onClick={handleBack}>
+      <div className="flex justify-end gap-5 mt-4">
+        <Button type="button" onClick={handleBack}>
           Back
         </Button>
-        <Button type="button" className="save-button mt-4" onClick={handleSave}>
+        <Button type="button" onClick={handleSave}>
           Next
         </Button>
       </div>

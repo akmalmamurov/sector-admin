@@ -39,6 +39,7 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   } = useForm<ProductRequest>();
   const [activeStep, setActiveStep] = useState(0);
   const [imageFiles, setImageFiles] = useState<File[]>([]);
+
   const { mutate: createProduct } = useCreateProduct();
   const steps = [
     "Catalogs",
@@ -63,14 +64,16 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   const onSubmit = (data: ProductRequest) => {
     const formData = new FormData();
 
-    imageFiles.forEach((file) => {
-      formData.append(`descriptionImages`, file, file.name);
-    });
+    if (imageFiles.length > 0) {
+      imageFiles.forEach((file) => {
+        formData.append("descriptionImages", file, file.name);
+      });
+    }
 
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || key === "productImages") return;
 
-      if (typeof value === "object") {
+      if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useEffect, useState } from "react";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import { UseFormSetValue, UseFormGetValues } from "react-hook-form";

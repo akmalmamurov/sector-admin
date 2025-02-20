@@ -1,13 +1,6 @@
 import { useCurrentColor } from "@/hooks";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../ui/table";
-import classNames from "classnames";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../ui/table";
+ import classNames from "classnames";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,13 +9,17 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
-import { Product } from "@/types";
+import { ProductData } from "@/types";
+import { DOMAIN } from "@/constants";
+import { priceFormat } from "@/utils";
 
 interface Props {
-  productData: Product[];
+  productData: ProductData[];
 }
 export const ProductTable = ({ productData }: Props) => {
   const theme = useCurrentColor();
+  console.log(productData);
+
   return (
     <Table>
       <TableHeader className={`${theme.header}`}>
@@ -37,6 +34,38 @@ export const ProductTable = ({ productData }: Props) => {
           </TableHead>
           <TableHead
             className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            image
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            instock
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            product code
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            price
+          </TableHead>
+          <TableHead
+            className={classNames(
               "font-bold text-sm uppercase px-5 text-right",
               theme.text
             )}
@@ -48,8 +77,22 @@ export const ProductTable = ({ productData }: Props) => {
       <TableBody>
         {productData?.map((product) => (
           <TableRow key={product?.id}>
-            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+            <TableCell
+              className={classNames("text-sm px-6 py-1 w-1/3", theme.text)}
+            >
               {product?.title}
+            </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              <img src={`${DOMAIN}/${product?.images}`} alt="" />
+            </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              {product.inStock}
+            </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              {product.productCode}
+            </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              {priceFormat(product.price)} summ
             </TableCell>
 
             <TableCell

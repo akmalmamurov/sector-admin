@@ -37,7 +37,7 @@ export const EDITOR_JS_TOOLS: Record<string, ToolConstructable | ToolSettings> =
   linkTool: {
     class: LinkTool as unknown as ToolConstructable,
     config: {
-      endpoint: "/api/fetch-url", // Replace with your backend endpoint
+      endpoint: "/api/fetch-url", 
     },
   },
   image: {
@@ -45,10 +45,26 @@ export const EDITOR_JS_TOOLS: Record<string, ToolConstructable | ToolSettings> =
     config: {
       uploader: {
         uploadByFile: async (file: File) => {
-          return {
-            success: 1,
-            file: { url: URL.createObjectURL(file) }, // Replace with actual upload logic
-          };
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Faylni base64 formatga o'tkazish
+
+            reader.onload = () => {
+              const images = JSON.parse(localStorage.getItem("editorImages") || "[]");
+              images.push({ name: file.name, base64: reader.result });
+              localStorage.setItem("editorImages", JSON.stringify(images));
+
+              resolve({
+                success: 1,
+                file: {
+                  url: URL.createObjectURL(file),
+                  name: file.name,
+                },
+              });
+            };
+
+            reader.onerror = (error) => reject(error);
+          });
         },
       },
     },

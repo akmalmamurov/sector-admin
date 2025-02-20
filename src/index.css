@@ -110,10 +110,15 @@ h4 {
   border: 1px solid #ccc !important;
 }
 .ce-block__content{
+  max-width: 790px;
   width: 100%;
+  margin: 0 0;
   padding: 8px 16px;
-  margin-left: 20px;
 }
+
 .ce-toolbar__actions {
-  right: 0;
+  right: -100px;
+}
+.ce-block a{
+  color: blue;
 }

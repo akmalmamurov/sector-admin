@@ -3,14 +3,14 @@ import { ProductModal } from "@/components/modal";
 import { Section } from "@/components/section";
 import { ProductTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
-// import { useGetCatalog } from "@/hooks";
+import { useGetProduct } from "@/hooks";
 import { useState } from "react";
 
 const ProductsPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // const { data: catalogData = [] } = useGetCatalog();
   const handleOpen = () => setIsOpen(!isOpen);
-  const productData = [{ id: "1", title: "Product 1" }];
+  const {data: productData = []}  = useGetProduct();
+  
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">

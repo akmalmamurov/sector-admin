@@ -170,10 +170,7 @@ export interface RelevanceRequest {
   name: string;
 }
 
-export interface Product {
-  id: string;
-  title: string;
-}
+
 export interface CharacterOption {
   name: string;
   value: string;
@@ -192,25 +189,20 @@ export interface ProductRequest {
   fullDescription?: string;
   conditionId?: string;
   relevanceId?: string;
-  characteristics?: { title: string; options: CharacterOption[] }[]; 
+  characteristics?: { title: string; options: CharacterOption[] }[];
   productImages?: File[];
   descriptionImage?: File[];
 }
-
 export interface ProductData {
-  catalogId: string;
-  subcatalogId: string;
-  categoryId?: string;
+  id: string;
   title: string;
   articul: string;
   productCode: string;
+  description: string;
   inStock: boolean;
   price: number;
-  description: string;
-  brandId?: string;
-  fullDescription?: string;
-  conditionId?: string;
-  relevanceId?: string;
-  characteristics?: CharacterOption[];
-  path?: string;
+  images: string;
+}
+export interface ProductResponse {
+  data: ProductData[];
 }

@@ -24,7 +24,10 @@ interface Props {
   isOpen: boolean;
   handleOpen: () => void;
 }
-
+interface StoredImage {
+  base64: string;
+  name: string;
+}
 export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   const theme = useCurrentColor();
   const {
@@ -60,38 +63,54 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
       setActiveStep((prev) => prev - 1);
     }
   };
-  const onSubmit = (data: ProductRequest) => {
+  const onSubmit = async (data: ProductRequest) => {
     const formData = new FormData();
-
-
+  
     Object.entries(data).forEach(([key, value]) => {
       if (value === undefined || key === "productImages") return;
-
+  
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());
       }
     });
-
+  
     if (data.productImages?.length) {
       data.productImages.forEach((file) => {
         formData.append("productImages", file, file.name);
       });
     }
+  
+    const storedImages = JSON.parse(localStorage.getItem("editorImages") || "[]");
+  
+    storedImages.forEach((img : StoredImage) => {
+      const byteString = atob(img.base64.split(",")[1]);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const uint8Array = new Uint8Array(arrayBuffer);
+  
+      for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+      }
+  
+      const file = new Blob([uint8Array], { type: "image/png" });
+      formData.append(`fullDescriptionImage`, file, img.name);
+    });
 
+  
     createProduct(formData, {
       onSuccess: () => {
         handleOpen();
         reset();
+        localStorage.removeItem("editorImages");
         console.log("Product created successfully", formData);
-        
       },
       onError: (error) => {
         console.error("Creation failed:", error);
       },
     });
   };
+  
 
   const catalogsProps = {
     control,

@@ -47,7 +47,7 @@ export const EDITOR_JS_TOOLS: Record<string, ToolConstructable | ToolSettings> =
         uploadByFile: async (file: File) => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.readAsDataURL(file); // Faylni base64 formatga o'tkazish
+            reader.readAsDataURL(file); 
 
             reader.onload = () => {
               const images = JSON.parse(localStorage.getItem("editorImages") || "[]");

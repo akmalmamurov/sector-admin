@@ -92,7 +92,7 @@ export const ProductStepTwo = ({
           <label className="text-sm font-medium">In Stock</label>
           <input
             {...register("inStock", { required: "Stock quantity is required" })}
-            type="number"
+            type="text"
             placeholder="Enter Stock Quantity"
             className="inputs py-2"
           />

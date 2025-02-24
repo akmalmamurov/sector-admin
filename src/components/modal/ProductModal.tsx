@@ -82,21 +82,26 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
       });
     }
   
-    const storedImages = JSON.parse(localStorage.getItem("editorImages") || "[]");
+    const hasUrlInFullDescription = data.fullDescription?.includes("http");
   
-    storedImages.forEach((img : StoredImage) => {
-      const byteString = atob(img.base64.split(",")[1]);
-      const arrayBuffer = new ArrayBuffer(byteString.length);
-      const uint8Array = new Uint8Array(arrayBuffer);
+    if (hasUrlInFullDescription) {
+      const storedImages = JSON.parse(localStorage.getItem("editorImages") || "[]");
   
-      for (let i = 0; i < byteString.length; i++) {
-        uint8Array[i] = byteString.charCodeAt(i);
-      }
+      storedImages.forEach((img: StoredImage) => {
+        const byteString = atob(img.base64.split(",")[1]);
+        const arrayBuffer = new ArrayBuffer(byteString.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
   
-      const file = new Blob([uint8Array], { type: "image/png" });
-      formData.append(`fullDescriptionImage`, file, img.name);
-    });
-
+        for (let i = 0; i < byteString.length; i++) {
+          uint8Array[i] = byteString.charCodeAt(i);
+        }
+  
+        const file = new Blob([uint8Array], { type: "image/png" });
+        formData.append(`fullDescriptionImages`, file, img.name);
+      });
+    } else {
+      localStorage.removeItem("editorImages");
+    }
   
     createProduct(formData, {
       onSuccess: () => {
@@ -110,6 +115,7 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
       },
     });
   };
+  
   
 
   const catalogsProps = {

@@ -28,8 +28,9 @@ export const ProductBrandCondition = ({
   const { data: relevanceData = [] } = useGetRelevance();
   const conditionId = watch("conditionId");
   const relevanceId = watch("relevanceId");
+  const brandId = watch("brandId");
 
-  const isNextDisabled = !relevanceId || !conditionId;
+  const isNextDisabled = !relevanceId || !conditionId || !brandId;
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
       {/* Brand Selection */}

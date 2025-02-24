@@ -1,6 +1,13 @@
 import { useCurrentColor } from "@/hooks";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "../ui/table";
- import classNames from "classnames";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "../ui/table";
+import classNames from "classnames";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -83,7 +90,11 @@ export const ProductTable = ({ productData }: Props) => {
               {product?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              <img src={`${DOMAIN}/${product?.mainImage}`} alt="productImage" />
+              <img
+                src={`${DOMAIN}/${product?.mainImage}`}
+                alt="productImage"
+                className="w-10 h-10"
+              />
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {product.inStock}

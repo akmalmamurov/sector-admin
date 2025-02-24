@@ -201,7 +201,7 @@ export interface ProductData {
   description: string;
   inStock: boolean;
   price: number;
-  images: string;
+  mainImage: string;
 }
 export interface ProductResponse {
   data: ProductData[];

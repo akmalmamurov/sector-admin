@@ -83,7 +83,7 @@ export const ProductTable = ({ productData }: Props) => {
               {product?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              <img src={`${DOMAIN}/${product?.images}`} alt="productImage" />
+              <img src={`${DOMAIN}/${product?.mainImage}`} alt="productImage" />
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {product.inStock}

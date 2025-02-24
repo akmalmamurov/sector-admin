@@ -44,18 +44,18 @@ const SignIn = () => {
               <div>
                 <input
                   type="text"
-                  {...register("email", { required: "Email is required" })}
+                  {...register("username", { required: "username is required" })}
                   className={classNames(
                     "inputs",
-                    errors.email
+                    errors.username
                       ? "ring-red-500 focus:ring-red-500"
                       : "focus:ring-activeInput"
                   )}
-                  placeholder="Email"
+                  placeholder="Username"
                 />
-                {errors.email && (
+                {errors.username && (
                   <span className="text-red-500 text-sm mt-1">
-                    {errors.email.message as string}
+                    {errors.username.message as string}
                   </span>
                 )}
               </div>

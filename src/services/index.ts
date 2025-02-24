@@ -11,7 +11,6 @@ const request = axios.create({
   },
 });
 
-// Request Interceptor
 request.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem("access_token");
@@ -25,7 +24,6 @@ request.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error)
 );
 
-// Response Interceptor
 request.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {

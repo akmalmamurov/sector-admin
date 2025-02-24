@@ -24,7 +24,7 @@ export interface PageInterface<T> {
   limit?: number;
 }
 export interface UserLogin {
-  email: string;
+  username: string;
   password: string;
 }
 export interface CatalogResponse {

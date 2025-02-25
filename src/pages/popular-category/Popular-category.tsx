@@ -5,7 +5,7 @@ import { useGetPopularCategory } from "../../hooks/popular-category/get-popular-
 import { cn } from "../../lib/utils";
 import { PopularCategoryTable } from "../../components/table";
 import { Select } from "../../components/ui/select";
-import { useGetCatalog } from "../../hooks";
+// import { useGetCatalog } from "../../hooks";
 import PopularModal from "../../components/modal/PopularModal";
 
 export const PopularCategory = () => {
@@ -14,7 +14,7 @@ export const PopularCategory = () => {
     setOpen((prev) => !prev);
   };
   const { data, isError } = useGetPopularCategory(false);
-  const { data: catalogData = [] } = useGetCatalog();
+  // const { data: catalogData = [] } = useGetCatalog();
   
   if (!data) return <div>Loading...</div>;
   if (isError) return <div>Error occurred</div>;

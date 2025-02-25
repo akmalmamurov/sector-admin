@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCurrentColor, useDeleteCategory } from "@/hooks";
+import { useCurrentColor } from "@/hooks";
 import { IPopularCategory } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
@@ -24,7 +24,7 @@ interface Props {
   categoriesData: IPopularCategory[];
   handleOpen: () => void;
 }
-export const PopularCategoryTable = ({ handleOpen, categoriesData }: Props) => {
+export const PopularCategoryTable = ({ categoriesData }: Props) => {
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);

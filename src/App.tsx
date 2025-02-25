@@ -8,6 +8,7 @@ import useStore from "@/context/store";
 import UsersPage from "@/pages/user/UsersPage";
 import BrandPage from "./pages/brand/BrandPage";
 import FilterPage from "./pages/filter-condition/FilterConditionPage";
+import PopularCategory from "./pages/popular-category/Popular-category";
 
 function App() {
   const { auth } = useStore();
@@ -28,6 +29,7 @@ function App() {
             <Route path="/users" element={<UsersPage />} />
             <Route path="/brands" element={<BrandPage />} />
             <Route path="/filter" element={<FilterPage />} />
+            <Route path="/popular-category" element={<PopularCategory />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

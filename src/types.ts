@@ -64,6 +64,11 @@ export interface Category {
   title: string;
 }
 
+export interface IPopularCategory extends Category {
+  isPopular: boolean;
+  slug: string;
+}
+
 export interface CategoryResponse {
   data: Category[];
   error: null | string;

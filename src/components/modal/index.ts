@@ -7,3 +7,4 @@ export * from "./UserModal";
 export * from "./ProductModal";
 export * from "./ConditionModal";
 export * from "./RelevanceModal";
+export * from "./PopularModal"

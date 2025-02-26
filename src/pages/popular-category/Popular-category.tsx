@@ -6,7 +6,7 @@ import { cn } from "../../lib/utils";
 import { PopularCategoryTable } from "../../components/table";
 import { Select } from "../../components/ui/select";
 import PopularModal from "../../components/modal/PopularModal";
-import { useGetCatalog, useGetSubCatalogs } from "../../hooks";
+import { useGetCatalog, useGetCategories, useGetSubCatalogs } from "../../hooks";
 
 export const PopularCategory = () => {
   const { data: catalogData = [] } = useGetCatalog();
@@ -14,12 +14,10 @@ export const PopularCategory = () => {
   const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<string>("");
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
-  console.log(subCatalogData);
   
-  // const { data: categoriesData = [] } =
-  //   useGetCategories(selectedSubCatalogId);
+  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
 
-  console.log(selectedCatalogId);
+  console.log(categoriesData);
   
   const [isOpen, setOpen] = useState(false);
   const handleOpen = () => {
@@ -51,6 +49,7 @@ export const PopularCategory = () => {
         setSelectedCatalogId={setSelectedCatalogId}
         subCatalogData={subCatalogData}
         selectedCatalogId={selectedCatalogId}
+        selectedSubCatalogId={selectedSubCatalogId}
         setSelectedSubCatalogId={setSelectedSubCatalogId}
       />
       <Select>

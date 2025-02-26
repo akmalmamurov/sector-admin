@@ -1,30 +1,45 @@
-import {Dialog,DialogContent,DialogDescription,DialogHeader,DialogClose,DialogTitle} from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogClose,
+  DialogTitle,
+} from "../ui/dialog";
 import { useCurrentColor } from "../../hooks";
 import classNames from "classnames";
 import { X } from "lucide-react";
 import { Catalog, SubCatalog } from "../../types";
-import { memo } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { FC, memo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
-const PopularModal = ({
-  isOpen,
-  handleOpen,
-  catalogData,
-  setSelectedCatalogId,
-  setSelectedSubCatalogId,
-  subCatalogData,
-  selectedCatalogId,
-}: {
+interface IPopularData {
   isOpen: boolean;
-  selectedCatalogId: string;
   handleOpen: () => void;
+  catalogData: Catalog[];
   setSelectedCatalogId: (value: string) => void;
   setSelectedSubCatalogId: (value: string) => void;
-  catalogData: Catalog[];
   subCatalogData: SubCatalog[];
+  selectedCatalogId: string;
+  selectedSubCatalogId:string
+}
+const PopularModal: FC<IPopularData> = ({
+  catalogData,
+  handleOpen,
+  isOpen,
+  selectedCatalogId,
+  setSelectedCatalogId,
+  setSelectedSubCatalogId,
+  selectedSubCatalogId,
+  subCatalogData,
 }) => {
   const theme = useCurrentColor();
-  console.log(catalogData);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
@@ -46,7 +61,7 @@ const PopularModal = ({
           onValueChange={(value) => {
             setSelectedCatalogId(value);
           }}
-          value={""}
+          value={selectedCatalogId || ""}
         >
           <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
             <SelectValue placeholder="Select Catalog" />
@@ -63,9 +78,10 @@ const PopularModal = ({
             ))}
           </SelectContent>
         </Select>
+
         <Select
           onValueChange={(value) => setSelectedSubCatalogId(value)}
-          value={ ""}
+          value={selectedSubCatalogId || ""}
           disabled={!selectedCatalogId}
         >
           <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
@@ -83,6 +99,7 @@ const PopularModal = ({
             ))}
           </SelectContent>
         </Select>
+
         <DialogDescription className="hidden">
           Description text goes here.
         </DialogDescription>

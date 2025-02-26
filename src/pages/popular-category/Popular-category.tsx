@@ -1,21 +1,33 @@
 import { CreateButton } from "../../components/create-button";
 import { TableTitle } from "../../components/title";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useGetPopularCategory } from "../../hooks/popular-category/get-popular-category";
 import { cn } from "../../lib/utils";
 import { PopularCategoryTable } from "../../components/table";
 import { Select } from "../../components/ui/select";
-// import { useGetCatalog } from "../../hooks";
 import PopularModal from "../../components/modal/PopularModal";
+import { useGetCatalog, useGetSubCatalogs } from "../../hooks";
 
 export const PopularCategory = () => {
+  const { data: catalogData = [] } = useGetCatalog();
+  const [selectedCatalogId, setSelectedCatalogId] = useState<string>("");
+  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<string>("");
+
+  const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
+  console.log(subCatalogData);
+  
+  // const { data: categoriesData = [] } =
+  //   useGetCategories(selectedSubCatalogId);
+
+  console.log(selectedCatalogId);
+  
   const [isOpen, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
   const { data, isError } = useGetPopularCategory(false);
   // const { data: catalogData = [] } = useGetCatalog();
-  
+
   if (!data) return <div>Loading...</div>;
   if (isError) return <div>Error occurred</div>;
 
@@ -32,7 +44,15 @@ export const PopularCategory = () => {
           </CreateButton>
         </div>
       </div>
-      {isOpen && <PopularModal isOpen={isOpen} handleOpen={() => setOpen(false)}  />}
+      <PopularModal
+        isOpen={isOpen}
+        handleOpen={() => setOpen(false)}
+        catalogData={catalogData}
+        setSelectedCatalogId={setSelectedCatalogId}
+        subCatalogData={subCatalogData}
+        selectedCatalogId={selectedCatalogId}
+        setSelectedSubCatalogId={setSelectedSubCatalogId}
+      />
       <Select>
         <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
           {data.length > 0 ? (
@@ -54,4 +74,4 @@ export const PopularCategory = () => {
   );
 };
 
-export default PopularCategory;
+export default memo(PopularCategory);

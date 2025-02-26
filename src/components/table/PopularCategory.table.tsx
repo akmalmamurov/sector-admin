@@ -10,7 +10,7 @@ import { useCurrentColor } from "@/hooks";
 import { IPopularCategory } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -133,4 +133,4 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
   );
 };
 
-export default PopularCategoryTable;
+export default memo(PopularCategoryTable);

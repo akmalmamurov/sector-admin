@@ -19,8 +19,7 @@ export const ProductImage = ({
   element,
   handleBack,
 }: ProductImageProps) => {
-
-  const MAX_FILE_SIZE = 1048576; 
+  const MAX_FILE_SIZE = 1048576;
   const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif"];
 
   const [updatedImages, setUpdatedImages] = useState<{ [key: number]: File }>(
@@ -111,40 +110,45 @@ export const ProductImage = ({
       <div className="p-4">
         <h2 className="text-lg font-semibold mb-3">Product Images</h2>
 
-        {/* Image Preview Grid */}
-        <div className="grid grid-cols-4 gap-4 mb-4">
-          {existingImages.map((image, index) => (
-            <div key={index} className="relative">
-              <img
-                src={
-                  updatedImages[index]
-                    ? URL.createObjectURL(updatedImages[index])
-                    : `${DOMAIN}/${image}`
-                }
-                alt={`Product Image ${index + 1}`}
-                className="w-24 h-24 object-cover rounded-md"
-              />
-              <div className="mt-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpdate(e, index)}
-                  className="hidden"
-                  id={`update-image-${index}`}
+        <div className="grid grid-cols-5 gap-4 mb-20">
+          {existingImages.map((image, index) => {
+            const labelText =
+              index === 0 && element?.mainImage
+                ? "Update Main Image"
+                : "Update Image";
+            return (
+              <div key={index} className="relative">
+                <img
+                  src={
+                    updatedImages[index]
+                      ? URL.createObjectURL(updatedImages[index])
+                      : `${DOMAIN}/${image}`
+                  }
+                  alt={`Product Image ${index + 1}`}
+                  className="w-24 h-24 object-cover rounded-md"
                 />
-                <label
-                  htmlFor={`update-image-${index}`}
-                  className="cursor-pointer bg-green-500 text-white px-2 py-1 rounded-md text-xs"
-                >
-                  Update Image
-                </label>
+                <div className="mt-2">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => handleImageUpdate(e, index)}
+                    className="hidden"
+                    id={`update-image-${index}`}
+                  />
+                  <label
+                    htmlFor={`update-image-${index}`}
+                    className="cursor-pointer bg-green-500 text-white px-2 py-1 rounded-md text-xs"
+                  >
+                    {labelText}
+                  </label>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-end gap-5 mt-6">
+        <div className="flex justify-end gap-5 mt-40">
           {handleBack && (
             <Button type="button" onClick={handleBack} className="h-[42px]">
               Back

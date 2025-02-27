@@ -175,7 +175,6 @@ export interface RelevanceRequest {
   name: string;
 }
 
-
 export interface CharacterOption {
   name: string;
   value: string;
@@ -195,6 +194,7 @@ export interface ProductRequest {
   conditionId?: string;
   relevanceId?: string;
   characteristics?: { title: string; options: CharacterOption[] }[];
+  productMainImage?: File;
   productImages?: File[];
   descriptionImage?: File[];
 }
@@ -207,6 +207,7 @@ export interface ProductData {
   inStock: boolean;
   price: number;
   mainImage: string;
+  images?: string[];
 }
 export interface ProductResponse {
   data: ProductData[];

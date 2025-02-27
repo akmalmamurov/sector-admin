@@ -44,6 +44,7 @@ export const CategoriesModal = ({
     setError,
     clearErrors,
     reset,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<CategoryRequest>();
 
@@ -143,11 +144,13 @@ export const CategoriesModal = ({
     if (file) {
       setFile(file);
       clearErrors("categoryImage");
+      setValue("categoryImage", file, { shouldDirty: true });
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
+  
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
@@ -186,7 +189,6 @@ export const CategoriesModal = ({
             </Select>
           </div>
 
-          {/* Subcatalog  */}
           <div className="mb-4">
             <label className={`block mb-1 ${theme.text}`}>
               Select Subcatalog
@@ -229,7 +231,6 @@ export const CategoriesModal = ({
             )}
           </div>
 
-          {/* Title */}
           <div>
             <input
               type="text"
@@ -275,7 +276,6 @@ export const CategoriesModal = ({
             )}
           </div>
 
-          {/* Tugmalar */}
           <div className="flex justify-end gap-4 mt-4">
             <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel

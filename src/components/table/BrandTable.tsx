@@ -29,7 +29,6 @@ export const BrandTable = ({ handleOpen, brandData }: Props) => {
   const handleImage = (path: string | null) => {
     setImage(path);
     setIsOpen(true);
-    console.log(path);
   };
   return (
     <Table>

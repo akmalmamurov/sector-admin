@@ -20,7 +20,7 @@ export const useCreateCatalog = () => {
       toast.success("Created successfully!");
     },
     onError: (error) => {
-      toast.error(`Error: ${error.message}`);
+      toast.error(`Error: ${error.message}`, { theme: "colored" });
     },
   });
 };

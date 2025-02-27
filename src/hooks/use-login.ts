@@ -3,6 +3,7 @@ import { UserLogin } from "@/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import useStore from "@/context/store";
+import { toast } from "react-toastify";
 interface LoginResponse {
   token: string;
   role: string;
@@ -29,7 +30,9 @@ export const useLogin = () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error) => {
-      console.error("Login failed:", error.message);
+      console.log(error);
+      
+      toast.error("Network Error",);
     },
   });
 };

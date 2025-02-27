@@ -110,15 +110,18 @@ h4 {
   border: 1px solid #ccc !important;
 }
 .ce-block__content{
-  max-width: 790px;
+  max-width: 860px;
   width: 100%;
   margin: 0 0;
-  padding: 8px 16px;
+  padding: 4px 16px;
 }
 
 .ce-toolbar__actions {
-  right: -100px;
+  right: -120px;
 }
 .ce-block a{
   color: blue;
+}
+.ce-paragraph{
+  font-size: 14px;
 }

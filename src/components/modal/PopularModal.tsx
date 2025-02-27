@@ -4,10 +4,10 @@ import { useCurrentColor } from '../../hooks';
 import classNames from 'classnames';
 import { X } from 'lucide-react';
 
-const theme = useCurrentColor();
 
 
 const PopularModal = ({isOpen, handleOpen}: {isOpen:boolean,handleOpen:() => void}) => {
+  const theme = useCurrentColor();
   return (
     <div>
       <Dialog open={isOpen} onOpenChange={handleOpen}>

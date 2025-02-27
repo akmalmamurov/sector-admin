@@ -15,7 +15,7 @@ export const PopularCategory = () => {
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
   
-  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
+  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId,false);
 
   console.log(categoriesData);
   
@@ -23,7 +23,7 @@ export const PopularCategory = () => {
   const handleOpen = () => {
     setOpen((prev) => !prev);
   };
-  const { data, isError } = useGetPopularCategory(false);
+  const { data, isError } = useGetPopularCategory(true);
   // const { data: catalogData = [] } = useGetCatalog();
 
   if (!data) return <div>Loading...</div>;
@@ -51,6 +51,7 @@ export const PopularCategory = () => {
         selectedCatalogId={selectedCatalogId}
         selectedSubCatalogId={selectedSubCatalogId}
         setSelectedSubCatalogId={setSelectedSubCatalogId}
+        categoriesData={categoriesData}
       />
       <Select>
         <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">

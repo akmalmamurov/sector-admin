@@ -78,7 +78,7 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
               {category?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.isPopular ? "Popular" : "Not Popular"}
+              {category?.popular ? "Popular" : "Not Popular"}
             </TableCell>
 
             <TableCell
@@ -127,8 +127,6 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
           </div>
         </DialogContent>
       </Dialog>
-
-      
     </Table>
   );
 };

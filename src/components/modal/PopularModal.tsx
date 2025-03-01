@@ -44,19 +44,21 @@ const PopularModal: FC<IPopularData> = ({
     label: category.title,
   }));
 
-  const { mutate: createPopularCategory} = useCreatePopularCategory()
+  const { mutate: createPopularCategory } = useCreatePopularCategory();
 
   const handleCreatePopular = () => {
     console.log("Tanlangan Category IDlari:", selectedCategoryIds);
     createPopularCategory(selectedCategoryIds);
-    handleOpen()
+    handleOpen();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle className={classNames(theme.text)}>Create Popular Category</DialogTitle>
+          <DialogTitle className={classNames(theme.text)}>
+            Create Popular Category
+          </DialogTitle>
         </DialogHeader>
         <DialogClose asChild>
           <button>
@@ -70,7 +72,6 @@ const PopularModal: FC<IPopularData> = ({
         </DialogClose>
 
         <ReactSelect
-          
           onChange={(selectedOption) =>
             setSelectedCatalogId(selectedOption ? selectedOption.value : "")
           }
@@ -115,8 +116,9 @@ const PopularModal: FC<IPopularData> = ({
         />
 
         <button
+          disabled={!selectedCategoryIds.length}
           onClick={handleCreatePopular}
-          className="mt-4 bg-blue-500 text-white rounded-md px-4 py-2"
+          className="mt-4 bg-blue-500 text-white rounded-md px-4 py-2 disabled:opacity-70"
         >
           Create Popular
         </button>

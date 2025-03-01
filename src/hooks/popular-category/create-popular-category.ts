@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_POPULAR_CATEGORY } from "@/constants";
-import { Category } from "@/types";
 import { toast } from "react-toastify";
 
 const createPopularCategory = async (categoryIds: string[]): Promise<any> => {
@@ -10,7 +9,7 @@ const createPopularCategory = async (categoryIds: string[]): Promise<any> => {
     categoryIds,
   };
 
-  const res = await request.patch<any>(CREATE_POPULAR_CATEGORY, data, {
+  const res = await request.post<any>(CREATE_POPULAR_CATEGORY, data, {
     headers: {
       "Content-Type": "application/json",
     },

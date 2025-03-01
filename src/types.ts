@@ -153,26 +153,22 @@ export interface UserCreateRequest {
 export interface Condition {
   id: string;
   title: string;
-  name: string;
 }
 export interface ConditionResponse {
   data: Condition[];
 }
 export interface ConditionRequest {
   title: string;
-  name: string;
 }
 export interface Relevance {
   id: string;
   title: string;
-  name: string;
 }
 export interface RelevanceResponse {
   data: Relevance[];
 }
 export interface RelevanceRequest {
   title: string;
-  name: string;
 }
 
 export interface CharacterOption {

@@ -50,14 +50,6 @@ export const RelevanceTable = ({
               theme.text
             )}
           >
-            Name
-          </TableHead>
-          <TableHead
-            className={classNames(
-              "font-bold text-sm uppercase px-5",
-              theme.text
-            )}
-          >
             Title
           </TableHead>
           <TableHead
@@ -73,9 +65,6 @@ export const RelevanceTable = ({
       <TableBody>
         {relevanceData?.map((item) => (
           <TableRow key={item.id}>
-            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {item.name}
-            </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {item.title}
             </TableCell>

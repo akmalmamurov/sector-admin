@@ -17,7 +17,7 @@ export const PopularCategory = () => {
   
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId,false);
 
-  console.log(categoriesData);
+  // console.log(categoriesData);
   
   const [isOpen, setOpen] = useState(false);
   const handleOpen = () => {

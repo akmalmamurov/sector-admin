@@ -47,7 +47,7 @@ const PopularModal: FC<IPopularData> = ({
   const { mutate: createPopularCategory } = useCreatePopularCategory();
 
   const handleCreatePopular = () => {
-    console.log("Tanlangan Category IDlari:", selectedCategoryIds);
+    // console.log("Tanlangan Category IDlari:", selectedCategoryIds);
     createPopularCategory(selectedCategoryIds);
     handleOpen();
   };

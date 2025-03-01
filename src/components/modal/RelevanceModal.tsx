@@ -37,12 +37,11 @@ export const RelevanceModal = ({ isOpen, handleOpen, element }: Props) => {
   const { mutate: createData } = useCreateReleavance();
   const watchedValues = watch();
   const createDisabled =
-    !watchedValues.title?.trim() || !watchedValues.name?.trim();
+    !watchedValues.title?.trim();
 
   const onSubmit = (data: RelevanceRequest) => {
     const trimmedData = {
-      title: data.title.trim(),
-      name: data.name.trim(),
+      title: data.title.trim()
     };
 
     if (element?.id) {
@@ -73,8 +72,7 @@ export const RelevanceModal = ({ isOpen, handleOpen, element }: Props) => {
   useEffect(() => {
     if (isOpen) {
       reset({
-        title: element?.title || "",
-        name: element?.name || "",
+        title: element?.title || ""
       });
     }
   }, [isOpen, element, reset]);
@@ -113,22 +111,19 @@ export const RelevanceModal = ({ isOpen, handleOpen, element }: Props) => {
               <span className="text-red-500">{errors.title.message}</span>
             )}
           </div>
-          <div>
+          {/* <div>
             <input
               type="text"
               {...register("name", { required: "Name is required" })}
               className={classNames(
-                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                errors.name
-                  ? "ring-red-500 focus:ring-red-500"
-                  : "focus:ring-activeInput"
+                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`
               )}
               placeholder="Relevance Name"
             />
             {errors.name && (
               <span className="text-red-500">{errors.name.message}</span>
             )}
-          </div>
+          </div> */}
 
           <div className="flex justify-end gap-4 mt-4">
             <Button

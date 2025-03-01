@@ -3,23 +3,35 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_POPULAR_CATEGORY } from "@/constants";
 import { toast } from "react-toastify";
-
-const createPopularCategory = async (categoryIds: string[]): Promise<any> => {
-  const data = {
-    categoryIds,
+interface PopularCategoryResponse {
+  success: boolean;
+  message: string;
+  data: {
+    id: string;
+    categoryIds: string[];
   };
+}
 
-  const res = await request.post<any>(CREATE_POPULAR_CATEGORY, data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+const createPopularCategory = async (
+  categoryIds: string[]
+): Promise<PopularCategoryResponse> => {
+  const data = { categoryIds };
+
+  const res = await request.post<PopularCategoryResponse>(
+    CREATE_POPULAR_CATEGORY,
+    data,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
   return res.data;
 };
 
 export const useCreatePopularCategory = () => {
   const queryClient = useQueryClient();
-  return useMutation<any, AxiosError, string[]>({
+  return useMutation<PopularCategoryResponse, AxiosError, string[]>({
     mutationFn: createPopularCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["popular_category"] });

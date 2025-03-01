@@ -5,7 +5,7 @@
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
-import { useFieldArray, useForm,  } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 
 import { CreateButton } from "../create-button";
 import { Catalog, FilterFormData, UpdateFilterProps } from "@/types";
@@ -26,32 +26,6 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 
-
-const generateNameFromTitle = (title: string): string => {
-  const cyrillicToLatinMap: Record<string, string> = {
-    'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh',
-    'З': 'Z', 'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O',
-    'П': 'P', 'Р': 'R', 'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'Kh', 'Ц': 'Ts',
-    'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Shch', 'Ы': 'Y', 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya',
-    'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh',
-    'з': 'z', 'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o',
-    'п': 'p', 'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'kh', 'ц': 'ts',
-    'ч': 'ch', 'ш': 'sh', 'щ': 'shch', 'ы': 'y', 'э': 'e', 'ю': 'yu', 'я': 'ya'
-  };
-
-  title = title.replace(/гбит\s*\/?\s*с/gi, "gbit-s").replace(/мбит\s*\/?\s*с/gi, "mbit-s");
-
-  let transliterated = title
-    .split("")
-    .map((char) => cyrillicToLatinMap[char] || char)
-    .join("");
-  transliterated = transliterated.toLowerCase();
-  transliterated = transliterated.replace(/[^a-z0-9\s-]/g, "");
-  transliterated = transliterated.trim().replace(/\s+/g, "-").replace(/-+/g, "-");
-
-  return transliterated;
-};
-
 interface Props {
   isOpen: boolean;
   handleOpen: () => void;
@@ -59,6 +33,10 @@ interface Props {
   catalog: Catalog[];
   catalogApi?: string | null;
 }
+
+const generateNameFromTitle = (title: string): string => {
+  return title.trim().toLowerCase().replace(/\s+/g, "-");
+};
 
 export const FilterModal = ({
   isOpen,
@@ -129,7 +107,6 @@ export const FilterModal = ({
   const { mutate: createFilter } = useCreateFilter();
   const { mutate: updateFilter } = useUpdateFilter();
 
-  // onSubmit: formData dagi har bir filter uchun title asosida "name" maydoni generatsiya qilinadi
   const onSubmit = (formData: FilterFormData) => {
     const transformedData = {
       subcatalogId: formData.subcatalogId,
@@ -157,21 +134,18 @@ export const FilterModal = ({
     });
   };
 
-  // handleSave: update jarayonida yangilangan filter uchun title asosida "name" va option name lar generatsiya qilinadi
   const handleSave = (index: number) => {
-    if (!element?.id) {
-      return;
-    }
-
+    if (!element?.id) return;
+  
     const updatedFilter = getValues(`data.${index}`);
-
+  
     if (!updatedFilter) {
       console.error("Error: Updated data is missing!");
       return;
     }
-
+    const originalData = element.data[index];
     const payload: UpdateFilterProps = {
-      name: generateNameFromTitle(updatedFilter.title),
+      name: originalData.name,
       data: {
         name: generateNameFromTitle(updatedFilter.title),
         title: updatedFilter.title,
@@ -186,10 +160,11 @@ export const FilterModal = ({
           : [],
       },
     };
-
+  console.log(payload);
+  
     updateFilter({ id: element.id, data: payload });
   };
-
+  
   useEffect(() => {
     if (isOpen) {
       if (element && Object.keys(element).length > 0) {
@@ -249,15 +224,22 @@ export const FilterModal = ({
       <DialogContent
         className={`${theme.bg} max-w-6xl h-[800px] overflow-y-auto flex flex-col px-5 pt-6`}
       >
-        <DialogHeader className="font-bold">
+        <DialogHeader className="font-bold ">
           <DialogTitle className={theme.text}>
-            {Object.keys(element).length === 0 ? "Create Filter" : "Update Filter"}
+            {Object.keys(element).length === 0
+              ? "Create Filter"
+              : "Update Filter"}
           </DialogTitle>
           <button onClick={() => handleOpen()}>
-            <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
+            <X
+              className={classNames(
+                theme.text,
+                "w-6 h-6 absolute top-4 right-4"
+              )}
+            />
           </button>
         </DialogHeader>
-        <DialogDescription className="hidden" />
+        <DialogDescription className="hidden"></DialogDescription>
 
         <form onSubmit={handleSubmit(onSubmit)} className="pt-2 pb-10 h-full">
           <FilterTopSelect {...filterTopProps} />

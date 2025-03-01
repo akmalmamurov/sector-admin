@@ -1,15 +1,19 @@
 import { useState } from "react";
+
 import { CreateButton } from "../create-button";
-import { CatalogModal } from "../modal";
-import { useGetCatalog } from "@/hooks/catalog/get-catalog";
-
-import { Catalog } from "@/types";
-import { CatalogTable } from "../table";
-import { Section } from "../section";
 import { LoadingData } from "../loading";
+import { CatalogModal } from "../modal";
+import { CatalogTable } from "../table";
 import { TableTitle } from "../title";
+import { Section } from "../section";
+import { Catalog } from "@/types";
+interface CatalogListProps {
+  catalogData: Catalog[];
+  isLoading: boolean;
+  error: Error;
+}
 
-export const CatalogList = () => {
+export const CatalogList = ({ catalogData, isLoading, error }: CatalogListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableElement, setTableElement] = useState<Partial<Catalog>>({});
 
@@ -18,17 +22,12 @@ export const CatalogList = () => {
     setIsOpen(!isOpen);
   };
 
-  const { data: catalogData = [], isLoading, error } = useGetCatalog();
-
-  
-
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Catalog Table</TableTitle>
         <CreateButton onClick={() => handleOpen()}>Create Catalog</CreateButton>
       </div>
-
       {isLoading ? (
         <LoadingData className="w-full flex justify-center mt-2" />
       ) : error ? (

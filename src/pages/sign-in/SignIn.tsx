@@ -4,7 +4,6 @@ import SignRight from "./SignRight";
 import { useForm, SubmitHandler } from "react-hook-form";
 import classNames from "classnames";
 import { Eye, EyeOff } from "lucide-react";
-import { toast } from "react-toastify";
 import { useLogin } from "@/hooks";
 import { UserLogin } from "@/types";
 
@@ -19,11 +18,7 @@ const SignIn = () => {
 
   const onSubmit: SubmitHandler<UserLogin> = (data) => {
     console.log(data);
-    signIn(data, {
-      onSuccess: () => {
-        toast.success("Sign in successfully!");
-      },
-    });
+    signIn(data);
   };
 
   return (
@@ -44,7 +39,9 @@ const SignIn = () => {
               <div>
                 <input
                   type="text"
-                  {...register("username", { required: "username is required" })}
+                  {...register("username", {
+                    required: "username is required",
+                  })}
                   className={classNames(
                     "inputs",
                     errors.username
@@ -101,7 +98,6 @@ const SignIn = () => {
           </div>
         </div>
 
-        {/* Right */}
         <SignRight />
       </div>
     </div>

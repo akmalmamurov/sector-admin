@@ -1,19 +1,14 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../ui/dialog";
-import { useForm } from "react-hook-form";
-import classNames from "classnames";
+import { X } from "lucide-react";
 import { useEffect } from "react";
-import { Catalog } from "@/types";
+import classNames from "classnames";
+import { useForm } from "react-hook-form";
+
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, } from "../ui/dialog";
 import { useCreateCatalog } from "@/hooks/catalog/create-catalog";
 import { useUpdateCatalog } from "@/hooks/catalog/update-catalog";
 import { useCurrentColor } from "@/hooks";
-import { X } from "lucide-react";
 import { Button } from "../ui/button";
+import { Catalog } from "@/types";
 
 interface CatalogRequest {
   title: string;
@@ -25,16 +20,9 @@ interface CatalogModalProps {
   element: Partial<Catalog>;
 }
 
-export const CatalogModal = ({
-  isOpen,
-  handleOpen,
-  element,
-}: CatalogModalProps) => {
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isDirty },
+export const CatalogModal = (props: CatalogModalProps) => {
+  const {isOpen, handleOpen, element, } = props;
+  const { register, handleSubmit, reset, formState: { errors, isDirty },
   } = useForm<CatalogRequest>({
     defaultValues: {
       title: element?.title || "",

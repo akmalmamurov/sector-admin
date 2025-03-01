@@ -28,11 +28,12 @@ export const useLogin = () => {
       setAuth(true, response.role, response.username);
 
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      toast.success("Login successfully!");
     },
     onError: (error) => {
       console.log(error);
-      
-      toast.error("Network Error",);
+
+      toast.error("Network Error");
     },
   });
 };

@@ -5,6 +5,6 @@ export const CREATE_SUBCATALOG = `/catalog/subcatalog/create`;
 export const UPDATE_SUBCATALOG = `/catalog/subcatalog/update`;
 export const CREATE_CATEGORY = `/catalog/category/create`;
 export const UPDATE_CATEGORY = `/catalog/category/update`;
-export const CREATE_POPULAR_CATEGORY = `/catalog/category/popular/create`
+export const CREATE_POPULAR_CATEGORY = `/catalog/category/popular/create`;
 export const GET_POPULAR_CATEGORY = `/catalog/categories/all`
 export const GET_CATEGORY = `/catalog/category/all/`

@@ -1,28 +1,32 @@
-import {
-  CatalogList,
-  CategoriesList,
-  SubCatalogList,
-} from "@/components/tab-list";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { tabHeader } from "@/data";
-import { useCurrentColor } from "@/hooks";
 import classNames from "classnames";
 
-const tabList = [
-  {
-    value: "catalog",
-    item: CatalogList,
-  },
-  {
-    value: "subcatalog",
-    item: SubCatalogList,
-  },
-  {
-    value: "categories",
-    item: CategoriesList,
-  },
-];
+import { CatalogList, CategoriesList, SubCatalogList, } from "@/components/tab-list";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCurrentColor, useGetCatalog } from "@/hooks";
+import { tabHeader } from "@/data";
+
 const CatalogPage = () => {
+  const { data: catalogData = [], isLoading, error } = useGetCatalog();
+  const tabList = [
+    {
+      value: "catalog",
+      item: (
+        <CatalogList
+          catalogData={catalogData}
+          isLoading={isLoading}
+          error={error as Error}
+        />
+      ),
+    },
+    {
+      value: "subcatalog",
+      item: <SubCatalogList catalogData={catalogData} />,
+    },
+    {
+      value: "categories",
+      item: <CategoriesList catalogData={catalogData}/>,
+    },
+  ];
   const theme = useCurrentColor();
   return (
     <div>
@@ -51,7 +55,7 @@ const CatalogPage = () => {
         <div className="mt-5">
           {tabList.map((el) => (
             <TabsContent key={el.value} value={el.value} className="p-0">
-              <el.item />
+              {el.item}
             </TabsContent>
           ))}
         </div>

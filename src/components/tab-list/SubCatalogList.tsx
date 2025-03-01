@@ -1,30 +1,21 @@
 import { useState } from "react";
-import { CreateButton } from "../create-button";
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useCurrentColor, useGetCatalog, useGetSubCatalogs } from "@/hooks";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select";
+import { useCurrentColor, useGetSubCatalogs } from "@/hooks";
+import { CreateButton } from "../create-button";
+import { Catalog, SubCatalog } from "@/types";
 import { SubCatalogModal } from "../modal";
 import { SubCatalogTable } from "../table";
-import { SubCatalog } from "@/types";
-import { Section } from "../section";
 import { TableTitle } from "../title";
+import { Section } from "../section";
 
-export const SubCatalogList = () => {
+export const SubCatalogList = ({ catalogData }: { catalogData: Catalog[] }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableElement, setTableElement] = useState({});
-  const { data: catalogData = [] } = useGetCatalog();
-  const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
-    catalogData[0]?.id
-  );
+  const [catalogId, setCatalogId] = useState<string | null>( catalogData[0]?.id);
   const theme = useCurrentColor();
 
-  const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
+  const { data: subCatalogData = [] } = useGetSubCatalogs(catalogId);
 
   const handleOpen = (element?: SubCatalog) => {
     setTableElement(element || {});
@@ -37,7 +28,7 @@ export const SubCatalogList = () => {
         <TableTitle>Subcatalog Table</TableTitle>
         <div>
           <Select
-            onValueChange={(value) => setSelectedCatalogId(value)}
+            onValueChange={(value) => setCatalogId(value)}
             defaultValue={catalogData[0]?.id}
           >
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">

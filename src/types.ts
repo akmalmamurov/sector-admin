@@ -65,7 +65,7 @@ export interface Category {
 }
 
 export interface IPopularCategory extends Category {
-  isPopular: boolean;
+  popular: boolean;
   slug: string;
 }
 

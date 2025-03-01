@@ -15,7 +15,7 @@ export const PopularCategory = () => {
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
   
-  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId,false);
+  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId,true);
 
   // console.log(categoriesData);
   

@@ -78,7 +78,7 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
               {category?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.popular ? "Popular" : "Not Popular"}
+              {category?.popularCategory.id ? "Popular" : "Not Popular"}
             </TableCell>
 
             <TableCell

@@ -39,6 +39,7 @@ const useSettings = create<StoreState>((set) => ({
       switch: "input",
       tabBg: "bg-gray-100",
       tabActive: "bg-[#FFFFFF]",
+      
     },
     dark: {
       text: "text-white",

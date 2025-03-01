@@ -44,6 +44,7 @@ export const CategoriesModal = ({
     setError,
     clearErrors,
     reset,
+    setValue,
     formState: { errors, isDirty },
   } = useForm<CategoryRequest>();
 
@@ -62,12 +63,13 @@ export const CategoriesModal = ({
       : null
   );
 
-  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<
-    string | null
-  >(element?.subCatalogId || "");
+  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<string | null>(
+    element?.subCatalogId || ""
+  );
   const filteredSubCatalogs = subCatalogs.filter(
     (sc) => sc.catalogId === selectedCatalogId
   );
+
   const onSubmit = async (data: CategoryRequest) => {
     const formData = new FormData();
     formData.append("title", data.title.trim());
@@ -143,11 +145,13 @@ export const CategoriesModal = ({
     if (file) {
       setFile(file);
       clearErrors("categoryImage");
+      setValue("categoryImage", file, { shouldDirty: true });
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
@@ -157,9 +161,7 @@ export const CategoriesModal = ({
           </DialogTitle>
         </DialogHeader>
         <button onClick={() => handleOpen()}>
-          <X
-            className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")}
-          />
+          <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
         </button>
         <DialogDescription className="hidden">s</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -172,6 +174,7 @@ export const CategoriesModal = ({
                 reset({ subCatalogId: "" });
               }}
               value={selectedCatalogId || ""}
+              disabled={catalogs.length === 0}
             >
               <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header">
                 <SelectValue placeholder="Select Catalog" />
@@ -186,11 +189,8 @@ export const CategoriesModal = ({
             </Select>
           </div>
 
-          {/* Subcatalog  */}
           <div className="mb-4">
-            <label className={`block mb-1 ${theme.text}`}>
-              Select Subcatalog
-            </label>
+            <label className={`block mb-1 ${theme.text}`}>Select Subcatalog</label>
             <Controller
               name="subCatalogId"
               control={control}
@@ -202,7 +202,7 @@ export const CategoriesModal = ({
                     setSelectedSubCatalogId(value);
                   }}
                   value={selectedSubCatalogId || ""}
-                  disabled={!selectedCatalogId}
+                  disabled={!selectedCatalogId || filteredSubCatalogs.length === 0}
                 >
                   <SelectTrigger
                     className={classNames(
@@ -223,13 +223,10 @@ export const CategoriesModal = ({
               )}
             />
             {errors.subCatalogId && (
-              <span className="text-red-500">
-                {errors.subCatalogId.message}
-              </span>
+              <span className="text-red-500">{errors.subCatalogId.message}</span>
             )}
           </div>
 
-          {/* Title */}
           <div>
             <input
               type="text"
@@ -262,38 +259,23 @@ export const CategoriesModal = ({
               Upload Image
             </label>
             {preview && (
-              <img
-                src={preview}
-                alt="Category Preview"
-                className="mt-2 max-h-32 mx-auto"
-              />
+              <img src={preview} alt="Category Preview" className="mt-2 max-h-32 mx-auto" />
             )}
             {errors.categoryImage && (
-              <span className="text-red-500">
-                {errors.categoryImage.message}
-              </span>
+              <span className="text-red-500">{errors.categoryImage.message}</span>
             )}
           </div>
 
-          {/* Tugmalar */}
           <div className="flex justify-end gap-4 mt-4">
             <CreateButton type="button" onClick={() => handleOpen()}>
               Cancel
             </CreateButton>
             {!element?.id ? (
-              <Button
-                type="submit"
-                className="h-[42px] px-10 "
-                disabled={!isDirty}
-              >
+              <Button type="submit" className="h-[42px] px-10 " disabled={!isDirty}>
                 Create
               </Button>
             ) : (
-              <Button
-                type="submit"
-                className="h-[42px] px-10 "
-                disabled={!isDirty}
-              >
+              <Button type="submit" className="h-[42px] px-10 " disabled={!isDirty}>
                 Update
               </Button>
             )}

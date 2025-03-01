@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCreateProduct, useCurrentColor } from "@/hooks";
+import { useCreateProduct, useCurrentColor, useUpdateProduct } from "@/hooks";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ProductRequest } from "@/types";
+import { ProductData, ProductRequest } from "@/types";
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
@@ -23,12 +23,13 @@ import {
 interface Props {
   isOpen: boolean;
   handleOpen: () => void;
+  element?: Partial<ProductData>;
 }
 interface StoredImage {
   base64: string;
   name: string;
 }
-export const ProductModal = ({ isOpen, handleOpen }: Props) => {
+export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   const theme = useCurrentColor();
   const {
     control,
@@ -43,6 +44,7 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   const [activeStep, setActiveStep] = useState(0);
 
   const { mutate: createProduct } = useCreateProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
   const steps = [
     "Catalogs",
     "Title, Articul, Code, Description, Price, InStock",
@@ -65,58 +67,85 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
   };
   const onSubmit = async (data: ProductRequest) => {
     const formData = new FormData();
-  
+
     Object.entries(data).forEach(([key, value]) => {
-      if (value === undefined || key === "productImages") return;
-  
+      if (
+        value === undefined ||
+        key === "id" ||
+        key === "slug" ||
+        key === "mainImage" ||
+        key === "images" ||
+        key === "fullDescriptionImages" ||
+        key === "recommended" ||
+        key === "productImages" ||
+        key === "productMainImage"
+      )
+        return;
+
       if (typeof value === "object" && value !== null) {
         formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());
       }
     });
-  
+
+    if (data.productMainImage) {
+      formData.append("productMainImage", data.productMainImage);
+    }
+
     if (data.productImages?.length) {
       data.productImages.forEach((file) => {
-        formData.append("productImages", file, file.name);
+        formData.append("productImages", file);
       });
     }
-  
+
     const hasUrlInFullDescription = data.fullDescription?.includes("http");
-  
+
     if (hasUrlInFullDescription) {
-      const storedImages = JSON.parse(localStorage.getItem("editorImages") || "[]");
-  
+      const storedImages = JSON.parse(
+        localStorage.getItem("editorImages") || "[]"
+      );
+
       storedImages.forEach((img: StoredImage) => {
         const byteString = atob(img.base64.split(",")[1]);
         const arrayBuffer = new ArrayBuffer(byteString.length);
         const uint8Array = new Uint8Array(arrayBuffer);
-  
+
         for (let i = 0; i < byteString.length; i++) {
           uint8Array[i] = byteString.charCodeAt(i);
         }
-  
+
         const file = new Blob([uint8Array], { type: "image/png" });
-        formData.append(`fullDescriptionImages`, file, img.name);
+        formData.append("fullDescriptionImages", file, img.name);
       });
     } else {
       localStorage.removeItem("editorImages");
     }
-  
-    createProduct(formData, {
-      onSuccess: () => {
-        handleOpen();
-        reset();
-        localStorage.removeItem("editorImages");
-        console.log("Product created successfully", formData);
-      },
-      onError: (error) => {
-        console.error("Creation failed:", error);
-      },
-    });
+
+    if (element?.id) {
+      console.log("Updating product", data);
+      updateProduct(
+        { id: element.id, data: formData },
+        {
+          onSuccess: () => {
+            handleOpen();
+            reset();
+            localStorage.removeItem("editorImages");
+            console.log("Product updated successfully", formData);
+          },
+        }
+      );
+    } else {
+      console.log("Creating product", data);
+      createProduct(formData, {
+        onSuccess: () => {
+          handleOpen();
+          reset();
+          localStorage.removeItem("editorImages");
+        },
+      });
+    }
   };
-  
-  
 
   const catalogsProps = {
     control,
@@ -125,16 +154,26 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
     watch,
   };
   useEffect(() => {
+    setActiveStep(0);
     if (isOpen) {
-      setActiveStep(0);
-      reset();
+      if (element && element.id) {
+        reset({ ...element });
+      } else {
+        reset({
+          title: "",
+          description: "",
+          price: 0,
+        });
+      }
+    } else {
+      reset({});
     }
-  }, [isOpen, reset]);
+  }, [isOpen, element, reset]);
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent
-        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[600px] overflow-y-auto`}
+        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
@@ -143,13 +182,17 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
                 <div
                   key={index}
                   className={classNames(
-                    "px-2 py-2 rounded-md text-sm font-normal border",
+                    "px-2 py-2 rounded-md text-sm font-normal border", theme.tabBg,
                     index === activeStep
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-gray-200 text-gray-500 border-gray-300"
+                      ? `${theme.tabActive} ${theme.text} `
+                      : `bg-transparent text-header  shadow-2xl`
                   )}
                 >
-                  {step}
+                  {element?.id ? (
+                    <button onClick={() => setActiveStep(index)}>{step}</button>
+                  ) : (
+                    <span>{step}</span>
+                  )}
                 </div>
               ))}
             </div>
@@ -202,8 +245,14 @@ export const ProductModal = ({ isOpen, handleOpen }: Props) => {
             )}
             {activeStep === 5 && (
               <ProductImage
-                setValue={(files) => setValue("productImages", files)}
+                setValue={({ productMainImage, productImages }) => {
+                  if (productMainImage)
+                    setValue("productMainImage", productMainImage);
+                  if (productImages) setValue("productImages", productImages);
+                }}
                 handleNext={handleNext}
+                element={element}
+                handleBack={handleBack}
               />
             )}
           </form>

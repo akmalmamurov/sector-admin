@@ -22,10 +22,14 @@ import { priceFormat } from "@/utils";
 
 interface Props {
   productData: ProductData[];
+  handleOpen: (element: ProductData) => void;
 }
-export const ProductTable = ({ productData }: Props) => {
+export const ProductTable = ({
+  productData,
+  handleOpen,
+}: Props) => {
   const theme = useCurrentColor();
-  console.log(productData);
+
 
   return (
     <Table>
@@ -120,7 +124,10 @@ export const ProductTable = ({ productData }: Props) => {
 
                 <DropdownMenuContent align="end" className={theme.bg}>
                   <DropdownMenuItem>
-                    <button className="flex items-center justify-center px-3 py-2 w-full">
+                    <button
+                      onClick={() => handleOpen(product)}
+                      className="flex items-center justify-center px-3 py-2 w-full"
+                    >
                       <Edit className="mr-2 w-4 h-4 text-blue-600" />
                       <span className={`min-w-[47px] ${theme.text}`}>Edit</span>
                     </button>

@@ -29,7 +29,7 @@ export const CategoryTable = ({ handleOpen, categoriesData }: Props) => {
   const handleImage = (path: string | null) => {
     setImage(path);
     setIsOpen(true);
-    console.log(path);
+    
   };
   return (
     <Table>

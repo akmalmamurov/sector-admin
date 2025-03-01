@@ -4,13 +4,18 @@ import { Section } from "@/components/section";
 import { ProductTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
 import { useGetProduct } from "@/hooks";
+import { ProductData } from "@/types";
 import { useState } from "react";
 
 const ProductsPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const handleOpen = () => setIsOpen(!isOpen);
-  const {data: productData = []}  = useGetProduct();
-  
+  const [tableElement, setTableElement] = useState({});
+  const handleOpen = (element?: ProductData) => {
+    setTableElement(element || {});
+    setIsOpen(!isOpen);
+  };;
+  const { data: productData = [] } = useGetProduct();
+
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
@@ -19,7 +24,7 @@ const ProductsPage = () => {
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
         {productData?.length > 0 ? (
-          <ProductTable productData={productData} />
+          <ProductTable productData={productData} handleOpen={handleOpen}  />
         ) : (
           <div className="p-4 text-center text-gray-500">
             <p>No Product available</p>
@@ -29,10 +34,7 @@ const ProductsPage = () => {
           </div>
         )}
       </div>
-      <ProductModal
-        isOpen={isOpen}
-        handleOpen={handleOpen}
-      />
+      <ProductModal isOpen={isOpen} handleOpen={handleOpen} element={tableElement} />
     </Section>
   );
 };

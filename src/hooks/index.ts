@@ -37,3 +37,4 @@ export * from "./relevance/create-relevance";
 export * from "./relevance/update-relevance";
 export * from "./product/create-product"
 export * from "./product/get-product"
+export * from "./product/update-product"

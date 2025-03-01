@@ -10,7 +10,7 @@ import { useCurrentColor } from "@/hooks";
 import { IPopularCategory } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
-import { useState } from "react";
+import { memo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -78,7 +78,7 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
               {category?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.isPopular ? "Popular" : "Not Popular"}
+              {category?.popular ? "Popular" : "Not Popular"}
             </TableCell>
 
             <TableCell
@@ -127,10 +127,8 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
           </div>
         </DialogContent>
       </Dialog>
-
-      
     </Table>
   );
 };
 
-export default PopularCategoryTable;
+export default memo(PopularCategoryTable);

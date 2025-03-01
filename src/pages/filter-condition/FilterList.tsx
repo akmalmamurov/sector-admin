@@ -83,7 +83,6 @@ const FilterList = () => {
             </SelectContent>
           </Select>
 
-          {/* 📌 SubCatalog tanlash */}
           <Select
             onValueChange={handleSubCatalogChange}
             value={selectedSubCatalogId || ""}

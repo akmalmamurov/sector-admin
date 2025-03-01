@@ -1,5 +1,7 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
@@ -27,11 +29,14 @@ import { Button } from "../ui/button";
 interface Props {
   isOpen: boolean;
   handleOpen: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   element?: any;
   catalog: Catalog[];
   catalogApi?: string | null;
 }
+
+const generateNameFromTitle = (title: string): string => {
+  return title.trim().toLowerCase().replace(/\s+/g, "-");
+};
 
 export const FilterModal = ({
   isOpen,
@@ -75,25 +80,25 @@ export const FilterModal = ({
   const watchedFields = watch("data") || [];
   const watchedSubCatalogId = watch("subcatalogId");
   const watchedCategoryId = watch("categoryId");
-  
+  console.log(element);
+
   const isDirtyArray = watchedFields.map((item, index) =>
     element.data && element.data[index]
       ? JSON.stringify(item) !== JSON.stringify(element.data[index])
       : false
   );
-  
+
   const isSubCatalogDirty = element.subcatalog
     ? watchedSubCatalogId !== element.subcatalog
-    : Boolean(watchedSubCatalogId); 
-  
+    : Boolean(watchedSubCatalogId);
+
   const isCategoryDirty = element.category
     ? watchedCategoryId !== element.category
-    : Boolean(watchedCategoryId); 
-  
+    : Boolean(watchedCategoryId);
+
   const isDirty =
     isDirtyArray.some(Boolean) || isSubCatalogDirty || isCategoryDirty;
-  
-  
+
   const {
     fields: data,
     append,
@@ -106,7 +111,19 @@ export const FilterModal = ({
     const transformedData = {
       subcatalogId: formData.subcatalogId,
       ...(formData.categoryId && { categoryId: formData.categoryId }),
-      data: formData.data,
+      data: formData.data.map((filter) => ({
+        name: generateNameFromTitle(filter.title),
+        title: filter.title,
+        icon: filter.icon,
+        withSearch: filter.withSearch,
+        type: filter.type,
+        options: filter.options
+          ? filter.options.map((option) => ({
+              name: generateNameFromTitle(option.title),
+              title: option.title,
+            }))
+          : [],
+      })),
     };
 
     createFilter(transformedData, {
@@ -116,12 +133,11 @@ export const FilterModal = ({
       },
     });
   };
+
   const handleSave = (index: number) => {
     if (!element?.id) {
       return;
     }
-
-    const oldName = element.data[index]?.name || "undefined";
 
     const updatedFilter = getValues(`data.${index}`);
 
@@ -131,14 +147,19 @@ export const FilterModal = ({
     }
 
     const payload: UpdateFilterProps = {
-      name: oldName,
+      name: generateNameFromTitle(updatedFilter.title),
       data: {
-        name: updatedFilter.name,
+        name: generateNameFromTitle(updatedFilter.title),
         title: updatedFilter.title,
         icon: updatedFilter.icon,
         withSearch: updatedFilter.withSearch,
         type: updatedFilter.type,
-        options: updatedFilter.options,
+        options: updatedFilter.options
+          ? updatedFilter.options.map((option: { title: string }) => ({
+              name: generateNameFromTitle(option.title),
+              title: option.title,
+            }))
+          : [],
       },
     };
 
@@ -151,7 +172,7 @@ export const FilterModal = ({
         setCatalogId(catalogApi ?? null);
         setCategoryId(element.category);
         reset({
-          subcatalogId: element.subcatalog || "", 
+          subcatalogId: element.subcatalog || "",
           categoryId: element.category || "",
           data: element.data || [
             {
@@ -166,7 +187,7 @@ export const FilterModal = ({
         });
       } else {
         reset({
-          subcatalogId: "", 
+          subcatalogId: "",
           categoryId: "",
           data: [
             {
@@ -184,8 +205,7 @@ export const FilterModal = ({
         setCategoryId(null);
       }
     }
-  }, [isOpen, element]); 
-  
+  }, [isOpen, element]);
 
   const filterTopProps = {
     catalog,
@@ -253,20 +273,18 @@ export const FilterModal = ({
               Add Filter Field
             </Button>
           )}
-          <div className="flex items-end  justify-end mt-10 gap-4 pb-5">
+          <div className="flex items-end justify-end mt-10 gap-4 pb-5">
             <CreateButton type="button" onClick={() => handleOpen()}>
               Close
             </CreateButton>
             {Object.keys(element).length === 0 && (
               <CreateButton type="submit">Create</CreateButton>
             )}
-            {
-              isDirty && Object.keys(element).length > 0 && (
-                <CreateButton type="button" onClick={() => handleSave(0)}>
-                  Update Filter
-                </CreateButton>
-              )
-            }
+            {isDirty && Object.keys(element).length > 0 && (
+              <CreateButton type="button" onClick={() => handleSave(0)}>
+                Update Filter
+              </CreateButton>
+            )}
           </div>
         </form>
       </DialogContent>

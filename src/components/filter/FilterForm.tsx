@@ -46,7 +46,6 @@ export const FilterForm = ({
   element,
   isDirtyArray,
   handleSave,
-  setValue,
 }: Props) => {
   return (
     <div className="space-y-5 mt-5">
@@ -64,33 +63,6 @@ export const FilterForm = ({
           </button>
 
           <div className="grid grid-cols-3 gap-4">
-            {/* Filter Name */}
-            <div className="flex flex-col">
-              <label className="text-textColor text-sm">Filter Name</label>
-              <input
-                placeholder="Filter Name"
-                {...register(`data.${filterIndex}.name`, {
-                  required: "Filter name is required",
-                })}
-                className="inputs py-2"
-                onChange={(e) => {
-                  const trimmedValue = e.target.value
-                    .replace(/\s+/g, " ")
-                    .trim()
-                    .toLowerCase();
-                  setValue(`data.${filterIndex}.name`, trimmedValue, {
-                    shouldDirty: true,
-                  });
-                }}
-              />
-
-              {errors.data?.[filterIndex]?.name && (
-                <p className="text-red-500 text-xs">
-                  {errors.data[filterIndex]?.name?.message}
-                </p>
-              )}
-            </div>
-
             {/* Filter Title */}
             <div className="flex flex-col">
               <label className="text-textColor text-sm">Filter Title</label>
@@ -201,7 +173,7 @@ export const FilterForm = ({
             </div>
 
             <div>
-              <label htmlFor="" className="flex justify-center text-sm mb-1">
+              <label htmlFor="" className="flex justify-start text-sm mb-1">
                 Options
               </label>
               {/* Options */}
@@ -228,18 +200,6 @@ export const FilterForm = ({
                     {field.value.map((option, optionIndex) => (
                       <div key={optionIndex} className="flex gap-3 mb-2">
                         <input
-                          placeholder="Option Name"
-                          value={option.name}
-                          onChange={(e) => {
-                            const updated = [...field.value];
-                            updated[optionIndex].name = e.target.value
-                              .toLowerCase()
-                              .trim();
-                            field.onChange(updated);
-                          }}
-                          className="inputs py-2 w-fit"
-                        />
-                        <input
                           placeholder="Option Title"
                           value={option.title}
                           onChange={(e) => {
@@ -247,7 +207,7 @@ export const FilterForm = ({
                             updated[optionIndex].title = e.target.value.trim();
                             field.onChange(updated);
                           }}
-                          className="inputs py-2 w-fit"
+                          className="inputs py-2 w-full"
                         />
                         <button
                           type="button"
@@ -266,8 +226,8 @@ export const FilterForm = ({
                 )}
               />
             </div>
-              {Object.keys(element).length > 0 && (
-            <div className="flex justify-end items-end ml-14">
+            {Object.keys(element).length > 0 && (
+              <div className="flex justify-end items-end ml-14">
                 <Button
                   type="button"
                   disabled={!isDirtyArray[filterIndex]}
@@ -276,8 +236,8 @@ export const FilterForm = ({
                 >
                   Save
                 </Button>
-            </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       ))}

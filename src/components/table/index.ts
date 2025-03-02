@@ -6,4 +6,4 @@ export * from "./UserTable";
 export * from "./ProductTable";
 export * from "./ConditionTable";
 export * from "./RelevanceTable";
-export * from "./PopularCategory.table"
+export * from "./PopularCategory.table";

@@ -11,7 +11,7 @@ import { useConfirmModal, useCurrentColor } from "@/hooks";
 import { Brand, Catalog, Category, SubCatalog } from "@/types";
 import { ConfirmModal } from "../modal";
 
-type ItemType = Catalog | SubCatalog | Category | Brand;
+type ItemType = Catalog | SubCatalog | Category | Brand ;
 
 interface UpDeleteProps<T extends ItemType> {
   item: T;

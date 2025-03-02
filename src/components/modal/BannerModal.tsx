@@ -1,4 +1,4 @@
-import { Brand, BrandRequest } from "@/types";
+import { BannerData, BannerRequest,  } from "@/types";
 import { useForm } from "react-hook-form";
 import {
   Dialog,
@@ -8,22 +8,22 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import classNames from "classnames";
-import { useCreateBrand, useCurrentColor, useUpdateBrand } from "@/hooks";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DOMAIN } from "@/constants";
 import { Button } from "../ui/button";
+import { useCreateBanner, useCurrentColor, useUpdateBanner } from "@/hooks";
 
 interface Props {
   isOpen: boolean;
   handleOpen: (isOpen: boolean) => void;
-  element: Partial<Brand>;
+  element: Partial<BannerData>;
 }
 
-export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
+export const BannerModal = ({ isOpen, handleOpen, element }: Props) => {
   const theme = useCurrentColor();
-  const { mutate: createBrand } = useCreateBrand();
-  const { mutate: updateBrand } = useUpdateBrand();
+  const { mutate: createBanner } = useCreateBanner();
+  const { mutate: updateBanner } = useUpdateBanner();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [isImageUpdated, setIsImageUpdated] = useState(false);
@@ -35,26 +35,32 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     clearErrors,
     watch,
     formState: { errors, isDirty },
-  } = useForm<BrandRequest>();
+  } = useForm<BannerRequest>();
 
   const watchedValues = watch();
-  const isCreateDisabled = !watchedValues.title || !watchedValues.title.trim();
+  const isCreateDisabled =
+    !watchedValues.routePath || !watchedValues.redirectUrl;
   const isUpdateDisabled = !isDirty && !isImageUpdated;
-  const onSubmit = async (data: BrandRequest) => {
+
+  const onSubmit = async (data: BannerRequest) => {
     const formData = new FormData();
-    formData.append("title", data.title.trim());
+    formData.append("routePath", data.routePath.trim());
+    formData.append("redirectUrl", data.redirectUrl.trim());
 
     if (file) {
-      formData.append("logo", file);
-    } else if (element?.path) {
-      formData.append("logo", element.path);
+      formData.append("bannerImage", file);
+    } else if (element?.imagePath) {
+      formData.append("bannerImage", element.imagePath);
     } else {
-      setError("logo", { type: "manual", message: "Image is required" });
+      setError("bannerImage", {
+        type: "manual",
+        message: "Banner image is required",
+      });
       return;
     }
 
     if (element?.id) {
-      updateBrand(
+      updateBanner(
         { id: element.id, data: formData },
         {
           onSuccess: () => {
@@ -67,7 +73,7 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
         }
       );
     } else {
-      createBrand(formData, {
+      createBanner(formData, {
         onSuccess: () => {
           handleOpen(false);
           reset();
@@ -82,11 +88,12 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   useEffect(() => {
     if (isOpen) {
       reset({
-        title: element?.title || "",
+        routePath: element?.routePath || "",
+        redirectUrl: element?.redirectUrl || "",
       });
 
-      if (element?.path) {
-        setPreview(`${DOMAIN}/${element.path}`);
+      if (element?.imagePath) {
+        setPreview(`${DOMAIN}/${element.imagePath}`);
       } else {
         setPreview(null);
       }
@@ -96,14 +103,14 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   }, [isOpen, element, reset]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(file);
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
       setIsImageUpdated(true);
-      clearErrors("logo");
+      clearErrors("bannerImage");
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(selectedFile);
     }
   };
 
@@ -113,8 +120,8 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
             {Object.keys(element).length === 0
-              ? "Create Brand"
-              : "Update Brand"}
+              ? "Create Banner"
+              : "Update Banner"}
           </DialogTitle>
           <button onClick={() => handleOpen(false)}>
             <X
@@ -127,20 +134,51 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
         </DialogHeader>
         <DialogDescription className="hidden">a</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
-          <div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="routePath" className={theme.text}>
+              Route Path
+            </label>
             <input
               type="text"
-              {...register("title", { required: "Title is required" })}
+              {...register("routePath", {
+                required: "Route Path is required",
+              })}
               className={classNames(
                 `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                errors.title
+                errors.routePath
                   ? "ring-red-500 focus:ring-red-500"
                   : "focus:ring-activeInput"
               )}
-              placeholder="Brand Title"
+              placeholder="Route Path"
             />
-            {errors.title && (
-              <span className="text-red-500">{errors.title.message}</span>
+            {errors.routePath && (
+              <span className="text-red-500">
+                {errors.routePath.message}
+              </span>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1 mt-4">
+            <label htmlFor="redirectUrl" className={theme.text}>
+              Redirect URL
+            </label>
+            <input
+              type="text"
+              {...register("redirectUrl", {
+                required: "Redirect URL is required",
+              })}
+              className={classNames(
+                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
+                errors.redirectUrl
+                  ? "ring-red-500 focus:ring-red-500"
+                  : "focus:ring-activeInput"
+              )}
+              placeholder="Redirect URL"
+            />
+            {errors.redirectUrl && (
+              <span className="text-red-500">
+                {errors.redirectUrl.message}
+              </span>
             )}
           </div>
 
@@ -150,23 +188,25 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               accept="image/*"
               onChange={handleImageChange}
               className="hidden"
-              id="path-upload"
+              id="bannerImage-upload"
             />
             <label
-              htmlFor="path-upload"
+              htmlFor="bannerImage-upload"
               className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
             >
-              Upload path
+              Upload Banner Image
             </label>
             {preview && (
               <img
                 src={preview}
-                alt="path Preview"
+                alt="Banner Preview"
                 className="mt-2 max-h-32 mx-auto"
               />
             )}
-            {errors.logo && (
-              <span className="text-red-500">{errors.logo.message}</span>
+            {errors.bannerImage && (
+              <span className="text-red-500">
+                {errors.bannerImage.message}
+              </span>
             )}
           </div>
 
@@ -195,4 +235,4 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   );
 };
 
-export default BrandModal;
+export default BannerModal;

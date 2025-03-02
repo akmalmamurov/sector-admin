@@ -210,3 +210,15 @@ export interface ProductData {
 export interface ProductResponse {
   data: ProductData[];
 }
+
+export interface BannerRequest {
+  routePath: string;
+  redirectUrl: string;
+  bannerImage: File;
+}
+export interface BannerData {
+  id: string;
+  routePath: string;
+  redirectUrl: string;
+  imagePath: string;
+}

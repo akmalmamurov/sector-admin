@@ -8,7 +8,7 @@ import useStore from "@/context/store";
 import UsersPage from "@/pages/user/UsersPage";
 import BrandPage from "./pages/brand/BrandPage";
 import FilterPage from "./pages/filter-condition/FilterConditionPage";
-import PopularCategory from "./pages/popular-category/Popular-category";
+import PopularCategory from "./pages/popular/Popular";
 import BannerPage from "./pages/banner/BannerPage";
 
 function App() {

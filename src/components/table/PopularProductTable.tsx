@@ -7,7 +7,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCurrentColor } from "@/hooks";
-import { IPopularCategory } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
 import { memo, useState } from "react";
@@ -20,18 +19,17 @@ import {
 } from "../ui/dialog";
 import { Trash2Icon, X } from "lucide-react";
 import { cn } from "../../lib/utils";
+import { PopularProduct } from "@/types";
 interface Props {
-  categoriesData: IPopularCategory[];
-  handleOpen: () => void;
+  productData: PopularProduct[];
 }
-export const PopularCategoryTable = ({ categoriesData }: Props) => {
+export const PopularProductTable = ({ productData }: Props) => {
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const handleImage = (path: string | null) => {
     setImage(path);
     setIsOpen(true);
-    // console.log(path);
   };
   return (
     <Table>
@@ -72,13 +70,13 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {categoriesData?.map((category: IPopularCategory) => (
-          <TableRow key={category?.id}>
+        {productData?.map((product: PopularProduct) => (
+          <TableRow key={product?.id}>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.title}
+              {product?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.popularCategory?.id ? "Popular" : "Not Popular"}
+                {product?.popularProduct?.id ? "Popular" : "Not Popular"}
             </TableCell>
 
             <TableCell
@@ -86,11 +84,11 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
                 "text-sm px-6 py-1 cursor-pointer",
                 theme.text
               )}
-              onClick={() => handleImage(category?.path)}
+              onClick={() => handleImage(product?.mainImage)}
             >
               <img
-                src={`${DOMAIN}/${category?.path}`}
-                alt={category?.title}
+                src={`${DOMAIN}/${product?.mainImage}`}
+                alt={product?.title}
                 className="w-10 h-10"
               />
             </TableCell>
@@ -131,4 +129,4 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
   );
 };
 
-export default memo(PopularCategoryTable);
+export default memo(PopularProductTable);

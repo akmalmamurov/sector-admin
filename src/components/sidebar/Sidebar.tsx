@@ -11,7 +11,7 @@ const menuItems = [
   { title: "Dashboard", url: "/", icon: Home },
   { title: "Catalog", url: "/catalog", icon: Grid },
   { title: "Banner", url: "/banner", icon: Image },
-  { title: "Popular category", url: "/popular-category", icon: Grid },
+  { title: "Popular", url: "/popular", icon: Grid },
   { title: "Filter", url: "/filter", icon: ListFilter },
   { title: "Products", url: "/products", icon: ShoppingBasket },
   { title: "Brands", url: "/brands", icon: Earth },

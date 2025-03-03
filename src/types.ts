@@ -93,6 +93,13 @@ export interface Brand {
   path: string;
 }
 
+export interface IPopularBrand extends Brand {
+  slug: string;
+  popularBrand: {
+    id: string;
+  };
+}
+
 export interface FilterOption {
   name: string;
   title: string;
@@ -195,6 +202,9 @@ export interface ProductRequest {
   productMainImage?: File;
   productImages?: File[];
   descriptionImage?: File[];
+  popularProduct: {
+    id: string;
+  }
 }
 export interface ProductData {
   id: string;
@@ -207,6 +217,13 @@ export interface ProductData {
   mainImage: string;
   images?: string[];
 }
+
+export interface PopularProduct extends ProductData {
+  popularProduct: {
+    id: string;
+  };
+}
+
 export interface ProductResponse {
   data: ProductData[];
 }

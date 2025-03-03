@@ -9,6 +9,7 @@ interface PopularCategoryResponse {
   data: {
     id: string;
     categoryIds: string[];
+    message: string;
   };
 }
 
@@ -29,13 +30,13 @@ const createPopularCategory = async (
   return res.data;
 };
 
-export const useCreatePopularCategory = () => {
+export const useCreateToggleCategory = () => {
   const queryClient = useQueryClient();
   return useMutation<PopularCategoryResponse, AxiosError, string[]>({
     mutationFn: createPopularCategory,
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["popular_category"] });
-      toast.success("Created Popular category successfully!");
+      toast.success(data.data?.message);  
     },
     onError: (error) => {
       toast.error(`Error: ${error.message}`);

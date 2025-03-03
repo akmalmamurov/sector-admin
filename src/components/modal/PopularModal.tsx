@@ -14,7 +14,7 @@ import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from ".
 import { Button } from "../ui/button";
 import { useState } from "react";
 import ReactSelect from "react-select";
-import { useCreatePopularCategory } from "@/hooks/popular-category/create-popular-category";
+import { useCreateToggleCategory } from "@/hooks/popular-category/create-popular-category";
 
 interface PopularCategoryModalProps {
   isOpen: boolean;
@@ -38,10 +38,10 @@ export const PopularCategoryModal = (props: PopularCategoryModalProps) => {
     setSelectedCatalogId("");
     setSelectedSubCatalogId("");
   }
-  const {mutate: createPopularCategory} = useCreatePopularCategory();
+  const {mutate: addCategory} = useCreateToggleCategory();
   
   const handleCreatePopular = () => {
-    createPopularCategory(selectedCategoryIds);
+    addCategory(selectedCategoryIds);
     setSelectedCategoryIds([]);
     setSelectedCatalogId("");
     setSelectedSubCatalogId("");

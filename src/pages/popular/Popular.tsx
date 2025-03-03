@@ -1,77 +1,76 @@
-import { CreateButton } from "../../components/create-button";
-import { TableTitle } from "../../components/title";
-import { memo, useState } from "react";
-import { useGetPopularCategory } from "../../hooks/popular-category/get-popular-category";
-import { cn } from "../../lib/utils";
-import { PopularCategoryTable } from "../../components/table";
-import { Select } from "../../components/ui/select";
-import PopularModal from "../../components/modal/PopularModal";
-import { useGetCatalog, useGetCategories, useGetSubCatalogs } from "../../hooks";
+import classNames from "classnames";
 
-export const PopularCategory = () => {
-  const { data: catalogData = [] } = useGetCatalog();
-  const [selectedCatalogId, setSelectedCatalogId] = useState<string>("");
-  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<string>("");
+import {
+  CategoriesList,
+} from "@/components/tab-list";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCurrentColor, useGetBrand, useGetCatalog } from "@/hooks";
+import { popularTabHeader } from "@/data";
+import { useGetPopularCategory } from "@/hooks/popular-category/get-popular-category";
+import { PopularCategoryList } from "@/components/tab-list/PopularCategoryList";  
+import { PopularBrandList } from "@/components/tab-list/PopularBrand";
+import { IPopularBrand } from "@/types";
 
-  const { data: subCatalogData = [] } = useGetSubCatalogs(selectedCatalogId);
-  
-  const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId,true);
-
-  // console.log(categoriesData);
-  
-  const [isOpen, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen((prev) => !prev);
-  };
-  const { data, isError } = useGetPopularCategory(true);
-  // const { data: catalogData = [] } = useGetCatalog();
-
-  if (!data) return <div>Loading...</div>;
-  if (isError) return <div>Error occurred</div>;
-
+const Popular = () => {
+  const { data: catalogData = []} = useGetCatalog();
+  const { data: popularCategoryData = [], isLoading: popularCategoryLoading, error: popularCategoryError } = useGetPopularCategory(true);
+  const { data: popularBrandData = [], isLoading: popularBrandLoading, error: popularBrandError } = useGetBrand(true);
+  const tabList = [
+    {
+      value: "Popular Category",
+      item: (
+        <PopularCategoryList
+          categoriesData={popularCategoryData}
+          isLoading={popularCategoryLoading}
+          error={popularCategoryError as Error}
+          catalogData={catalogData}
+        />
+      ),
+    },
+    {
+      value: "Popular Brand",
+      item: <PopularBrandList popularBrandData={popularBrandData as IPopularBrand[]} isLoading={popularBrandLoading} error={popularBrandError as Error} />,
+    },
+    {
+      value: "Popular Product",
+      item: <CategoriesList catalogData={catalogData} />,
+    },
+  ];
+  const theme = useCurrentColor();
   return (
-    <>
-      <div className={cn("mt-12")}>
-        <div className={cn("flex justify-between mb-4")}>
-          <TableTitle>Popular Category List</TableTitle>
-          <CreateButton
-            onClick={() => setOpen((prev) => !prev)}
-            className="mt-3"
-          >
-            Create Popular Category
-          </CreateButton>
-        </div>
-      </div>
-      <PopularModal
-        isOpen={isOpen}
-        handleOpen={() => setOpen(false)}
-        catalogData={catalogData}
-        setSelectedCatalogId={setSelectedCatalogId}
-        subCatalogData={subCatalogData}
-        selectedCatalogId={selectedCatalogId}
-        selectedSubCatalogId={selectedSubCatalogId}
-        setSelectedSubCatalogId={setSelectedSubCatalogId}
-        categoriesData={categoriesData}
-      />
-      <Select>
-        <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          {data.length > 0 ? (
-            <PopularCategoryTable
-              categoriesData={data}
-              handleOpen={handleOpen}
-            />
-          ) : (
-            <div className="p-4 text-center text-gray-500">
-              <p>No Popular Category found for this page</p>
-              <CreateButton onClick={() => handleOpen()} className="mt-3">
-                Create Popular Category
-              </CreateButton>
-            </div>
+    <div>
+      {/* tabs */}
+      <Tabs defaultValue="Popular Category" className="w-full">
+        <TabsList
+          className={classNames(
+            "h-[42px] p-1 font-sans relative gap-7",
+            theme.tabBg
           )}
+        >
+          {popularTabHeader.map((el) => (
+            <TabsTrigger
+              key={el}      
+              className={classNames(
+                "px-5 h-full text-base font-normal py-0 capitalize",
+                theme.text
+              )}
+              value={el}
+            >
+              {el}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        <div className="mt-5">
+          {tabList.map((el) => (
+            <TabsContent key={el.value} value={el.value} className="p-0">
+              {el.item}
+            </TabsContent>
+          ))}
         </div>
-      </Select>
-    </>
+      </Tabs>
+    </div>
   );
 };
 
-export default memo(PopularCategory);
+export default Popular;

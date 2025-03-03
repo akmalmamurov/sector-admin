@@ -7,7 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCurrentColor } from "@/hooks";
-import { IPopularCategory } from "@/types";
+import { IPopularBrand } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
 import { memo, useState } from "react";
@@ -21,10 +21,11 @@ import {
 import { Trash2Icon, X } from "lucide-react";
 import { cn } from "../../lib/utils";
 interface Props {
-  categoriesData: IPopularCategory[];
+  brandsData: IPopularBrand[];
   handleOpen: () => void;
 }
-export const PopularCategoryTable = ({ categoriesData }: Props) => {
+export const PopularBrandTable = ({ brandsData }: Props) => {
+  console.log(brandsData);
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -72,13 +73,13 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {categoriesData?.map((category: IPopularCategory) => (
-          <TableRow key={category?.id}>
+        {brandsData?.map((brand: IPopularBrand) => (
+          <TableRow key={brand?.id}>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.title}
+              {brand?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {category?.popularCategory?.id ? "Popular" : "Not Popular"}
+              {brand?.popularBrand?.id ? "Popular" : "Not Popular"}
             </TableCell>
 
             <TableCell
@@ -86,11 +87,11 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
                 "text-sm px-6 py-1 cursor-pointer",
                 theme.text
               )}
-              onClick={() => handleImage(category?.path)}
+              onClick={() => handleImage(brand?.path)}
             >
               <img
-                src={`${DOMAIN}/${category?.path}`}
-                alt={category?.title}
+                src={`${DOMAIN}/${brand?.path}`}
+                alt={brand?.title}
                 className="w-10 h-10"
               />
             </TableCell>
@@ -131,4 +132,4 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
   );
 };
 
-export default memo(PopularCategoryTable);
+export default memo(PopularBrandTable);

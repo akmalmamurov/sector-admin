@@ -9,3 +9,7 @@ export const CREATE_POPULAR_CATEGORY = `/catalog/category/popular/create`;
 export const UPDATE_POPULAR_CATEGORY = `/catalog/category/popular/update`;
 export const GET_POPULAR_CATEGORY = `/catalog/categories/all`
 export const GET_CATEGORY = `/catalog/category/all/`
+export const CREATE_POPULAR_BRAND = `/brand/popular/create`;
+export const UPDATE_POPULAR_BRAND = `/brand/popular/update`;
+export const GET_POPULAR_BRAND = `/brand/all`;
+

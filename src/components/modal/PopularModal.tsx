@@ -1,54 +1,50 @@
+import { X } from "lucide-react";
+import classNames from "classnames";
+
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogClose,
   DialogTitle,
 } from "../ui/dialog";
-import { useCurrentColor } from "../../hooks";
-import classNames from "classnames";
-import { X } from "lucide-react";
-import { Catalog, Category, SubCatalog } from "../../types";
-import { FC, memo, useState } from "react";
+import { useCurrentColor } from "@/hooks";
+import { Category, SubCatalog, Catalog } from "@/types";
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../ui/button";
+import { useState } from "react";
 import ReactSelect from "react-select";
-import { useCreatePopularCategory } from "../../hooks/popular-category/create-popular-category";
+import { useCreatePopularCategory } from "@/hooks/popular-category/create-popular-category";
 
-interface IPopularData {
+interface PopularCategoryModalProps {
   isOpen: boolean;
-  handleOpen: () => void;
-  catalogData: Catalog[];
-  setSelectedCatalogId: (value: string) => void;
-  setSelectedSubCatalogId: (value: string) => void;
+  setOpen: (value: boolean) => void;
+  selectedCatalogId: string | null;
+  selectedSubCatalogId: string | null;
+  selectedCategoriesData: Category[];
   subCatalogData: SubCatalog[];
-  selectedCatalogId: string;
-  selectedSubCatalogId: string;
-  categoriesData: Category[];
+  catalogData: Catalog[];
+  setSelectedCatalogId: (id: string) => void;
+  setSelectedSubCatalogId: (id: string) => void;
 }
-const PopularModal: FC<IPopularData> = ({
-  catalogData,
-  handleOpen,
-  isOpen,
-  selectedCatalogId,
-  setSelectedCatalogId,
-  setSelectedSubCatalogId,
-  selectedSubCatalogId,
-  subCatalogData,
-  categoriesData,
-}) => {
-  const theme = useCurrentColor();
+
+export const PopularCategoryModal = (props: PopularCategoryModalProps) => {
+  const {isOpen, setOpen, selectedCatalogId, selectedSubCatalogId, selectedCategoriesData, subCatalogData, catalogData, setSelectedCatalogId, setSelectedSubCatalogId} = props;
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
-
-  const categoryOptions = categoriesData.map((category: Category) => ({
-    value: category.id,
-    label: category.title,
-  }));
-
-  const { mutate: createPopularCategory } = useCreatePopularCategory();
-
+  const theme = useCurrentColor();
+  const handleOpen = () => {
+    setOpen(!isOpen);
+    setSelectedCategoryIds([]);
+    setSelectedCatalogId("");
+    setSelectedSubCatalogId("");
+  }
+  const {mutate: createPopularCategory} = useCreatePopularCategory();
+  
   const handleCreatePopular = () => {
-    // console.log("Tanlangan Category IDlari:", selectedCategoryIds);
     createPopularCategory(selectedCategoryIds);
+    setSelectedCategoryIds([]);
+    setSelectedCatalogId("");
+    setSelectedSubCatalogId("");
     handleOpen();
   };
 
@@ -56,12 +52,10 @@ const PopularModal: FC<IPopularData> = ({
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle className={classNames(theme.text)}>
+          <DialogTitle className={theme.text}>
             Create Popular Category
           </DialogTitle>
-        </DialogHeader>
-        <DialogClose asChild>
-          <button>
+          <button onClick={() => handleOpen()}>
             <X
               className={classNames(
                 theme.text,
@@ -69,40 +63,56 @@ const PopularModal: FC<IPopularData> = ({
               )}
             />
           </button>
-        </DialogClose>
+        </DialogHeader>
+
+        <Select
+          onValueChange={(value) => {
+            setSelectedCatalogId(value);
+            setSelectedSubCatalogId("");
+          }}
+          value={selectedCatalogId || ""}
+        >
+          <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
+            <SelectValue placeholder="Select Catalog" />
+          </SelectTrigger>
+          <SelectContent className={theme.bg}>
+            {catalogData.map((catalog) => (
+              <SelectItem
+                key={catalog.id}
+                value={catalog.id}
+                className="text-header cursor-pointer"
+              >
+                {catalog.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select
+          onValueChange={(value) => setSelectedSubCatalogId(value)}
+          value={selectedSubCatalogId || ""}
+          disabled={!selectedCatalogId || !subCatalogData.length}
+        >
+          <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[280px] text-sm font-semibold">
+            <SelectValue placeholder="Select Subcatalog" />
+          </SelectTrigger>
+          <SelectContent className={theme.bg}>
+            {subCatalogData.map((subcatalog) => (
+              <SelectItem
+                key={subcatalog.id}
+                value={subcatalog.id}
+                className="text-header cursor-pointer"
+              >
+                {subcatalog.title}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
 
         <ReactSelect
-          onChange={(selectedOption) =>
-            setSelectedCatalogId(selectedOption ? selectedOption.value : "")
-          }
-          value={catalogData
-            .filter((item) => item.id === selectedCatalogId)
-            .map((item) => ({ value: item.id, label: item.title }))}
-          options={catalogData.map((catalog) => ({
-            value: catalog.id,
-            label: catalog.title,
+          options={selectedCategoriesData.map((category) => ({
+            label: category.title,
+            value: category.id,
           }))}
-          placeholder="Select Catalog"
-        />
-
-        <ReactSelect
-          onChange={(selectedOption) =>
-            setSelectedSubCatalogId(selectedOption ? selectedOption.value : "")
-          }
-          value={subCatalogData
-            .filter((item) => item.id === selectedSubCatalogId)
-            .map((item) => ({ value: item.id, label: item.title }))}
-          options={subCatalogData.map((subcatalog) => ({
-            value: subcatalog.id,
-            label: subcatalog.title,
-          }))}
-          placeholder="Select Subcatalog"
-          isDisabled={!selectedCatalogId}
-        />
-
-        {/* Multiple Category Select */}
-        <ReactSelect
-          options={categoryOptions}
           isMulti
           onChange={(selectedOptions) =>
             setSelectedCategoryIds(
@@ -112,23 +122,24 @@ const PopularModal: FC<IPopularData> = ({
             )
           }
           placeholder="Select Categories"
-          className="mt-4"
+          className={classNames(
+            theme.text,
+            theme.bg,
+          )}
         />
 
-        <button
-          disabled={!selectedCategoryIds.length}
+        <Button
           onClick={handleCreatePopular}
-          className="mt-4 bg-blue-500 text-white rounded-md px-4 py-2 disabled:opacity-70"
+          disabled={selectedCategoryIds.length === 0}
+          className={classNames("w-full disabled:opacity-50")}
         >
-          Create Popular
-        </button>
+          Create
+        </Button>
 
-        <DialogDescription className="hidden">
-          Description text goes here.
-        </DialogDescription>
+        <DialogDescription className="hidden">a</DialogDescription>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default memo(PopularModal);
+export default PopularCategoryModal;

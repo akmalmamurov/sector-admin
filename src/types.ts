@@ -93,6 +93,13 @@ export interface Brand {
   path: string;
 }
 
+export interface IPopularBrand extends Brand {
+  slug: string;
+  popularBrand: {
+    id: string;
+  };
+}
+
 export interface FilterOption {
   name: string;
   title: string;

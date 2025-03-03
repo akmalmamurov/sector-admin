@@ -9,6 +9,7 @@ interface PopularBrandResponse {
     data: {
         id: string;
         brandIds: string[];
+        message: string;
     };
 }
 
@@ -29,13 +30,14 @@ const createPopularBrand = async (
     return res.data;
 };
 
-export const useCreatePopularBrand = () => {
+export const useCreateToggleBrand = () => {
     const queryClient = useQueryClient();
     return useMutation<PopularBrandResponse, AxiosError, string[]>({
         mutationFn: createPopularBrand,
-        onSuccess: () => {
+        onSuccess: (data) => {
+            console.log(data);
             queryClient.invalidateQueries({ queryKey: ["brand", true] });
-            toast.success("Created Popular brand successfully!");
+            toast.success(data.data?.message);
         },
         onError: (error) => {
             toast.error(`Error: ${error.message}`);

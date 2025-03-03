@@ -13,7 +13,7 @@ import { IPopularBrand } from "@/types";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import ReactSelect from "react-select";
-import { useCreatePopularBrand } from "@/hooks/brand/create-popular-brand";
+import { useCreateToggleBrand } from "@/hooks/brand/create-popular-brand";
 
 interface PopularBrandModalProps {
   isOpen: boolean;
@@ -26,15 +26,15 @@ export const PopularBrandModal = (props: PopularBrandModalProps) => {
   const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
   const theme = useCurrentColor();
 
-  const { mutate: createPopularBrand } = useCreatePopularBrand();
+  const { mutate: addBrand } = useCreateToggleBrand();
   
   const handleOpen = () => {
     setSelectedBrandIds([]);
     setOpen(!isOpen);
   };
   const handleCreatePopular = () => {
-    createPopularBrand(selectedBrandIds);
-    handleOpen();
+    addBrand(selectedBrandIds);
+    handleOpen(); 
   };
 
   return (

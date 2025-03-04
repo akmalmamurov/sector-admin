@@ -3,6 +3,7 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_POPULAR_PRODUCT } from "@/constants";
 import { toast } from "react-toastify";
+
 interface PopularProductResponse {
     success: boolean;
     message: string;
@@ -35,8 +36,8 @@ export const useCreateToggleProduct = () => {
     return useMutation<PopularProductResponse, AxiosError, string[]>({
         mutationFn: createPopularProduct,
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["product", true] });
-            toast.success(data.data?.message);
+            queryClient.invalidateQueries({ queryKey: ["product", {popular: true}] });
+            toast.success(data?.data.message);
         },
         onError: (error) => {
             toast.error(`Error: ${error.message}`);

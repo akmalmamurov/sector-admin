@@ -216,6 +216,7 @@ export interface ProductData {
   price: number;
   mainImage: string;
   images?: string[];
+  recommended: boolean;
 }
 
 export interface PopularProduct extends ProductData {
@@ -223,6 +224,8 @@ export interface PopularProduct extends ProductData {
     id: string;
   };
 }
+
+
 
 export interface ProductResponse {
   data: ProductData[];

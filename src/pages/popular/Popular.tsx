@@ -8,11 +8,14 @@ import { PopularBrandList } from "@/components/tab-list/PopularBrand";
 import { IPopularBrand, PopularProduct } from "@/types";
 import { useGetPopularProducts } from "@/hooks/product/get-popular-products";
 import { PopularProductList } from "@/components/tab-list/PopularProductList";
+import { ProductRecommendationList } from "@/components/tab-list/ProductRecommendationList";
 const Popular = () => {
   const { data: catalogData = []} = useGetCatalog();
   const { data: popularCategoryData = [], isLoading: popularCategoryLoading, error: popularCategoryError } = useGetPopularCategory(true);
   const { data: popularBrandData = [], isLoading: popularBrandLoading, error: popularBrandError } = useGetBrand(true);
-  const { data: popularProductData = [], isLoading: popularProductLoading, error: popularProductError } = useGetPopularProducts(true);
+  const { data: popularProductData = [], isLoading: popularProductLoading, error: popularProductError } = useGetPopularProducts({popular: true});
+  const { data: productRecommendationData = [], isLoading: productRecommendationLoading, error: productRecommendationError } = useGetPopularProducts({recommended: true});
+  
   const tabList = [
     {
       value: "Popular Category",
@@ -32,6 +35,10 @@ const Popular = () => {
     {
       value: "Popular Product",
       item: <PopularProductList popularProductData={popularProductData as PopularProduct[]} isLoading={popularProductLoading} error={popularProductError as Error} />,
+    },
+    {
+      value: "Product Recommendation",
+      item: <ProductRecommendationList productRecommendationData={productRecommendationData as PopularProduct[]} isLoading={productRecommendationLoading} error={productRecommendationError as Error} />,
     },
   ];
   const theme = useCurrentColor();

@@ -20,45 +20,41 @@ import {
 } from "../ui/dialog";
 import { AlertTriangle, Trash2Icon, X } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { PopularProduct } from "@/types";
-import { Button } from "../ui/button";
 import { motion } from "framer-motion";
-import { useCreateToggleProduct } from "@/hooks/product/create-popular-product";
+import { Button } from "../ui/button";
+import { useCreateProductRecommendationToggle } from "@/hooks/product/create-recommendation";
+import { ProductData } from "@/types";
 interface Props {
-  productData: PopularProduct[];
+  productData: ProductData[];
 }
-export const PopularProductTable = ({ productData }: Props) => {
+
+export const ProductRecommendationTable = ({ productData }: Props) => {
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [deleteIsOpen, setDeleteIsOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const { mutate: toggleProductRecommendation } = useCreateProductRecommendationToggle();
+  const handleImage = (path: string | null) => {
+    setImage(path);
+    setIsOpen(true);
+  };
 
-  const { mutate: togglePopularProduct } = useCreateToggleProduct();
   const handleDelete = (id: string) => {
     setDeleteId(id);
     setDeleteIsOpen(true);
   };
-
-  const handleDeleteProduct = () => {
+  const handleDeleteProductRecommendation = () => {
     if (deleteId) {
-      togglePopularProduct([deleteId]);
+      toggleProductRecommendation(deleteId);
       setDeleteIsOpen(false);
     }
-  };  
-
+  };
   const handleCancel = () => {
     setDeleteIsOpen(false);
     setDeleteId(null);
   };
 
-
-
-
-  const handleImage = (path: string | null) => {
-    setImage(path);
-    setIsOpen(true);
-  };
   return (
     <Table>
       <TableHeader className={`${theme.header} `}>
@@ -77,7 +73,7 @@ export const PopularProductTable = ({ productData }: Props) => {
               theme.text
             )}
           >
-            Is Popular
+            Is Recommended
           </TableHead>
           <TableHead
             className={classNames(
@@ -98,13 +94,13 @@ export const PopularProductTable = ({ productData }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {productData?.map((product: PopularProduct) => (
+        {productData?.map((product: ProductData) => (
           <TableRow key={product?.id}>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {product?.title}
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {product?.popularProduct?.id ? "Popular" : "Not Popular"}
+                {product?.recommended ? "Recommended" : "Not Recommended"}
             </TableCell>
 
             <TableCell
@@ -161,8 +157,7 @@ export const PopularProductTable = ({ productData }: Props) => {
         <DialogContent className="max-w-md p-6 rounded-xl shadow-lg">
           <DialogHeader className="text-center">
             <DialogTitle className="text-xl font-semibold text-red-600 flex items-center justify-center gap-2">
-              <AlertTriangle className="w-6 h-6 text-red-500" /> Delete Popular
-              Product
+              <AlertTriangle className="w-6 h-6 text-red-500" /> Delete Product Recommendation
             </DialogTitle>
           </DialogHeader>
           <motion.div
@@ -172,11 +167,11 @@ export const PopularProductTable = ({ productData }: Props) => {
             className="flex flex-col items-center justify-center text-center"
           >
             <p className="text-lg font-medium mb-4 text-gray-700">
-              Are you sure you want to delete this popular product?
+              Are you sure you want to delete this product recommendation?
             </p>
             <div className="flex gap-4">
               <Button
-                onClick={handleDeleteProduct}
+                onClick={handleDeleteProductRecommendation}
                 className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md shadow-md"
               >
                 Delete
@@ -191,9 +186,9 @@ export const PopularProductTable = ({ productData }: Props) => {
           </motion.div>
           <DialogFooter />
         </DialogContent>
-      </Dialog> 
+      </Dialog>
     </Table>
   );
 };
 
-export default memo(PopularProductTable);
+export default memo(ProductRecommendationTable);

@@ -2,14 +2,23 @@ import { useQuery } from "@tanstack/react-query";
 import request from "@/services";
 import { ProductData, ProductResponse } from "@/types";
 
-const fetchData = async (popular: boolean = false): Promise<ProductData[]> => {
-    const res = await request.get<ProductResponse>(`/product?popular=${popular}`);
+interface Filters {
+    recommended?: boolean;
+    popular?: boolean;
+    condition?: boolean;
+    relevance?: boolean;
+}
+
+const fetchData = async (filters: Filters): Promise<ProductData[]> => {
+    const res = await request.get<ProductResponse>(`/product`,{
+        params: filters,
+    });
     return res.data.data;
 };
 
-export const useGetPopularProducts = (popular: boolean) => {
+export const useGetPopularProducts = (filters: Filters) => {
     return useQuery<ProductData[], Error>({
-        queryKey: ["product", popular],
-        queryFn: () => fetchData(popular),
+        queryKey: ["product", filters],
+        queryFn: () => fetchData(filters),
     });
 };

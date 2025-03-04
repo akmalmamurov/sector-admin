@@ -11,3 +11,4 @@ export const GET_CATEGORY = `/catalog/category/all/`
 export const CREATE_POPULAR_BRAND = `/brand/popular/toggle`;
 export const GET_POPULAR_BRAND = `/brand/all`;
 export const CREATE_POPULAR_PRODUCT = `/product/popular/toggle`;
+export const CREATE_PRODUCT_RECOMMENDATION = `/product/recommend/toggle`;

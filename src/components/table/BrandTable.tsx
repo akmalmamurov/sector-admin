@@ -48,6 +48,14 @@ export const BrandTable = ({ handleOpen, brandData }: Props) => {
               theme.text
             )}
           >
+            Description
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
             Image
           </TableHead>
           <TableHead
@@ -66,6 +74,9 @@ export const BrandTable = ({ handleOpen, brandData }: Props) => {
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
               {brand?.title}
             </TableCell>
+            <TableCell title={brand?.description} className={classNames("text-sm px-6 py-1 max-w-[200px] line-clamp-1", theme.text)}>
+              {brand?.description}
+            </TableCell>  
             <TableCell
               className={classNames("text-sm px-6 py-1 cursor-pointer", theme.text)}
               onClick={() => handleImage(brand?.path)}

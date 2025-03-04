@@ -85,12 +85,14 @@ export interface CategoryRequest {
 export interface BrandRequest {
   id: string;
   title: string;
+  description?: string;
   logo: File | null;
 }
 export interface Brand {
   id: string;
   title: string;
   path: string;
+  description?: string;
 }
 
 export interface IPopularBrand extends Brand {

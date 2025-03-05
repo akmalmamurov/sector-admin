@@ -10,7 +10,7 @@ import BrandPage from "./pages/brand/BrandPage";
 import FilterPage from "./pages/filter-condition/FilterConditionPage";
 import BannerPage from "./pages/banner/BannerPage";
 import Popular from "./pages/popular/Popular";
-
+import Remark from "./pages/remark/Remark";
 function App() {
   const { auth } = useStore();
 
@@ -32,6 +32,7 @@ function App() {
             <Route path="/filter" element={<FilterPage />} />
             <Route path="/banner" element={<BannerPage />} />
             <Route path="/popular" element={<Popular />} />
+            <Route path="/remark" element={<Remark />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

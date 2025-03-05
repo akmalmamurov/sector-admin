@@ -5,7 +5,7 @@ import { ProductTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
 import { useGetProduct } from "@/hooks";
 import { ProductData } from "@/types";
-import { useState } from "react";
+import { memo, useState } from "react";
 
 const ProductsPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -39,4 +39,4 @@ const ProductsPage = () => {
   );
 };
 
-export default ProductsPage;
+export default memo(ProductsPage);

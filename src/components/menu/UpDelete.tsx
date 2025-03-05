@@ -8,10 +8,10 @@ import {
 import { Button } from "../ui/button";
 import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
 import { useConfirmModal, useCurrentColor } from "@/hooks";
-import { Brand, Catalog, Category, SubCatalog } from "@/types";
+import { Brand, Catalog, Category, SubCatalog, IComment } from "@/types";
 import { ConfirmModal } from "../modal";
 
-type ItemType = Catalog | SubCatalog | Category | Brand ;
+type ItemType = Catalog | SubCatalog | Category | Brand | IComment;
 
 interface UpDeleteProps<T extends ItemType> {
   item: T;

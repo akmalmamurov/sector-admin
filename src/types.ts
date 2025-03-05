@@ -102,6 +102,49 @@ export interface IPopularBrand extends Brand {
   };
 }
 
+export interface IReply {
+  id: string;
+  message: string;
+  adminId: string;
+  createdAt: string;
+}
+
+export interface IComment {
+  id: string;
+  commentBody: string;
+  star: number;
+  reply?: IReply[]; 
+  user: User;
+  products: ProductData;
+  createdAt: string;
+}
+
+export interface ICommentResponse {
+  data: IComment[];
+  error: string | null;
+  status: number;
+} 
+export interface IReplyComment {
+  message: string;
+  adminId: string;
+  createdAt: string;
+}
+
+export interface IQuestion {
+  id: string;
+  questionBody: string;
+  reply?: IReplyComment;
+  user: {
+    id: string;
+    email: string;
+    phone: string;
+  }
+  products: {
+    id: string;
+    title: string;
+  }
+}
+
 export interface FilterOption {
   name: string;
   title: string;

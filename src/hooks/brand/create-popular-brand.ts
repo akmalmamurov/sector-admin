@@ -3,9 +3,11 @@ import { AxiosError } from "axios";
 import request from "@/services";
 import { CREATE_POPULAR_BRAND } from "@/constants";
 import { toast } from "react-toastify";
+
 interface PopularBrandResponse {
     success: boolean;
     message: string;
+    status: number; 
     data: {
         id: string;
         brandIds: string[];
@@ -35,8 +37,9 @@ export const useCreateToggleBrand = () => {
     return useMutation<PopularBrandResponse, AxiosError, string[]>({
         mutationFn: createPopularBrand,
         onSuccess: (data) => {
-            console.log(data);
+
             queryClient.invalidateQueries({ queryKey: ["brand", true] });
+
             toast.success(data.data?.message);
         },
         onError: (error) => {

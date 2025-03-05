@@ -5,7 +5,6 @@ import { TableTitle } from "../title";
 import { Section } from "../section";
 import { IPopularBrand } from "@/types";
 import { PopularBrandModal } from "../modal/PopularBrandModal";
-import { useGetBrand } from "@/hooks";
 import { PopularBrandTable } from "../table/PopularBrand";
 
 interface PopularBrandListProps {
@@ -20,7 +19,6 @@ export const PopularBrandList = ({
   error,
 }: PopularBrandListProps) => {
   const [isOpen, setIsOpen] = useState(false);
-    const { data: brandsData = [] } = useGetBrand(false);
     return (
       <Section>
         <div className="flex justify-between items-center mb-4">
@@ -51,7 +49,6 @@ export const PopularBrandList = ({
           </div>
         )}
         <PopularBrandModal
-          brandsData={brandsData as IPopularBrand[]}
           isOpen={isOpen}
           setOpen={setIsOpen}
         />

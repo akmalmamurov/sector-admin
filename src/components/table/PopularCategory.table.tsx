@@ -83,7 +83,7 @@ export const PopularCategoryTable = ({ categoriesData }: Props) => {
               theme.text
             )}
           >
-            Categories path
+            Image
           </TableHead>
           <TableHead
             className={classNames(

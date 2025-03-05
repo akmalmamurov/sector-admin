@@ -31,7 +31,6 @@ export const PopularCategoryList = ({
 
    const { data: selectedCategoriesData = [] } = useGetCategories(selectedSubCatalogId,false);
 
-
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">

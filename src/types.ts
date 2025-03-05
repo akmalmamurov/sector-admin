@@ -85,12 +85,14 @@ export interface CategoryRequest {
 export interface BrandRequest {
   id: string;
   title: string;
+  description?: string;
   logo: File | null;
 }
 export interface Brand {
   id: string;
   title: string;
   path: string;
+  description?: string;
 }
 
 export interface IPopularBrand extends Brand {
@@ -98,6 +100,38 @@ export interface IPopularBrand extends Brand {
   popularBrand: {
     id: string;
   };
+}
+
+export interface IReply {
+  id: string;
+  message: string;
+  adminId: string;
+  createdAt: string;
+}
+
+export interface IComment {
+  id: string;
+  body: string;
+  star: number;
+  reply: IReply[];
+  user: User;
+  products: ProductData;
+  createdAt: string;
+}
+
+export interface ICommentResponse {
+  data: IComment[];
+  error: string | null;
+  status: number;
+} 
+
+export interface IQuestion {
+  id: string;
+  body: string;
+  reply: IReply[];
+  user: User;
+  products: ProductData;
+  createdAt: string;
 }
 
 export interface FilterOption {
@@ -140,7 +174,9 @@ export type UpdateFilterProps = {
 };
 export interface User {
   id: string;
-  username: string;
+  name: string;
+  email: string;
+  phone: string;
   role: string;
   status: string;
   password?: string;
@@ -216,6 +252,7 @@ export interface ProductData {
   price: number;
   mainImage: string;
   images?: string[];
+  recommended: boolean;
 }
 
 export interface PopularProduct extends ProductData {
@@ -223,6 +260,8 @@ export interface PopularProduct extends ProductData {
     id: string;
   };
 }
+
+
 
 export interface ProductResponse {
   data: ProductData[];

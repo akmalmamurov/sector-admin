@@ -3,24 +3,23 @@ import { CreateButton } from "../create-button";
 import { LoadingData } from "../loading";
 import { TableTitle } from "../title";
 import { Section } from "../section";
-import { PopularProduct } from "@/types";
-import { PopularProductTable } from "../table/PopularProductTable";
-import { PopularProductModal } from "../modal/PopularProductModal";
+import { ProductData } from "@/types";
+import { ProductRecommendationModal } from "../modal/ProductReccomendation";
 import { useGetPopularProducts } from "@/hooks/product/get-popular-products";
-interface PopularProductListProps {
-  popularProductData: PopularProduct[];
+import { ProductRecommendationTable } from "../table/ProductRecommendationTable";
+interface ProductRecommendationListProps {
+  productRecommendationData: ProductData[];
   isLoading: boolean;
   error: Error;
 }
 
-export const PopularProductList = ({
-  popularProductData,
+export const ProductRecommendationList = ({
+  productRecommendationData,
   isLoading,
   error,
-}: PopularProductListProps) => {
+}: ProductRecommendationListProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { data: productData , refetch } = useGetPopularProducts({popular: false});
-
+  const { data: productData , refetch } = useGetPopularProducts({recommended: false});
   useEffect(() => {
     if (isOpen) {
       refetch();
@@ -29,9 +28,9 @@ export const PopularProductList = ({
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
-        <TableTitle>Popular Product Table</TableTitle>
+        <TableTitle>Product Recommendation Table</TableTitle>
         <CreateButton onClick={() => setIsOpen(true)}>
-          Create Popular Product
+          Create Product Recommendation
         </CreateButton>
       </div>
       {isLoading ? (
@@ -40,20 +39,20 @@ export const PopularProductList = ({
         <p className="text-red-500">Error: {error.message}</p>
       ) : (
         <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          {popularProductData?.length > 0 || !popularProductData ? (
-            <PopularProductTable productData={popularProductData} />
+          {productRecommendationData?.length > 0 || !productRecommendationData ? (
+                <ProductRecommendationTable  productData={productRecommendationData as ProductData[] } />
           ) : (
             <div className="p-4 text-center text-gray-500">
               <p>No Product found </p>
               <CreateButton onClick={() => setIsOpen(true)} className="mt-3">
-                Create Popular Product
+                    Create Product Recommendation
               </CreateButton>
             </div>
           )}
         </div>
       )}
-      <PopularProductModal
-        popularProductData={productData as PopularProduct[]}
+      <ProductRecommendationModal 
+        productRecommendationData={productData as ProductData[]}
         isOpen={isOpen}
         setOpen={setIsOpen}
       />
@@ -61,4 +60,4 @@ export const PopularProductList = ({
   );
 };
 
-export default PopularProductList;
+export default ProductRecommendationList;

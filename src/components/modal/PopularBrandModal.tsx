@@ -1,6 +1,5 @@
 import { X } from "lucide-react";
 import classNames from "classnames";
-
 import {
   Dialog,
   DialogContent,
@@ -8,43 +7,47 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { useCurrentColor } from "@/hooks";
-import { IPopularBrand } from "@/types";
+import { useCurrentColor, useGetBrand } from "@/hooks";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactSelect from "react-select";
 import { useCreateToggleBrand } from "@/hooks/brand/create-popular-brand";
 
 interface PopularBrandModalProps {
   isOpen: boolean;
   setOpen: (value: boolean) => void;
-  brandsData: IPopularBrand[];
 }
 
 export const PopularBrandModal = (props: PopularBrandModalProps) => {
-  const { isOpen, setOpen, brandsData } = props;
+  const { isOpen, setOpen } = props;
   const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
   const theme = useCurrentColor();
 
+  const { data: brandsData = [], refetch } = useGetBrand(false);
   const { mutate: addBrand } = useCreateToggleBrand();
-  
+
+  useEffect(() => {
+    if (isOpen) {
+      refetch();
+    }
+  }, [isOpen, refetch]);
+
   const handleOpen = () => {
     setSelectedBrandIds([]);
     setOpen(!isOpen);
   };
+
   const handleCreatePopular = () => {
     addBrand(selectedBrandIds);
-    handleOpen(); 
+    handleOpen();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle className={theme.text}>
-            Create Popular Brand
-          </DialogTitle>
-          <button onClick={() => handleOpen()}>
+          <DialogTitle className={theme.text}>Create Popular Brand</DialogTitle>
+          <button onClick={handleOpen}>
             <X
               className={classNames(
                 theme.text,
@@ -53,6 +56,7 @@ export const PopularBrandModal = (props: PopularBrandModalProps) => {
             />
           </button>
         </DialogHeader>
+
         <ReactSelect
           options={brandsData.map((brand) => ({
             label: brand.title,

@@ -111,9 +111,9 @@ export interface IReply {
 
 export interface IComment {
   id: string;
-  commentBody: string;
+  body: string;
   star: number;
-  reply?: IReply[]; 
+  reply: IReply[];
   user: User;
   products: ProductData;
   createdAt: string;
@@ -124,25 +124,14 @@ export interface ICommentResponse {
   error: string | null;
   status: number;
 } 
-export interface IReplyComment {
-  message: string;
-  adminId: string;
-  createdAt: string;
-}
 
 export interface IQuestion {
   id: string;
-  questionBody: string;
-  reply?: IReplyComment;
-  user: {
-    id: string;
-    email: string;
-    phone: string;
-  }
-  products: {
-    id: string;
-    title: string;
-  }
+  body: string;
+  reply: IReply[];
+  user: User;
+  products: ProductData;
+  createdAt: string;
 }
 
 export interface FilterOption {
@@ -185,7 +174,9 @@ export type UpdateFilterProps = {
 };
 export interface User {
   id: string;
-  username: string;
+  name: string;
+  email: string;
+  phone: string;
   role: string;
   status: string;
   password?: string;

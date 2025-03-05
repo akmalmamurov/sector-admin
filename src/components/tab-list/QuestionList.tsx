@@ -1,25 +1,24 @@
 import { LoadingData } from "../loading";
 import { TableTitle } from "../title";
 import { Section } from "../section";
-import { IComment } from "@/types";
-import { CommentTable } from "@/components/table/CommentTable";
+import { IQuestion } from "@/types";
+import { QuestionTable } from "@/components/table/QuestionTable";
 
-interface CommentListProps {
-  commentData: IComment[];
+interface QuestionListProps {
+  questionData: IQuestion[];
   isLoading: boolean;
   error: Error;
 }
 
-export const CommentList = ({
-  commentData,
+export const QuestionList = ({
+  questionData,
   isLoading,
   error,
-}: CommentListProps) => {
-
+}: QuestionListProps) => {
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
-        <TableTitle>Comment Table</TableTitle>
+        <TableTitle>Question Table</TableTitle>
       </div>
       {isLoading ? (
         <LoadingData className="w-full flex justify-center mt-2" />
@@ -27,13 +26,11 @@ export const CommentList = ({
         <p className="text-red-500">Error: {error.message}</p>
       ) : (
         <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-          {commentData?.length > 0 ? (
-            <CommentTable
-              commentData={commentData}
-            />
+          {questionData?.length > 0 ? (
+            <QuestionTable questionData={questionData} />
           ) : (
             <div className="p-4 text-center text-gray-500">
-              <p>No Comment found </p>
+              <p>No Question found </p>
             </div>
           )}
         </div>
@@ -42,4 +39,4 @@ export const CommentList = ({
   );
 };
 
-export default CommentList;
+export default QuestionList;

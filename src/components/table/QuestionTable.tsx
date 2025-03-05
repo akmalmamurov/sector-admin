@@ -7,66 +7,64 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useCurrentColor } from "@/hooks/useCurrentColor";
-import { IComment } from "@/types";
+import { IQuestion } from "@/types";
 import classNames from "classnames";
 import { DOMAIN } from "@/constants";
 import { memo, useEffect, useState } from "react";
 import {
   Dialog,
-  DialogContent,  
-  DialogDescription,  
+  DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import UpDeleteAndReply from "../menu/UpDeleteAndReply";
-import { useDeleteComment } from "@/hooks/remark/delete-comment";
-import { useReplyComment } from "@/hooks/remark/reply-comment"; 
+import { useReplyQuestion } from "@/hooks/remark/reply-question";
 import { formatDate } from "@/utils/formatedDate";
+import { useDeleteQuestion } from "@/hooks/remark/delete-question";
 interface Props {
-  commentData: IComment[];
+  questionData: IQuestion[];
 }
 
-export const CommentTable = ({ commentData }: Props) => {
+export const QuestionTable = ({ questionData }: Props) => {
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
-  const { mutate: replyComment } = useReplyComment()
+  const { mutate: replyQuestion } = useReplyQuestion();
   const [isOpen, setIsOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
-  const [comment, setComment] = useState<IComment | null>(null);
-
+  const [question, setQuestion] = useState<IQuestion | null>(null);
 
   const handleImage = (path: string | null) => {
     setImage(path);
     setIsOpen(true);
   };
 
-  const handleComment = (comment: IComment) => {
-    setComment(comment);
+  const handleQuestion = (question: IQuestion) => {
+    setQuestion(question);
     setIsReplyOpen(true);
-  }
+  };
 
-  const [deleteCommentId, setDeteleteCommentId] = useState<string>("")
-  const { mutate: deleteComment} = useDeleteComment()
-  const [replyData, setReplyData] = useState<{ id: string; message: string; } | null>(null);
-
-  
-  useEffect(() => {
-       if (replyData) {
-         replyComment(
-           { commentId: replyData.id, message: replyData.message }
-         );
-         setReplyData(null);  
-       }
-  }, [replyData, replyComment]);
-
+  const [deleteQuestionId, setDeteleteQuestionId] = useState<string>("");
+  const { mutate: deleteQuestion } = useDeleteQuestion();    
+  const [replyData, setReplyData] = useState<{
+    id: string;
+    message: string;
+  } | null>(null);
 
   useEffect(() => {
-    if (deleteCommentId) {
-      deleteComment({ id: deleteCommentId });
-      setDeteleteCommentId("");
+    if (replyData) {
+      replyQuestion({ questionId: replyData.id, message: replyData.message });
+      setReplyData(null);
     }
-  }, [deleteCommentId, deleteComment]);
+  }, [replyData, replyQuestion]);
+
+  useEffect(() => {
+    if (deleteQuestionId) {
+      deleteQuestion({ id: deleteQuestionId });
+      setDeteleteQuestionId("");
+    }
+  }, [deleteQuestionId, deleteQuestion]);
 
   return (
     <>
@@ -77,8 +75,7 @@ export const CommentTable = ({ commentData }: Props) => {
               "ID",
               "Product Image",
               "Product Title",
-              "Star",
-              "Comment",
+              "Question",
               "Created At",
               "Action",
             ].map((title) => (
@@ -97,8 +94,8 @@ export const CommentTable = ({ commentData }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {commentData?.map((comment, inx) => (
-            <TableRow key={comment.id}>
+          {questionData?.map((question, inx) => (
+            <TableRow key={question.id}>
               <TableCell
                 className={classNames("text-sm px-6 py-1", theme.text)}
               >
@@ -109,11 +106,11 @@ export const CommentTable = ({ commentData }: Props) => {
                   "text-sm px-6 py-1 cursor-pointer",
                   theme.text
                 )}
-                onClick={() => handleImage(comment.products.mainImage)}
+                onClick={() => handleImage(question.products.mainImage)}
               >
                 <img
-                  src={`${DOMAIN}/${comment.products.mainImage}`}
-                  alt={comment.products.title}
+                  src={`${DOMAIN}/${question.products.mainImage}`}
+                  alt={question.products.title}
                   className="w-10 h-10"
                 />
               </TableCell>
@@ -123,35 +120,30 @@ export const CommentTable = ({ commentData }: Props) => {
                   theme.text
                 )}
               >
-                {comment.products.title}
-              </TableCell>
-              <TableCell
-                className={classNames("text-sm px-6 py-1", theme.text)}
-              >
-                {comment.star}
+                {question.products.title}
               </TableCell>
               <TableCell
                 className={classNames(
                   "text-sm px-6 py-1 cursor-pointer",
                   theme.text
                 )}
-                onClick={() => handleComment(comment)}
+                onClick={() => handleQuestion(question)}
               >
-                {comment.body}
+                {question.body}
               </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1", theme.text)}
               >
-                {formatDate(comment.createdAt || new Date().toISOString())}
+                {formatDate(question.createdAt || new Date().toISOString())}
               </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1 text-end", theme.text)}
               >
                 <UpDeleteAndReply
-                  item={comment}
-                  setMarkId={setDeteleteCommentId}
+                  item={question}
+                  setMarkId={setDeteleteQuestionId}
                   setReplyData={setReplyData}
-                  title="Reply to comment"
+                  title="Reply to question"
                 />
               </TableCell>
             </TableRow>
@@ -202,27 +194,29 @@ export const CommentTable = ({ commentData }: Props) => {
             <div className="flex flex-col gap-2">
               <div className="flex flex-col gap-2 p-3 border-b w-3/4">
                 <p className="font-semibold text-gray-800">
-                  {comment?.user.name
-                    ? comment?.user.name
-                    : comment?.user.email}
+                  {question?.user.name
+                    ? question?.user.name
+                    : question?.user.email}
                 </p>
-                <p className="text-gray-700 text-sm">{comment?.body}</p>
+                <p className="text-gray-700 text-sm">{question?.body}</p>
                 <p className="text-gray-500 text-xs text-left">
-                  {formatDate(comment?.createdAt || new Date().toISOString())}
+                  {formatDate(question?.createdAt || new Date().toISOString())}
                 </p>
               </div>
               <div className="flex flex-col gap-2">
-                <p className="text-blue-500 font-semibold text-right my-2 ">Admin</p>
-                 {comment?.reply.map((reply) => (
-                <div
-                  key={reply.id}
-                  className="self-end p-3 rounded-lg border-b w-3/4 text-right"
-                >
-                  <p className="text-gray-700 text-sm">{reply.message}</p>
-                  <p className="text-gray-500 text-xs text-right">
-                    {formatDate(reply.createdAt || new Date().toISOString())}
-                  </p>
-                </div>
+                <p className="text-blue-500 font-semibold text-right my-2 ">
+                  Admin
+                </p>
+                {question?.reply.map((reply) => (
+                  <div
+                    key={reply.id}
+                    className="self-end p-3 rounded-lg border-b w-3/4 text-right"
+                  >
+                    <p className="text-gray-700 text-sm">{reply.message}</p>
+                    <p className="text-gray-500 text-xs text-right">
+                      {formatDate(reply.createdAt || new Date().toISOString())}
+                    </p>
+                  </div>
                 ))}
               </div>
             </div>
@@ -233,4 +227,4 @@ export const CommentTable = ({ commentData }: Props) => {
   );
 };
 
-export default memo(CommentTable);
+export default memo(QuestionTable);

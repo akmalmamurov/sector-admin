@@ -5,19 +5,22 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useCurrentColor } from '@/hooks/useCurrentColor';
 import classNames from 'classnames';
 import { remarkTabHeader } from '@/data/tab-header';
+import { useGetQuestion } from '@/hooks/remark/get-question';
+import { QuestionList } from '@/components/tab-list/QuestionList';
 
 const Remark = () => {
     const { data: commentData = [], isLoading, error: commentError } = useGetComment();
+    const { data: questionData = [], isLoading: questionLoading, error: questionError } = useGetQuestion();
 
     const tablist = [
         {
             value: "comment",
             item: <CommentList commentData={commentData} isLoading={isLoading} error={commentError as Error} />
         },
-        // {
-        //     value: "question",
-        //     item: <QuestionList />
-        // }
+        {
+            value: "question",
+            item: <QuestionList questionData={questionData} isLoading={questionLoading} error={questionError as Error} />
+        }
     ]
     const theme = useCurrentColor();
   return (

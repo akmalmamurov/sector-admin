@@ -40,7 +40,9 @@ export const PopularProductModal = (props: PopularProductModalProps) => {
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle className={theme.text}>Create Popular Product</DialogTitle>
+          <DialogTitle className={theme.text}>
+            Create Popular Product
+          </DialogTitle>
           <button onClick={() => handleOpen()}>
             <X
               className={classNames(
@@ -68,8 +70,31 @@ export const PopularProductModal = (props: PopularProductModalProps) => {
                 )
               }
               placeholder="Select Products"
-              className={classNames(theme.text, theme.bg)}
+              className="react-select-container w-full"
+              styles={{
+                option: (base) => ({
+                  ...base,
+                  width: "420px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  width: "420px",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                multiValueLabel: (base) => ({
+                  ...base,
+                  width: "420px",
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }),
+              }}
             />
+
             <Button
               onClick={handleCreatePopular}
               disabled={selectedProductIds.length === 0}

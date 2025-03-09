@@ -20,7 +20,7 @@ export const ProductImage = ({
   handleBack,
 }: ProductImageProps) => {
   const MAX_FILE_SIZE = 1048576;
-  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif"];
+  const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
   const [updatedImages, setUpdatedImages] = useState<{ [key: number]: File }>(
     {}
@@ -39,7 +39,7 @@ export const ProductImage = ({
     }
     if (!ALLOWED_TYPES.includes(file.type)) {
       alert(
-        "Faqat image/jpeg, image/png, image/gif formatdagi fayllarni yuklash mumkin."
+        "Faqat image/jpeg, image/png, image/gif, image/webp formatdagi fayllarni yuklash mumkin."
       );
       return false;
     }
@@ -146,7 +146,7 @@ export const ProductImage = ({
             );
           })}
         </div>
-
+          
         {/* Action Buttons */}
         <div className="flex justify-end gap-5 mt-40">
           {handleBack && (

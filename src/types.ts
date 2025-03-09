@@ -180,7 +180,6 @@ export interface User {
   role: string;
   status: string;
   password?: string;
-  username:string
 }
 export interface UsersProps {
   data: User[];

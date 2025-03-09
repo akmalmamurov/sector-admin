@@ -15,8 +15,10 @@ interface UserModalProps {
   element: Partial<User>
 }
 
+
 export const UserModal = ({ isOpen, handleOpen, element }: UserModalProps) => {
   const theme = useCurrentColor();
+  
   const [showPassword, setShowPassword] = useState(false);
   const { control, handleSubmit, reset, register, watch, formState: { errors,isDirty }, } = useForm({
     defaultValues: {

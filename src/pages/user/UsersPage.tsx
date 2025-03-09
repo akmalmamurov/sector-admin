@@ -17,6 +17,8 @@ const UsersPage = () => {
   };
   const { data = {} as UsersProps, isLoading, error } = useGetUsers();
   const userData = data.data || [];
+  console.log(userData);
+  
 
   return (
     <Section>

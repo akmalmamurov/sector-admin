@@ -175,7 +175,7 @@ export type UpdateFilterProps = {
 export interface User {
   id: string;
   name: string;
-  email: string;
+  username: string;
   phone: string;
   role: string;
   status: string;

@@ -279,3 +279,34 @@ export interface BannerData {
   redirectUrl: string;
   imagePath: string;
 }
+
+export interface GaranteeData {
+  id: string;
+  title: string;
+  price: string | number;
+}
+
+export interface PromotionData {
+  id: string;
+  title: string;
+  expireDate: string;
+  coverImage: string;
+  bannerImage?: string;
+  fullDescription?: string;
+  fullDescriptionImages?: string[];
+}
+
+export interface PromotionResponse {
+  data: PromotionData[];
+}
+
+export interface PromotionRequest {
+  id?: string;
+  title: string;
+  expireDate: string;
+  expireTime: string;
+  coverImage: File;
+  promotionBannerImage: File;
+  fullDescription?: string;
+  promotionDescriptionImages?: File[];
+}

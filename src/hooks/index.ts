@@ -42,3 +42,12 @@ export * from "./banner/get-banner";
 export * from "./banner/create-banner";
 export * from "./banner/update-banner";
 export * from "./banner/delete-banner"
+export * from "./garantee/create-garantee";
+export * from "./garantee/update-garantee";
+export * from "./garantee/delete-garantee";
+export * from "./garantee/get-garantee";
+export * from "./promotion/create-promotion";
+export * from "./promotion/update-promotion";
+export * from "./promotion/delete-promotion";
+export * from "./promotion/get-promotions";
+

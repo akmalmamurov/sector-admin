@@ -8,4 +8,5 @@ export * from "./ProductModal";
 export * from "./ConditionModal";
 export * from "./RelevanceModal";
 export * from "./PopularModal";
-export * from "./BannerModal"
+export * from "./BannerModal";
+export * from "./PromotionModal";

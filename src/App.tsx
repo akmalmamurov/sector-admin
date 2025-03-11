@@ -11,6 +11,8 @@ import FilterPage from "./pages/filter-condition/FilterConditionPage";
 import BannerPage from "./pages/banner/BannerPage";
 import Popular from "./pages/popular/Popular";
 import Remark from "./pages/remark/Remark";
+import Garantee from "./pages/garantee/Garantee";
+import Promotion from "./pages/promotion/Promotion";
 function App() {
   const { auth } = useStore();
 
@@ -33,6 +35,8 @@ function App() {
             <Route path="/banner" element={<BannerPage />} />
             <Route path="/popular" element={<Popular />} />
             <Route path="/remark" element={<Remark />} />
+            <Route path="/garantee" element={<Garantee />} />
+            <Route path="/promotion" element={<Promotion />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

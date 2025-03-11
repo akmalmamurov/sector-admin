@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { useConfirmModal, useCurrentColor, useDeleteBanner } from "@/hooks";
+import { useConfirmModal, useCurrentColor, useDeletePromotion } from "@/hooks";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,15 +24,16 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { Edit, MoreHorizontal, Trash2Icon, X } from "lucide-react";
-import { BannerData } from "@/types";
+import { PromotionData } from "@/types";
 import { ConfirmModal } from "../modal";
 import { Button } from "../ui/button";
+import { formatDate } from "@/utils/formatedDate";
 export interface Props {
-  handleOpen: (item: BannerData) => void;
-  bannerData: BannerData[];
+  handleOpen: (item: PromotionData) => void;
+  promotionData: PromotionData[];
 }
-export const BannerTable = ({ handleOpen, bannerData }: Props) => {
-  const { mutate: deletebanner } = useDeleteBanner();
+export const PromotionTable = ({ handleOpen, promotionData }: Props) => {
+  const { mutate: deletePromotion } = useDeletePromotion();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const theme = useCurrentColor();
@@ -44,8 +45,8 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
     onConfirm,
   } = useConfirmModal();
   const handleDeleteClick = (id: string) => {
-    openModal("Are you sure you want to delete this banner?", () => {
-      deletebanner({ id });
+    openModal("Are you sure you want to delete this promotion?", () => {
+      deletePromotion({ id });
     });
   };
   const handleImage = (path: string | null) => {
@@ -62,7 +63,7 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
               theme.text
             )}
           >
-            Route Path
+            Id
           </TableHead>
           <TableHead
             className={classNames(
@@ -70,7 +71,7 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
               theme.text
             )}
           >
-            Image
+            Cover Image
           </TableHead>
           <TableHead
             className={classNames(
@@ -78,7 +79,15 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
               theme.text
             )}
           >
-            Redirect Url
+            Title
+          </TableHead>
+          <TableHead
+            className={classNames(
+              "font-bold text-sm uppercase px-5",
+              theme.text
+            )}
+          >
+            Expire Date
           </TableHead>
           <TableHead
             className={classNames(
@@ -91,27 +100,31 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {bannerData?.map((item) => (
+        {promotionData?.map((item, index) => (
           <TableRow key={item?.id}>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {item?.routePath}
+              {index + 1}
             </TableCell>
             <TableCell
               className={classNames(
                 "text-sm px-6 py-1 cursor-pointer",
                 theme.text
               )}
-              onClick={() => handleImage(item?.imagePath)}
+              onClick={() => handleImage(item?.coverImage)}
             >
               <img
-                src={`${DOMAIN}/${item?.imagePath}`}
-                alt={"bannerImage"}
+                src={`${DOMAIN}/${item?.coverImage}`}
+                alt={"coverImage"}
                 className="w-24 h-14"
               />
             </TableCell>
             <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
-              {item?.routePath}
+              {item?.title}
             </TableCell>
+            <TableCell className={classNames("text-sm px-6 py-1", theme.text)}>
+              {formatDate(item?.expireDate.toString())}
+            </TableCell>
+          
             <TableCell
               className={classNames("text-sm px-6 py-1 text-end", theme.text)}
             >
@@ -138,7 +151,7 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <button
-                      onClick={() => handleDeleteClick(item.id)}
+                      onClick={() => handleDeleteClick(item?.id)}
                       className={classNames(
                         "w-full flex justify-center items-center",
                         theme.text
@@ -189,4 +202,4 @@ export const BannerTable = ({ handleOpen, bannerData }: Props) => {
   );
 };
 
-export default BannerTable;
+export default PromotionTable;

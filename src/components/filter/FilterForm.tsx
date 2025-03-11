@@ -156,7 +156,8 @@ export const FilterForm = ({
                     <SelectContent>
                       <SelectItem value="link">Link</SelectItem>
                       <SelectItem value="checkbox">Checkbox</SelectItem>
-                      <SelectItem value="import">Import</SelectItem>
+                      <SelectItem value="radio">Radio</SelectItem>
+                      {/* <SelectItem value="import">Import</SelectItem> */}
                       <SelectItem value="import-checkbox">
                         Import Checkbox
                       </SelectItem>

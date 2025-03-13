@@ -43,7 +43,7 @@ const Editor: React.FC<EditorProps> = ({
   useEffect(() => {
     if (!editorRef.current && editorData) {
       const editor = new EditorJS({
-        holder: "editor-container-promotion",
+        holder: "editor-container",
         autofocus: true,
         tools: EDITOR_JS_PROMOTION_TOOLS,
         data: (() => {
@@ -77,15 +77,23 @@ const Editor: React.FC<EditorProps> = ({
     if (editorRef.current) {
       const content: OutputData = await editorRef.current.save();
       setValue("promotionFullDescription", JSON.stringify(content));
-      handleNext(); // Bu yerda submit ishga tushadi
+      handleNext(); 
     }
   };
 
+  const handleBackWithSave = async () => {
+    if (editorRef.current) {
+      const content: OutputData = await editorRef.current.save();
+      setValue("promotionFullDescription", JSON.stringify(content));
+    }
+    handleBack();
+  };
+
   return (
-    <div className="editor-container-promotion">
-      <div id="editor-container-promotion" className="min-h-[200px]"></div>
+    <div className="editor-container">
+      <div id="editor-container" className="min-h-[200px]"></div>
       <div className="flex justify-end gap-5 mt-4">
-        <Button type="button" onClick={handleBack}>
+        <Button type="button" onClick={handleBackWithSave}>
           Back
         </Button>
         <Button type="button" onClick={handleSave}>

@@ -13,25 +13,22 @@ import { IComment } from "@/types";
 interface CommentModalProps {
   isOpen: boolean;
   setOpen: (value: boolean) => void;
-  commentData: IComment[];
+  commentData?: IComment[];
 }
 
 export const CommentModal = (props: CommentModalProps) => {
-  const { isOpen, setOpen, commentData } = props;
+  const { isOpen, setOpen } = props;
   const theme = useCurrentColor();
 
   const handleOpen = () => {
     setOpen(!isOpen);
   };
 
-  console.log(commentData);
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent className={theme.bg}>
         <DialogHeader className="font-bold">
-          <DialogTitle className={theme.text}>
-            Create Comment
-          </DialogTitle>
+          <DialogTitle className={theme.text}>Create Comment</DialogTitle>
           <button onClick={() => handleOpen()}>
             <X
               className={classNames(

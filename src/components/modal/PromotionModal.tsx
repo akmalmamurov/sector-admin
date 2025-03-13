@@ -24,6 +24,15 @@ interface StoredImage {
   name: string;
 }
 
+export interface Block {
+  type: string;
+  data: {
+    file: {
+      url: string;
+    };
+  };
+}
+
 const steps = [
   "oble, Expire Date, Expire Time cover image, promotion banner image",
   "Full Description",
@@ -56,18 +65,49 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
     },
   });
 
+    function replaceImageUrls(element: PromotionData) {
+      if (!element.fullDescription || !element.fullDescriptionImages) return;
+
+      let blocks;
+      try {
+        blocks = JSON.parse(element.fullDescription);
+      } catch (error) {
+        console.error("Invalid JSON in fullDescription", error);
+        return;
+      }
+
+      if (!blocks.blocks || !Array.isArray(blocks.blocks)) return;
+
+      const imageUrls = element.fullDescriptionImages.map((img: string) => img);
+      const api = "http://localhost:4000/";
+      let imageIndex = 0; 
+
+      blocks.blocks.forEach((block: Block) => {
+        if (block.type === "image" && block.data.file.url.startsWith("blob:")) {
+          if (imageUrls[imageIndex]) {
+            block.data.file.url = `${api}${imageUrls[imageIndex]}`;
+            imageIndex++;
+          }
+        }
+      });
+      return element.fullDescription = JSON.stringify(blocks);
+    }
+
     useEffect(() => {
       if (isOpen) {
         setActiveStep(0);
-
+        
         if (element && element.id) {
+          replaceImageUrls(element as PromotionData);
           let expireDate = new Date().toISOString().split("T")[0];
           let expireTime = "11:59";
 
           if (element?.expireDate) {
             const dateParts = element.expireDate.split("T");
             expireDate = dateParts[0];
-            expireTime = new Date(element.expireDate).toTimeString().slice(0, 5);
+            expireTime = new Date(element.expireDate)
+              .toTimeString()
+              .slice(0, 5);
           }
           reset({
             title: element?.title || "",
@@ -75,10 +115,7 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
             expireTime,
           });
 
-          setValue(
-            "promotionFullDescription",
-            element?.fullDescription||""
-          );
+          setValue("promotionFullDescription", element?.fullDescription || "");
 
           setCoverPreview(
             element?.coverImage ? `${DOMAIN}/${element.coverImage}` : null
@@ -208,7 +245,7 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent
-        className={`${theme.bg} flex flex-col py-5 px-7 max-w-4xl h-[calc(100vh-200px)] overflow-y-auto`}
+        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
         <DialogHeader>
           <DialogTitle className={theme.text}>

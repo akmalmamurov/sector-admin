@@ -254,6 +254,8 @@ export interface ProductData {
   mainImage: string;
   images?: string[];
   recommended: boolean;
+  fullDescription?: string;
+  fullDescriptionImages?: string[];
 }
 
 export interface PopularProduct extends ProductData {
@@ -310,4 +312,9 @@ export interface PromotionRequest {
   promotionBannerImage: File;
   promotionFullDescription?: string;
   promotionDescriptionImages?: File[];
+}
+
+export interface PromotionDescriptionImage {
+  url: string;
+  name: string; 
 }

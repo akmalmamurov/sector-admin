@@ -19,6 +19,7 @@ import {
   ProductBrandCondition,
   ProductFullDescription,
 } from "../product-steps";
+import { Block } from "./PromotionModal";
 
 interface Props {
   isOpen: boolean;
@@ -147,6 +148,39 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     }
   };
 
+  function replaceImageUrls(element: ProductData) {
+       if (!element.fullDescription || !element.fullDescriptionImages) return;
+
+       let blocks;
+       try {
+         blocks = JSON.parse(element.fullDescription);
+       } catch (error) {
+         console.error("Invalid JSON in fullDescription", error);
+         return;
+       }
+
+       if (!blocks.blocks || !Array.isArray(blocks.blocks)) return;
+
+        const imageUrls = element.fullDescriptionImages.map(
+         (img: string) => img
+       );
+       const api = "http://localhost:4000/";
+       let imageIndex = 0;
+
+       blocks.blocks.forEach((block: Block) => {
+         if (
+           block.type === "image" &&
+           block.data.file.url.startsWith("blob:")
+         ) {
+           if (imageUrls[imageIndex]) {
+             block.data.file.url = `${api}${imageUrls[imageIndex]}`;
+             imageIndex++;
+           }
+         }
+       });
+       return (element.fullDescription = JSON.stringify(blocks));
+  }
+
   const catalogsProps = {
     control,
     handleNext,
@@ -157,6 +191,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     setActiveStep(0);
     if (isOpen) {
       if (element && element.id) {
+        replaceImageUrls(element as ProductData); 
         reset({ ...element });
       } else {
         reset({

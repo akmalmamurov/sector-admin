@@ -239,6 +239,7 @@ export interface ProductRequest {
   productMainImage?: File;
   productImages?: File[];
   descriptionImage?: File[];
+  garanteeIds?: string[];
   popularProduct: {
     id: string;
   }

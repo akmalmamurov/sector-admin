@@ -50,7 +50,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     "Catalogs",
     "Title, Articul, Code, Description, Price, InStock",
     "Full Description",
-    "Brand, Condition, Relavance",
+    "Brand, Condition, Relavance, Garantee",
     " Characteristics",
     "Images",
   ];
@@ -83,7 +83,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
       )
         return;
 
-      if (typeof value === "object" && value !== null) {
+      if (typeof value === "object" && value !== null ) {
         formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());

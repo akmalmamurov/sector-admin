@@ -306,6 +306,7 @@ export interface PromotionRequest {
   expireDate: string;
   expireTime: string;
   coverImage: File;
+  fullDescription: string;
   promotionBannerImage: File;
   promotionFullDescription?: string;
   promotionDescriptionImages?: File[];

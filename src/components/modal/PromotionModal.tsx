@@ -1,6 +1,6 @@
 import { PromotionData, PromotionRequest } from "@/types";
 import { useForm } from "react-hook-form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import classNames from "classnames";
 import {
   useCreatePromotion,
@@ -25,7 +25,7 @@ interface StoredImage {
 }
 
 const steps = [
-  "Title, Expire Date, Expire Time cover image, promotion banner image",
+  "oble, Expire Date, Expire Time cover image, promotion banner image",
   "Full Description",
 ];
 
@@ -52,8 +52,53 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
       title: "",
       expireDate: "",
       expireTime: "",
+      fullDescription: "",
     },
   });
+
+    useEffect(() => {
+      if (isOpen) {
+        setActiveStep(0);
+
+        if (element && element.id) {
+          let expireDate = new Date().toISOString().split("T")[0];
+          let expireTime = "11:59";
+
+          if (element?.expireDate) {
+            const dateParts = element.expireDate.split("T");
+            expireDate = dateParts[0];
+            expireTime = new Date(element.expireDate).toTimeString().slice(0, 5);
+          }
+          reset({
+            title: element?.title || "",
+            expireDate,
+            expireTime,
+          });
+
+          setValue(
+            "promotionFullDescription",
+            element?.fullDescription||""
+          );
+
+          setCoverPreview(
+            element?.coverImage ? `${DOMAIN}/${element.coverImage}` : null
+          );
+          setBannerPreview(
+            element?.bannerImage ? `${DOMAIN}/${element.bannerImage}` : null
+          );
+        } else {
+          reset({
+            title: "",
+            expireDate: new Date().toISOString().split("T")[0],
+            expireTime: "11:59",
+          });
+
+          setValue("promotionFullDescription", "");
+          setCoverPreview(null);
+          setBannerPreview(null);
+        }
+      }
+    }, [isOpen, element, reset, setValue]); 
 
   const watchedValues = watch();
 
@@ -69,41 +114,23 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
   const onSubmit = async (data: PromotionRequest) => {
     const formData = new FormData();
 
-    const expireDate =
-      data.expireDate || new Date().toISOString().split("T")[0];
+    const expireDate = data.expireDate || new Date().toISOString().split("T")[0];
     const expireTime = data.expireTime || "00:00";
     const expireDateTime = new Date(`${expireDate}T${expireTime}:00`);
-
-    if (isNaN(expireDateTime.getTime())) {
-      console.error(
-        "Noto'g'ri sana yoki vaqt formati:",
-        expireDate,
-        expireTime
-      );
-      return;
-    }
-
     const timestamp = expireDateTime.getTime();
-    console.log("Timestamp:", timestamp);
     formData.append("title", data.title.trim());
     formData.append("expireDate", new Date(timestamp).toISOString());
-    if (data.promotionFullDescription) {
-      formData.append(
-        "promotionFullDescription",
-        data.promotionFullDescription
-      );
-    }
 
+    const fullDescription = data.promotionFullDescription;
+    if (fullDescription) {
+      formData.append("fullDescription", fullDescription);
+    }
     if (coverFile) formData.append("coverImage", coverFile);
     if (bannerFile) formData.append("promotionBannerImage", bannerFile);
 
-    const hasUrlInFullDescription =
-      data.promotionFullDescription?.includes("http");
-
+    const hasUrlInFullDescription = data.promotionFullDescription?.includes("http");
     if (hasUrlInFullDescription) {
-      const storedImages = JSON.parse(
-        localStorage.getItem("promotionDescriptionImages") || "[]"
-      );
+      const storedImages = JSON.parse(localStorage.getItem("promotionDescriptionImages") || "[]" );
       storedImages.forEach((img: StoredImage) => {
         const byteString = atob(img.base64.split(",")[1]);
         const arrayBuffer = new ArrayBuffer(byteString.length);
@@ -111,6 +138,7 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
         for (let i = 0; i < byteString.length; i++) {
           uint8Array[i] = byteString.charCodeAt(i);
         }
+
         const file = new Blob([uint8Array], { type: "image/png" });
         formData.append("promotionDescriptionImages", file, img.name);
       });
@@ -124,7 +152,12 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
         {
           onSuccess: () => {
             handleOpen(false);
-            reset();
+            reset({
+              title: element?.title || "",
+              expireDate,
+              expireTime,
+              fullDescription: element?.fullDescription || "",
+            });
             setActiveStep(0);
             localStorage.removeItem("promotionDescriptionImages");
           },
@@ -143,36 +176,6 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (isOpen) {
-      let expireDate = new Date().toISOString().split("T")[0];
-      let expireTime = "11:59";
-
-      if (element?.expireDate) {
-        const dateParts = element.expireDate.split("T");
-        if (dateParts.length === 2) {
-          expireDate = dateParts[0];
-          expireTime = dateParts[1]?.slice(0, 5) || "11:59";
-        }
-      }
-        reset({
-        title: element?.title || "",
-        expireDate,
-        expireTime,
-        promotionFullDescription: element?.fullDescription || "",
-      });
-
-      setCoverFile(null);
-      setBannerFile(null);
-      setCoverPreview(
-        element?.coverImage ? `${DOMAIN}/${element.coverImage}` : null
-      );
-      setBannerPreview(
-        element?.bannerImage ? `${DOMAIN}/${element.bannerImage}` : null
-      );
-    }
-  }, [isOpen, element, reset]);
 
   const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -230,6 +233,7 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
               ))}
             </div>
           </DialogTitle>
+          <DialogDescription className="hidden">da</DialogDescription>
           <button onClick={() => handleOpen(false)}>
             <X
               className={classNames(

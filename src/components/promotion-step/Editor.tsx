@@ -43,7 +43,7 @@ const Editor: React.FC<EditorProps> = ({
   useEffect(() => {
     if (!editorRef.current && editorData) {
       const editor = new EditorJS({
-        holder: "editor-container",
+        holder: "editor-container-promotion",
         autofocus: true,
         tools: EDITOR_JS_PROMOTION_TOOLS,
         data: (() => {
@@ -82,8 +82,8 @@ const Editor: React.FC<EditorProps> = ({
   };
 
   return (
-    <div className="editor-container">
-      <div id="editor-container" className="min-h-[200px]"></div>
+    <div className="editor-container-promotion">
+      <div id="editor-container-promotion" className="min-h-[200px]"></div>
       <div className="flex justify-end gap-5 mt-4">
         <Button type="button" onClick={handleBack}>
           Back

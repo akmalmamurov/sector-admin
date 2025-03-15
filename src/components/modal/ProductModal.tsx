@@ -50,7 +50,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     "Catalogs",
     "Title, Articul, Code, Description, Price, InStock",
     "Full Description",
-    "Brand, Condition, Relavance",
+    "Brand, Condition, Relavance, Garantee",
     " Characteristics",
     "Images",
   ];
@@ -83,7 +83,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
       )
         return;
 
-      if (typeof value === "object" && value !== null) {
+      if (typeof value === "object" && value !== null ) {
         formData.append(key, JSON.stringify(value));
       } else {
         formData.append(key, value.toString());
@@ -208,7 +208,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent
-        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[calc(100vh-100px)] overflow-y-auto`}
+        className={`${theme.bg} flex flex-col py-5 px-7 max-w-6xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>

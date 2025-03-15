@@ -8,8 +8,9 @@ import {
 } from "../ui/select";
 import { Control, Controller, UseFormWatch } from "react-hook-form";
 import { Button } from "../ui/button";
-import { useGetBrand, useGetCondition, useGetRelevance } from "@/hooks";
-
+import { useGetBrand, useGetCondition, useGetRelevance, useGetGarantee, useCurrentColor } from "@/hooks";
+import ReactSelect from "react-select"
+import classNames from "classnames";
 interface Props {
   control: Control<ProductRequest>;
   handleNext: () => void;
@@ -26,9 +27,13 @@ export const ProductBrandCondition = ({
   const { data: brandData = [] } = useGetBrand();
   const { data: conditionData = [] } = useGetCondition();
   const { data: relevanceData = [] } = useGetRelevance();
+  const { data: garanteeData = [] } = useGetGarantee();
+  
   const conditionId = watch("conditionId");
   const relevanceId = watch("relevanceId");
   const brandId = watch("brandId");
+
+  const theme = useCurrentColor();
 
   const isNextDisabled = !relevanceId || !conditionId || !brandId;
   return (
@@ -147,11 +152,42 @@ export const ProductBrandCondition = ({
           )}
         />
       </div>
+      {/* Garantee Selection */}
+      <div className="flex flex-col gap-1">
+        <label className="text-textColor font-medium w-fit text-sm">
+          Garantee
+        </label>
+        <Controller
+          name="garanteeIds"
+          control={control}
+          render={({ field }) => (
+            <ReactSelect
+              options={garanteeData.map((garantee) => ({
+                label: garantee.title,
+                value: garantee.id,
+              }))}
+              isMulti
+              value={garanteeData
+                .filter((g) => field.value?.includes(g.id))
+                .map((g) => ({ label: g.title, value: g.id }))}
+              onChange={(selectedOptions) =>
+                field.onChange(selectedOptions.map((option) => option.value))
+              }
+              placeholder="Select Garantee"
+              className={classNames(theme.text, theme.bg)}
+            />
+          )}
+        />
+      </div>
 
       {/* Navigation Buttons */}
       <div className="col-span-3 flex justify-end mt-4 gap-5">
-        <Button type="button" onClick={handleBack}>Back</Button>
-        <Button type="button" onClick={handleNext} disabled={isNextDisabled}>Next</Button>
+        <Button type="button" onClick={handleBack}>
+          Back
+        </Button>
+        <Button type="button" onClick={handleNext} disabled={isNextDisabled}>
+          Next
+        </Button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { ProductRequest } from "@/types";
+import { GaranteeData, ProductRequest } from "@/types";
 import {
   Select,
   SelectContent,
@@ -38,6 +38,7 @@ export const ProductBrandCondition = ({
   const isNextDisabled = !relevanceId || !conditionId || !brandId;
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      
       {/* Brand Selection */}
       <div className="flex flex-col gap-1">
         <label className="text-textColor font-medium w-fit text-sm">
@@ -47,30 +48,25 @@ export const ProductBrandCondition = ({
           name="brandId"
           control={control}
           render={({ field }) => (
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              value={field.value}
-              disabled={brandData.length === 0}
-            >
-              <SelectTrigger className="border border-header rounded-md h-11 px-3 text-header ring-header focus:ring-header text-sm font-semibold">
-                <SelectValue
-                  placeholder={
-                    brandData.length === 0 ? "No Brand found" : "Select Brand"
-                  }
-                />
-              </SelectTrigger>
-              <SelectContent>
-                {brandData.map(({ id, title }) => (
-                  <SelectItem
-                    key={id}
-                    value={id}
-                    className="text-header cursor-pointer"
-                  >
-                    {title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <ReactSelect
+              options={brandData.map((brand) => ({
+                label: brand.title,
+                value: brand.id,
+              }))}
+              value={
+                brandData
+                  .filter((brand) => field.value === brand.id)
+                  .map((brand) => ({
+                    label: brand.title,
+                    value: brand.id,
+                  }))[0] || null
+              }
+              onChange={(selectedOption) =>
+                field.onChange(selectedOption?.value)
+              }
+              placeholder="Select Brand"
+              className={classNames(theme.text, theme.bg)}
+            />
           )}
         />
       </div>
@@ -162,7 +158,7 @@ export const ProductBrandCondition = ({
           control={control}
           render={({ field }) => (
             <ReactSelect
-              options={garanteeData.map((garantee) => ({
+              options={garanteeData.map((garantee: GaranteeData) => ({
                 label: garantee.title,
                 value: garantee.id,
               }))}

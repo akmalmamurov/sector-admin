@@ -287,35 +287,35 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
         >
           {activeStep === 0 && (
             <>
-              <div>
-                <input
-                  type="text"
-                  {...register("title", { required: "Title is required" })}
-                  className={classNames(
+          <div>
+            <input
+              type="text"
+              {...register("title", { required: "Title is required" })}
+              className={classNames(
                     `inputs ${theme.sidebar} ${theme.text}`,
                     errors.title ? "ring-red-500" : "focus:ring-activeInput"
                   )}
                   placeholder="Promotion title"
-                />
-                {errors.title && (
-                  <span className="text-red-500">{errors.title.message}</span>
-                )}
-              </div>
+            />
+            {errors.title && (
+              <span className="text-red-500">{errors.title.message}</span>
+            )}
+          </div>
               <div className="flex gap-4">
                 <div className="flex-1">
-                  <input
+            <input
                     type="date"
                     {...register("expireDate", {
                       required: "End date is required",
                     })}
-                    className={classNames(
+              className={classNames(
                       `inputs ${theme.sidebar} ${theme.text} w-full`,
                       errors.expireDate
                         ? "ring-red-500"
                         : "focus:ring-activeInput"
                     )}
-                  />
-                  {errors.expireDate && (
+            />
+            {errors.expireDate && (
                     <span className="text-red-500">
                       {errors.expireDate.message}
                     </span>
@@ -338,48 +338,48 @@ export const PromotionModal = ({ isOpen, handleOpen, element }: Props) => {
                     <span className="text-red-500">
                       {errors.expireTime.message}
                     </span>
-                  )}
-                </div>
+            )}
+          </div>
               </div>
               <div>
-                <input
-                  type="file"
-                  accept="image/*"
+            <input
+              type="file"
+              accept="image/*"
                   onChange={handleCoverChange}
-                  className="hidden"
-                  id="cover-upload"
-                />
-                <label
-                  htmlFor="cover-upload"
-                  className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
-                >
+              className="hidden"
+              id="cover-upload"
+            />
+              <label
+                htmlFor="cover-upload"
+                className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
+              >
                   Upload cover image *
-                </label>
-                {coverPreview && (
-                  <img
-                    src={coverPreview}
+              </label>
+            {coverPreview && (
+              <img
+                src={coverPreview}
                     alt="Cover"
                     className="mt-2 max-h-32 mx-auto rounded-md"
-                  />
-                )}
-              </div>
+              />
+            )}
+          </div>
               <div>
-                <input
-                  type="file"
-                  accept="image/*"
+            <input
+              type="file"
+              accept="image/*"
                   onChange={handleBannerChange}
-                  className="hidden"
-                  id="banner-upload"
-                />
-                <label
-                  htmlFor="banner-upload"
-                  className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
-                >
+              className="hidden"
+              id="banner-upload"
+            />
+              <label
+                htmlFor="banner-upload"
+                className="block w-full text-center cursor-pointer border-2 border-dashed p-2 rounded-md hover:border-gray-400"
+              >
                   Upload banner image *
-                </label>
-                {bannerPreview && (
-                  <img
-                    src={bannerPreview}
+              </label>
+            {bannerPreview && (
+              <img
+                src={bannerPreview}
                     alt="Banner"
                     className="mt-2 max-h-32 mx-auto rounded-md"
                   />

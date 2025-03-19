@@ -132,6 +132,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
             handleOpen();
             reset();
             localStorage.removeItem("editorImages");
+            localStorage.removeItem("fullDescriptionImages")
             console.log("Product updated successfully", formData);
           },
         }
@@ -143,6 +144,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
           handleOpen();
           reset();
           localStorage.removeItem("editorImages");
+          localStorage.removeItem("fullDescriptionImages")
         },
       });
     }

@@ -164,7 +164,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         const imageUrls = element.fullDescriptionImages.map(
          (img: string) => img
        );
-       const api = "http://localhost:4000/";
+       const api = "https://api.sectortechnology.uz/";
        let imageIndex = 0;
 
        blocks.blocks.forEach((block: Block) => {

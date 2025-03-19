@@ -38,7 +38,6 @@ export const ProductBrandCondition = ({
   const isNextDisabled = !relevanceId || !conditionId || !brandId;
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-      
       {/* Brand Selection */}
       <div className="flex flex-col gap-1">
         <label className="text-textColor font-medium w-fit text-sm">
@@ -47,27 +46,31 @@ export const ProductBrandCondition = ({
         <Controller
           name="brandId"
           control={control}
-          render={({ field }) => (
-            <ReactSelect
-              options={brandData.map((brand) => ({
-                label: brand.title,
-                value: brand.id,
-              }))}
-              value={
-                brandData
-                  .filter((brand) => field.value === brand.id)
-                  .map((brand) => ({
-                    label: brand.title,
-                    value: brand.id,
-                  }))[0] || null
-              }
-              onChange={(selectedOption) =>
-                field.onChange(selectedOption?.value)
-              }
-              placeholder="Select Brand"
-              className={classNames(theme.text, theme.bg)}
-            />
-          )}
+          render={({ field }) => {
+            // Foydalanuvchi tanlagan yoki mavjud brandni olish
+            const selectedBrand = brandData.find(
+              (brand) => brand.id === field.value
+            );
+
+            return (
+              <ReactSelect
+                options={brandData.map((brand) => ({
+                  label: brand.title,
+                  value: brand.id,
+                }))}
+                value={
+                  selectedBrand
+                    ? { label: selectedBrand.title, value: selectedBrand.id }
+                    : null
+                }
+                onChange={(selectedOption) =>
+                  field.onChange(selectedOption?.value)
+                }
+                placeholder="Select Brand"
+                className={classNames(theme.text, theme.bg)}
+              />
+            );
+          }}
         />
       </div>
 

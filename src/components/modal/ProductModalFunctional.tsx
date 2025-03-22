@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCreateProduct, useCurrentColor, useUpdateProduct } from "@/hooks";
+import { useCurrentColor, useUpdateProduct } from "@/hooks";
 import {
   Dialog,
   DialogContent,
@@ -7,30 +7,42 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ProductData, ProductRequest } from "@/types";
+import {
+  LinkProduct,
+  ProductData,
+  ProductLinkProp,
+  ProductRequest,
+} from "@/types";
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
-import {
-  ProductCatalogs,
-  ProductCharacter,
-  ProductImage,
-  ProductStepTwo,
-  ProductBrandCondition,
-  ProductFullDescription,
-} from "../product-steps";
 import { Block } from "./PromotionModal";
+import {
+  ProductBrandConditionLink,
+  ProductCatalogsLink,
+  ProductCharacterLink,
+  ProductFullDescriptionLink,
+  ProductStepTwoLink,
+} from "../product-link-steps";
+import ProductLink from "../product-link-steps/ProductLink";
+import { useProductLink } from "@/hooks/fetch-data/get-fetch";
+import { useCreateFunctional } from "@/hooks/product/create-functional";
+import { ProductImageFunctional } from "../product-functional";
 
 interface Props {
-  isOpen: boolean;
-  handleOpen: () => void;
+  isOpenFunctional: boolean;
+  handleOpenFunctional: () => void;
   element?: Partial<ProductData>;
 }
 interface StoredImage {
   base64: string;
   name: string;
 }
-export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
+export const ProductModalFunctional = ({
+  isOpenFunctional,
+  handleOpenFunctional,
+  element,
+}: Props) => {
   const theme = useCurrentColor();
   const {
     control,
@@ -42,14 +54,25 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     getValues,
     formState: { errors },
   } = useForm<ProductRequest>();
+  const {
+    register: register2,
+    reset: linkReset,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm<ProductLinkProp>({
+    defaultValues: {
+      url: "",
+    },
+  });
+  const [linkData, setLinkData] = useState<LinkProduct | null>(null);
   const [activeStep, setActiveStep] = useState(0);
-
-  const { mutate: createProduct } = useCreateProduct();
+  const { mutate: productLink } = useProductLink();
+  const { mutate: createFunctional } = useCreateFunctional();
   const { mutate: updateProduct } = useUpdateProduct();
-
-  const steps = [
-    "Catalogs",
+  const allSteps = [
+    "Url Link",
     "Title, Articul, Code, Description, Price, InStock",
+    "Catalogs",
     "Full Description",
     "Brand, Condition, Relavance, Garantee",
     " Characteristics",
@@ -57,7 +80,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   ];
 
   const handleNext = () => {
-    if (activeStep < steps.length - 1) {
+    if (activeStep < allSteps.length - 1) {
       setActiveStep((prev) => prev + 1);
     }
   };
@@ -69,18 +92,19 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   };
   const onSubmit = async (data: ProductRequest) => {
     const formData = new FormData();
-
+    if (data.images) {
+      data.images.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
+    }
     Object.entries(data).forEach(([key, value]) => {
       if (
         value === undefined ||
         key === "id" ||
         key === "slug" ||
-        key === "mainImage" ||
         key === "images" ||
         key === "fullDescriptionImages" ||
-        key === "recommended" ||
-        key === "productImages" ||
-        key === "productMainImage"
+        key === "recommended"
       )
         return;
 
@@ -90,16 +114,6 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         formData.append(key, value.toString());
       }
     });
-
-    if (data.productMainImage) {
-      formData.append("productMainImage", data.productMainImage);
-    }
-
-    if (data.productImages?.length) {
-      data.productImages.forEach((file) => {
-        formData.append("productImages", file);
-      });
-    }
 
     const hasUrlInFullDescription = data.fullDescription?.includes("http");
 
@@ -130,7 +144,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         { id: element.id, data: formData },
         {
           onSuccess: () => {
-            handleOpen();
+            handleOpenFunctional();
             reset();
             localStorage.removeItem("editorImages");
             localStorage.removeItem("fullDescriptionImages");
@@ -140,15 +154,30 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
       );
     } else {
       console.log("Creating product", data);
-      createProduct(formData, {
+      createFunctional(formData, {
         onSuccess: () => {
-          handleOpen();
+          handleOpenFunctional();
           reset();
           localStorage.removeItem("editorImages");
           localStorage.removeItem("fullDescriptionImages");
         },
       });
     }
+  };
+  const onSubmit2 = async (data: ProductLinkProp) => {
+    productLink(
+      {
+        url: data.url,
+      },
+      {
+        onSuccess: (data) => {
+          setLinkData(data.data);
+          handleNext();
+          linkReset();
+          reset();
+        },
+      }
+    );
   };
 
   function replaceImageUrls(element: ProductData) {
@@ -187,7 +216,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   };
   useEffect(() => {
     setActiveStep(0);
-    if (isOpen) {
+    if (isOpenFunctional) {
       if (element && element.id) {
         replaceImageUrls(element as ProductData);
         reset({ ...element });
@@ -201,17 +230,17 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     } else {
       reset({});
     }
-  }, [isOpen, element, reset]);
+  }, [isOpenFunctional, element, reset]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpen}>
+    <Dialog open={isOpenFunctional} onOpenChange={handleOpenFunctional}>
       <DialogContent
         className={`${theme.bg} flex flex-col py-5 px-7 max-w-6xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
-            <div className="flex gap-5">
-              {steps.map((step, index) => (
+            <div className="flex gap-2">
+              {allSteps.map((step, index) => (
                 <div
                   key={index}
                   className={classNames(
@@ -231,7 +260,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
               ))}
             </div>
           </DialogTitle>
-          <button onClick={handleOpen}>
+          <button onClick={handleOpenFunctional}>
             <X
               className={classNames(
                 theme.text,
@@ -243,48 +272,57 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         <DialogDescription className="hidden">a</DialogDescription>
 
         <div className="mt-6">
+          <form noValidate onSubmit={handleSubmit2(onSubmit2)}>
+            {activeStep === 0 && (
+              <ProductLink register={register2} errors={errors2} />
+            )}
+          </form>
+
           <form onSubmit={handleSubmit(onSubmit)}>
-            {activeStep === 0 && <ProductCatalogs {...catalogsProps} />}
             {activeStep === 1 && (
-              <ProductStepTwo
+              <ProductStepTwoLink
+                setValue={setValue}
                 handleBack={handleBack}
                 register={register}
                 errors={errors}
                 handleNext={handleNext}
                 watch={watch}
+                linkData={linkData}
               />
             )}
-            {activeStep === 2 && (
-              <ProductFullDescription
+            {activeStep === 2 && <ProductCatalogsLink {...catalogsProps} />}
+            {activeStep === 3 && (
+              <ProductFullDescriptionLink
                 setValue={setValue}
                 getValues={getValues}
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
             )}
-            {activeStep === 3 && (
-              <ProductBrandCondition
+            {activeStep === 4 && (
+              <ProductBrandConditionLink
                 control={control}
+                setValue={setValue}
+                linkData={linkData}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 watch={watch}
               />
             )}
-            {activeStep === 4 && (
-              <ProductCharacter
+            {activeStep === 5 && (
+              <ProductCharacterLink
+                linkData={linkData}
+                setValue={setValue}
                 control={control}
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
             )}
-            {activeStep === 5 && (
-              <ProductImage
-                setValue={({ productMainImage, productImages }) => {
-                  if (productMainImage)
-                    setValue("productMainImage", productMainImage);
-                  if (productImages) setValue("productImages", productImages);
-                }}
+            {activeStep === 6 && (
+              <ProductImageFunctional
+                setValue={setValue}
                 handleNext={handleNext}
+                linkData={linkData}
                 element={element}
                 handleBack={handleBack}
               />
@@ -296,4 +334,4 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   );
 };
 
-export default ProductModal;
+export default ProductModalFunctional;

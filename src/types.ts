@@ -123,7 +123,7 @@ export interface ICommentResponse {
   data: IComment[];
   error: string | null;
   status: number;
-} 
+}
 
 export interface IQuestion {
   id: string;
@@ -222,13 +222,14 @@ export interface CharacterOption {
   value: string;
 }
 export interface ProductRequest {
+  link?: string;
   catalogId: string;
   subcatalogId: string;
   categoryId?: string;
   title: string;
   articul: string;
   productCode: string;
-  inStock: boolean;
+  inStock: boolean | string;
   price: number;
   description: string;
   brandId?: string;
@@ -242,8 +243,13 @@ export interface ProductRequest {
   garanteeIds?: string[];
   popularProduct: {
     id: string;
-  }
+  };
+  images?: string[] 
 }
+export interface ProductLinkProp {
+  url: string;
+}
+
 export interface ProductData {
   id: string;
   title: string;
@@ -258,14 +264,29 @@ export interface ProductData {
   fullDescription?: string;
   fullDescriptionImages?: string[];
 }
+export interface LinkOption {
+  title: string;
+  value: string;
+}
+export interface LinkProduct {
+  id?: string;
+  article: string;
+  brand: string;
+  articul: string;
+  code: string;
+  description: string;
+  price?: string;
+  stock?: string;
+  title: string;
+  images: string[]
+  characteristics: { title: string; option: LinkOption[] }[];
+}
 
 export interface PopularProduct extends ProductData {
   popularProduct: {
     id: string;
   };
 }
-
-
 
 export interface ProductResponse {
   data: ProductData[];
@@ -317,5 +338,5 @@ export interface PromotionRequest {
 
 export interface PromotionDescriptionImage {
   url: string;
-  name: string; 
+  name: string;
 }

@@ -94,8 +94,6 @@ export const CategoriesList = ({ catalogData }: { catalogData: Catalog[] }) => {
         isOpen={isOpen}
         handleOpen={handleOpen}
         element={tableElement as Category}
-        catalogs={catalogData}
-        subCatalogs={subCatalogData}
       />
     </Section>
   );

@@ -10,7 +10,7 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { CreateButton } from "../create-button";
-import { Catalog, Category, CategoryRequest, SubCatalog } from "@/types";
+import { Category, CategoryRequest } from "@/types";
 import {
   Select,
   SelectContent,
@@ -18,35 +18,41 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useCreateCategory, useCurrentColor, useUpdateCategory } from "@/hooks";
+import {
+  useCreateCategory,
+  useCurrentColor,
+  useGetCatalog,
+  useGetSubCatalogs,
+  useUpdateCategory,
+} from "@/hooks";
+import { useSubCatalogById } from "@/hooks/sub-catalog/get-subcatalogby-id";
 import { DOMAIN } from "@/constants";
 import { Button } from "../ui/button";
-
 interface CategoriesModalProps {
   isOpen: boolean;
   handleOpen: () => void;
   element?: Category;
-  catalogs: Catalog[];
-  subCatalogs: SubCatalog[];
 }
 
 export const CategoriesModal = ({
   isOpen,
   handleOpen,
-  catalogs,
-  subCatalogs,
   element,
 }: CategoriesModalProps) => {
   const {
     control,
     register,
     handleSubmit,
-    setError,
     clearErrors,
     reset,
     setValue,
     formState: { errors, isDirty },
-  } = useForm<CategoryRequest>();
+  } = useForm<CategoryRequest>({
+    defaultValues: {
+      title: "",
+      subCatalogId: "",
+    },
+  });
 
   const theme = useCurrentColor();
   const { mutate: createCategory } = useCreateCategory();
@@ -54,21 +60,50 @@ export const CategoriesModal = ({
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
+  const { data: catalogs = [] } = useGetCatalog();
   const [selectedCatalogId, setSelectedCatalogId] = useState<string | null>(
-    element?.subCatalogId
-      ? subCatalogs.find((sc) => sc.id === element.subCatalogId)?.catalogId ||
-          null
-      : catalogs.length > 0
-      ? catalogs[0].id
-      : null
+    null
   );
-
-  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<string | null>(
+  const { data: subCatalogs = [] } = useGetSubCatalogs(selectedCatalogId);
+  const [selectedSubCatalogId, setSelectedSubCatalogId] = useState<
+    string | null
+  >(null);
+  const { data: subCatalogData } = useSubCatalogById(
     element?.subCatalogId || ""
   );
-  const filteredSubCatalogs = subCatalogs.filter(
-    (sc) => sc.catalogId === selectedCatalogId
-  );
+  const firstSubCatalog = subCatalogData || null;
+  console.log(selectedSubCatalogId);
+  
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        title: element?.title || "",
+        subCatalogId: element?.subCatalogId || "",
+      });
+
+      if (element?.path) {
+        setPreview(`${DOMAIN}/${element.path}`);
+      } else {
+        setPreview(null);
+      }
+
+      if (element?.subCatalogId && firstSubCatalog) {
+        setSelectedSubCatalogId(element.subCatalogId);
+        if (firstSubCatalog.catalog) {
+          setSelectedCatalogId(firstSubCatalog.catalog.id || null);
+        }
+      } else {
+        setSelectedSubCatalogId(null);
+        setSelectedCatalogId(catalogs[0]?.id || null);
+      }
+    }
+  }, [isOpen, element, firstSubCatalog, catalogs, reset]);
+
+  useEffect(() => {
+    if (firstSubCatalog?.catalog) {
+      setSelectedCatalogId(firstSubCatalog.catalog.id || null);
+    }
+  }, [firstSubCatalog]);
 
   const onSubmit = async (data: CategoryRequest) => {
     const formData = new FormData();
@@ -79,12 +114,6 @@ export const CategoriesModal = ({
       formData.append("categoryImage", file);
     } else if (element?.path) {
       formData.append("categoryImage", element.path);
-    } else {
-      setError("categoryImage", {
-        type: "manual",
-        message: "Image is required",
-      });
-      return;
     }
 
     if (element?.id) {
@@ -111,35 +140,6 @@ export const CategoriesModal = ({
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      reset({
-        title: element?.title || "",
-        subCatalogId: element?.subCatalogId || "",
-      });
-
-      if (element?.path) {
-        setPreview(`${DOMAIN}/${element.path}`);
-      } else {
-        setPreview(null);
-      }
-
-      if (element?.subCatalogId) {
-        setSelectedSubCatalogId(element.subCatalogId);
-        const relatedCatalog = subCatalogs.find(
-          (sc) => sc.id === element.subCatalogId
-        )?.catalogId;
-
-        if (relatedCatalog) {
-          setSelectedCatalogId(relatedCatalog);
-        }
-      } else {
-        setSelectedCatalogId(null);
-        setSelectedSubCatalogId(null);
-      }
-    }
-  }, [isOpen, element, catalogs, subCatalogs, reset]);
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -161,7 +161,9 @@ export const CategoriesModal = ({
           </DialogTitle>
         </DialogHeader>
         <button onClick={() => handleOpen()}>
-          <X className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")} />
+          <X
+            className={classNames(theme.text, "w-6 h-6 absolute top-4 right-4")}
+          />
         </button>
         <DialogDescription className="hidden">s</DialogDescription>
         <form noValidate onSubmit={handleSubmit(onSubmit)}>
@@ -171,13 +173,20 @@ export const CategoriesModal = ({
               onValueChange={(value) => {
                 setSelectedCatalogId(value);
                 setSelectedSubCatalogId(null);
-                reset({ subCatalogId: "" });
+                setValue("subCatalogId", "", { shouldDirty: true });
               }}
               value={selectedCatalogId || ""}
               disabled={catalogs.length === 0}
             >
               <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header">
-                <SelectValue placeholder="Select Catalog" />
+                <SelectValue placeholder="Select Catalog">
+                  {/* Update holatida catalog.title ni ko'rsatish */}
+                  {selectedCatalogId
+                    ? catalogs.find(
+                        (catalog) => catalog.id === selectedCatalogId
+                      )?.title
+                    : "Select Catalog"}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent className={`${theme.bg} ${theme.text}`}>
                 {catalogs.map((catalog) => (
@@ -190,7 +199,9 @@ export const CategoriesModal = ({
           </div>
 
           <div className="mb-4">
-            <label className={`block mb-1 ${theme.text}`}>Select Subcatalog</label>
+            <label className={`block mb-1 ${theme.text}`}>
+              Select Subcatalog
+            </label>
             <Controller
               name="subCatalogId"
               control={control}
@@ -201,8 +212,8 @@ export const CategoriesModal = ({
                     field.onChange(value);
                     setSelectedSubCatalogId(value);
                   }}
-                  value={selectedSubCatalogId || ""}
-                  disabled={!selectedCatalogId || filteredSubCatalogs.length === 0}
+                  value={field.value || ""}
+                  disabled={!selectedCatalogId || subCatalogs.length === 0}
                 >
                   <SelectTrigger
                     className={classNames(
@@ -213,17 +224,25 @@ export const CategoriesModal = ({
                     <SelectValue placeholder="Select Subcatalog" />
                   </SelectTrigger>
                   <SelectContent className={`${theme.bg} ${theme.text}`}>
-                    {filteredSubCatalogs.map((subcatalog) => (
-                      <SelectItem key={subcatalog.id} value={subcatalog.id}>
-                        {subcatalog.title || "Create Subcatalog"}
-                      </SelectItem>
-                    ))}
+                    {subCatalogs.length > 0 ? (
+                      subCatalogs.map((subcatalog) => (
+                        <SelectItem key={subcatalog.id} value={subcatalog.id}>
+                          {subcatalog.title || "Create Subcatalog"}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="p-2 text-gray-500">
+                        No subcatalogs available
+                      </div>
+                    )}
                   </SelectContent>
                 </Select>
               )}
             />
             {errors.subCatalogId && (
-              <span className="text-red-500">{errors.subCatalogId.message}</span>
+              <span className="text-red-500">
+                {errors.subCatalogId.message}
+              </span>
             )}
           </div>
 
@@ -259,10 +278,11 @@ export const CategoriesModal = ({
               Upload Image
             </label>
             {preview && (
-              <img src={preview} alt="Category Preview" className="mt-2 max-h-32 mx-auto" />
-            )}
-            {errors.categoryImage && (
-              <span className="text-red-500">{errors.categoryImage.message}</span>
+              <img
+                src={preview}
+                alt="Category Preview"
+                className="mt-2 max-h-32 mx-auto"
+              />
             )}
           </div>
 
@@ -271,11 +291,19 @@ export const CategoriesModal = ({
               Cancel
             </CreateButton>
             {!element?.id ? (
-              <Button type="submit" className="h-[42px] px-10 " disabled={!isDirty}>
+              <Button
+                type="submit"
+                className="h-[42px] px-10"
+                disabled={!isDirty}
+              >
                 Create
               </Button>
             ) : (
-              <Button type="submit" className="h-[42px] px-10 " disabled={!isDirty}>
+              <Button
+                type="submit"
+                className="h-[42px] px-10"
+                disabled={!isDirty}
+              >
                 Update
               </Button>
             )}

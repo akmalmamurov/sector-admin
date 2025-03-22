@@ -45,6 +45,10 @@ export interface SubCatalog {
   title: string;
   catalogId: string;
   categories: Category[];
+  catalog:{
+    id: string;
+    title: string
+  }
 }
 
 export interface SubCatalogResponse {

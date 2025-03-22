@@ -11,7 +11,7 @@ interface Props {
 
 export const ProductLink = ({ register, errors }: Props) => {
   const theme = useCurrentColor();
-  
+
   return (
     <div className="space-y-5">
       <div className="w-1/4">
@@ -24,7 +24,7 @@ export const ProductLink = ({ register, errors }: Props) => {
               ? "ring-red-500 focus:ring-red-500"
               : "focus:ring-activeInput"
           )}
-          placeholder="Catalog Title"
+          placeholder="Product Link"
         />
         {errors.url && (
           <span className="text-red-500">{errors.url.message}</span>

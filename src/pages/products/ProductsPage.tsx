@@ -1,5 +1,6 @@
 import { CreateButton } from "@/components/create-button";
 import { ProductModal } from "@/components/modal";
+import ProductModalFunctional from "@/components/modal/ProductModalFunctional";
 import ProductModalLink from "@/components/modal/ProductModalLink";
 import { Section } from "@/components/section";
 import { ProductTable } from "@/components/table";
@@ -11,8 +12,10 @@ import { memo, useState } from "react";
 const ProductsPage = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isOpenLink, setIsOpenLink] = useState<boolean>(false);
+  const [isOpenFunctional, setIsOpenFunctional] = useState<boolean>(false);
   const [tableElement, setTableElement] = useState({});
   const [tableElementLink, setTableElementLink] = useState({});
+  const [tableElementFunctional, setTableElementFunctional] = useState({});
   const handleOpen = (element?: ProductData) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
@@ -21,6 +24,10 @@ const ProductsPage = () => {
     setTableElementLink(element || {});
     setIsOpenLink(!isOpenLink);
   };
+  const handleOpenFunctional = (element?: ProductData) => {
+    setTableElementFunctional(element || {});
+    setIsOpenFunctional(!isOpenFunctional);
+  };
   const { data: productData = [] } = useGetProduct();
 
   return (
@@ -28,6 +35,7 @@ const ProductsPage = () => {
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Product Table</TableTitle>
         <div className="flex gap-4 items-center">
+          <CreateButton onClick={() => handleOpenFunctional()}>Create Product Functional</CreateButton>
           <CreateButton onClick={() => handleOpenLink()}>Create Product Link</CreateButton>
           <CreateButton onClick={() => handleOpen()}>Create Product</CreateButton>
         </div>
@@ -46,6 +54,7 @@ const ProductsPage = () => {
       </div>
       <ProductModal isOpen={isOpen} handleOpen={handleOpen} element={tableElement} />
       <ProductModalLink isOpenLink={isOpenLink} handleOpenLink={handleOpenLink} element={tableElementLink} />
+      <ProductModalFunctional isOpenFunctional={isOpenFunctional} handleOpenFunctional={handleOpenFunctional} element={tableElementFunctional} />
     </Section>
   );
 };

@@ -244,6 +244,7 @@ export interface ProductRequest {
   popularProduct: {
     id: string;
   };
+  images?: string[] 
 }
 export interface ProductLinkProp {
   url: string;
@@ -277,6 +278,7 @@ export interface LinkProduct {
   price?: string;
   stock?: string;
   title: string;
+  images: string[]
   characteristics: { title: string; option: LinkOption[] }[];
 }
 

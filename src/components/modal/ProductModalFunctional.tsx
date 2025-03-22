@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCreateProduct, useCurrentColor, useUpdateProduct } from "@/hooks";
+import { useCurrentColor, useUpdateProduct } from "@/hooks";
 import {
   Dialog,
   DialogContent,
@@ -22,24 +22,25 @@ import {
   ProductCatalogsLink,
   ProductCharacterLink,
   ProductFullDescriptionLink,
-  ProductImageLink,
   ProductStepTwoLink,
 } from "../product-link-steps";
 import ProductLink from "../product-link-steps/ProductLink";
 import { useProductLink } from "@/hooks/fetch-data/get-fetch";
+import { useCreateFunctional } from "@/hooks/product/create-functional";
+import { ProductImageFunctional } from "../product-functional";
 
 interface Props {
-  isOpenLink: boolean;
-  handleOpenLink: () => void;
+  isOpenFunctional: boolean;
+  handleOpenFunctional: () => void;
   element?: Partial<ProductData>;
 }
 interface StoredImage {
   base64: string;
   name: string;
 }
-export const ProductModalLink = ({
-  isOpenLink,
-  handleOpenLink,
+export const ProductModalFunctional = ({
+  isOpenFunctional,
+  handleOpenFunctional,
   element,
 }: Props) => {
   const theme = useCurrentColor();
@@ -66,7 +67,7 @@ export const ProductModalLink = ({
   const [linkData, setLinkData] = useState<LinkProduct | null>(null);
   const [activeStep, setActiveStep] = useState(0);
   const { mutate: productLink } = useProductLink();
-  const { mutate: createProduct } = useCreateProduct();
+  const { mutate: createFunctional } = useCreateFunctional();
   const { mutate: updateProduct } = useUpdateProduct();
   const allSteps = [
     "Url Link",
@@ -91,18 +92,19 @@ export const ProductModalLink = ({
   };
   const onSubmit = async (data: ProductRequest) => {
     const formData = new FormData();
-
+    if (data.images) {
+      data.images.forEach((image, index) => {
+        formData.append(`images[${index}]`, image);
+      });
+    }
     Object.entries(data).forEach(([key, value]) => {
       if (
         value === undefined ||
         key === "id" ||
         key === "slug" ||
-        key === "mainImage" ||
         key === "images" ||
         key === "fullDescriptionImages" ||
-        key === "recommended" ||
-        key === "productImages" ||
-        key === "productMainImage"
+        key === "recommended"
       )
         return;
 
@@ -112,16 +114,6 @@ export const ProductModalLink = ({
         formData.append(key, value.toString());
       }
     });
-
-    if (data.productMainImage) {
-      formData.append("productMainImage", data.productMainImage);
-    }
-
-    if (data.productImages?.length) {
-      data.productImages.forEach((file) => {
-        formData.append("productImages", file);
-      });
-    }
 
     const hasUrlInFullDescription = data.fullDescription?.includes("http");
 
@@ -152,7 +144,7 @@ export const ProductModalLink = ({
         { id: element.id, data: formData },
         {
           onSuccess: () => {
-            handleOpenLink();
+            handleOpenFunctional();
             reset();
             localStorage.removeItem("editorImages");
             localStorage.removeItem("fullDescriptionImages");
@@ -162,9 +154,9 @@ export const ProductModalLink = ({
       );
     } else {
       console.log("Creating product", data);
-      createProduct(formData, {
+      createFunctional(formData, {
         onSuccess: () => {
-          handleOpenLink();
+          handleOpenFunctional();
           reset();
           localStorage.removeItem("editorImages");
           localStorage.removeItem("fullDescriptionImages");
@@ -180,7 +172,6 @@ export const ProductModalLink = ({
       {
         onSuccess: (data) => {
           setLinkData(data.data);
-
           handleNext();
           linkReset();
           reset();
@@ -225,7 +216,7 @@ export const ProductModalLink = ({
   };
   useEffect(() => {
     setActiveStep(0);
-    if (isOpenLink) {
+    if (isOpenFunctional) {
       if (element && element.id) {
         replaceImageUrls(element as ProductData);
         reset({ ...element });
@@ -239,10 +230,10 @@ export const ProductModalLink = ({
     } else {
       reset({});
     }
-  }, [isOpenLink, element, reset]);
+  }, [isOpenFunctional, element, reset]);
 
   return (
-    <Dialog open={isOpenLink} onOpenChange={handleOpenLink}>
+    <Dialog open={isOpenFunctional} onOpenChange={handleOpenFunctional}>
       <DialogContent
         className={`${theme.bg} flex flex-col py-5 px-7 max-w-6xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
@@ -269,7 +260,7 @@ export const ProductModalLink = ({
               ))}
             </div>
           </DialogTitle>
-          <button onClick={handleOpenLink}>
+          <button onClick={handleOpenFunctional}>
             <X
               className={classNames(
                 theme.text,
@@ -328,13 +319,10 @@ export const ProductModalLink = ({
               />
             )}
             {activeStep === 6 && (
-              <ProductImageLink
-                setValue={({ productMainImage, productImages }) => {
-                  if (productMainImage)
-                    setValue("productMainImage", productMainImage);
-                  if (productImages) setValue("productImages", productImages);
-                }}
+              <ProductImageFunctional
+                setValue={setValue}
                 handleNext={handleNext}
+                linkData={linkData}
                 element={element}
                 handleBack={handleBack}
               />
@@ -346,4 +334,4 @@ export const ProductModalLink = ({
   );
 };
 
-export default ProductModalLink;
+export default ProductModalFunctional;

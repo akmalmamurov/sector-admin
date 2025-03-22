@@ -37,7 +37,6 @@ export const ProductBrandConditionLink = ({
   const conditionId = watch("conditionId");
   const relevanceId = watch("relevanceId");
   const brandId = watch("brandId");
-  console.log(brandData);
 
   const theme = useCurrentColor();
   useEffect(() => {

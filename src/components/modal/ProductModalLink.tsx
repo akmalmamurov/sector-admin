@@ -7,30 +7,41 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { ProductData, ProductRequest } from "@/types";
+import {
+  LinkProduct,
+  ProductData,
+  ProductLinkProp,
+  ProductRequest,
+} from "@/types";
 import { X } from "lucide-react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
-import {
-  ProductCatalogs,
-  ProductCharacter,
-  ProductImage,
-  ProductStepTwo,
-  ProductBrandCondition,
-  ProductFullDescription,
-} from "../product-steps";
 import { Block } from "./PromotionModal";
+import {
+  ProductBrandConditionLink,
+  ProductCatalogsLink,
+  ProductCharacterLink,
+  ProductFullDescriptionLink,
+  ProductImageLink,
+  ProductStepTwoLink,
+} from "../product-link-steps";
+import ProductLink from "../product-link-steps/ProductLink";
+import { useProductLink } from "@/hooks/fetch-data/get-fetch";
 
 interface Props {
-  isOpen: boolean;
-  handleOpen: () => void;
+  isOpenLink: boolean;
+  handleOpenLink: () => void;
   element?: Partial<ProductData>;
 }
 interface StoredImage {
   base64: string;
   name: string;
 }
-export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
+export const ProductModalLink = ({
+  isOpenLink,
+  handleOpenLink,
+  element,
+}: Props) => {
   const theme = useCurrentColor();
   const {
     control,
@@ -42,14 +53,25 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     getValues,
     formState: { errors },
   } = useForm<ProductRequest>();
+  const {
+    register: register2,
+    reset: linkReset,
+    handleSubmit: handleSubmit2,
+    formState: { errors: errors2 },
+  } = useForm<ProductLinkProp>({
+    defaultValues: {
+      url: "",
+    },
+  });
+  const [linkData, setLinkData] = useState<LinkProduct | null>(null);
   const [activeStep, setActiveStep] = useState(0);
-
+  const { mutate: productLink } = useProductLink();
   const { mutate: createProduct } = useCreateProduct();
   const { mutate: updateProduct } = useUpdateProduct();
-
-  const steps = [
-    "Catalogs",
+  const allSteps = [
+    "Url Link",
     "Title, Articul, Code, Description, Price, InStock",
+    "Catalogs",
     "Full Description",
     "Brand, Condition, Relavance, Garantee",
     " Characteristics",
@@ -57,7 +79,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   ];
 
   const handleNext = () => {
-    if (activeStep < steps.length - 1) {
+    if (activeStep < allSteps.length - 1) {
       setActiveStep((prev) => prev + 1);
     }
   };
@@ -130,7 +152,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         { id: element.id, data: formData },
         {
           onSuccess: () => {
-            handleOpen();
+            handleOpenLink();
             reset();
             localStorage.removeItem("editorImages");
             localStorage.removeItem("fullDescriptionImages");
@@ -142,13 +164,29 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
       console.log("Creating product", data);
       createProduct(formData, {
         onSuccess: () => {
-          handleOpen();
+          handleOpenLink();
           reset();
           localStorage.removeItem("editorImages");
           localStorage.removeItem("fullDescriptionImages");
         },
       });
     }
+  };
+  const onSubmit2 = async (data: ProductLinkProp) => {
+    productLink(
+      {
+        url: data.url,
+      },
+      {
+        onSuccess: (data) => {
+          setLinkData(data.data);
+          
+          handleNext();
+          linkReset();
+          reset();
+        },
+      }
+    );
   };
 
   function replaceImageUrls(element: ProductData) {
@@ -187,7 +225,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   };
   useEffect(() => {
     setActiveStep(0);
-    if (isOpen) {
+    if (isOpenLink) {
       if (element && element.id) {
         replaceImageUrls(element as ProductData);
         reset({ ...element });
@@ -201,17 +239,17 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     } else {
       reset({});
     }
-  }, [isOpen, element, reset]);
+  }, [isOpenLink, element, reset]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpen}>
+    <Dialog open={isOpenLink} onOpenChange={handleOpenLink}>
       <DialogContent
         className={`${theme.bg} flex flex-col py-5 px-7 max-w-6xl h-[calc(100vh-100px)] overflow-y-auto`}
       >
         <DialogHeader className="font-bold">
           <DialogTitle className={theme.text}>
-            <div className="flex gap-5">
-              {steps.map((step, index) => (
+            <div className="flex gap-2">
+              {allSteps.map((step, index) => (
                 <div
                   key={index}
                   className={classNames(
@@ -231,7 +269,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
               ))}
             </div>
           </DialogTitle>
-          <button onClick={handleOpen}>
+          <button onClick={handleOpenLink}>
             <X
               className={classNames(
                 theme.text,
@@ -243,42 +281,54 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
         <DialogDescription className="hidden">a</DialogDescription>
 
         <div className="mt-6">
+          <form noValidate onSubmit={handleSubmit2(onSubmit2)}>
+            {activeStep === 0 && (
+              <ProductLink register={register2} errors={errors2} />
+            )}
+          </form>
+
           <form onSubmit={handleSubmit(onSubmit)}>
-            {activeStep === 0 && <ProductCatalogs {...catalogsProps} />}
             {activeStep === 1 && (
-              <ProductStepTwo
+              <ProductStepTwoLink
+                setValue={setValue}
                 handleBack={handleBack}
                 register={register}
                 errors={errors}
                 handleNext={handleNext}
                 watch={watch}
+                linkData={linkData}
               />
             )}
-            {activeStep === 2 && (
-              <ProductFullDescription
+            {activeStep === 2 && <ProductCatalogsLink {...catalogsProps} />}
+            {activeStep === 3 && (
+              <ProductFullDescriptionLink
                 setValue={setValue}
                 getValues={getValues}
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
             )}
-            {activeStep === 3 && (
-              <ProductBrandCondition
+            {activeStep === 4 && (
+              <ProductBrandConditionLink
                 control={control}
+                setValue={setValue}
+                linkData={linkData}
                 handleNext={handleNext}
                 handleBack={handleBack}
                 watch={watch}
               />
             )}
-            {activeStep === 4 && (
-              <ProductCharacter
+            {activeStep === 5 && (
+              <ProductCharacterLink
+                linkData={linkData}
+                setValue={setValue}
                 control={control}
                 handleNext={handleNext}
                 handleBack={handleBack}
               />
             )}
-            {activeStep === 5 && (
-              <ProductImage
+            {activeStep === 6 && (
+              <ProductImageLink
                 setValue={({ productMainImage, productImages }) => {
                   if (productMainImage)
                     setValue("productMainImage", productMainImage);
@@ -296,4 +346,4 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
   );
 };
 
-export default ProductModal;
+export default ProductModalLink;

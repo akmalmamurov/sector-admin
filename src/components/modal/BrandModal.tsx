@@ -14,7 +14,7 @@ import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { DOMAIN } from "@/constants";
 import { Button } from "../ui/button";
-import { useGetBrandSelectedImages } from "@/hooks/brand/get-select-images";  
+import { useGetBrandSelectedImages } from "@/hooks/brand/get-select-images";
 import { useUpdateBrandWithPath } from "@/hooks/brand/update-brand-with-path";
 interface Props {
   isOpen: boolean;
@@ -28,18 +28,17 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
   const { mutate: updateBrand } = useUpdateBrand();
   const [preview, setPreview] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [isImageUpdated, setIsImageUpdated] = useState(false);
   const [selectedImagePath, setSelectedImagePath] = useState<string | null>(null);
   const [isConfirmingUpdate, setIsConfirmingUpdate] = useState<string | null>(null);
   const [isConfirmingUpdateOpen, setIsConfirmingUpdateOpen] = useState(false);
-  
-  const handleConfirmUpdate = (path:string) => {
+
+  const handleConfirmUpdate = (path: string) => {
     setIsConfirmingUpdate(path);
     setIsConfirmingUpdateOpen(true);
   };
-    const { data: images } = useGetBrandSelectedImages(); 
+  const { data: images } = useGetBrandSelectedImages();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  
+
   const { mutate: updateBrandWithPath } = useUpdateBrandWithPath();
 
   useEffect(() => {
@@ -52,7 +51,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
             setSelectedImagePath(null);
             setPreview(null);
             setFile(null);
-            setIsImageUpdated(false);
             handleOpen(false);
             setIsConfirmingUpdateOpen(false);
             setIsConfirmingUpdate(null);
@@ -68,30 +66,25 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     register,
     handleSubmit,
     reset,
-    setError,
     clearErrors,
     watch,
-    formState: { errors, isDirty },
+    formState: { errors },
   } = useForm<BrandRequest>();
 
   const watchedValues = watch();
 
   const isCreateDisabled = !watchedValues.title || !watchedValues.title.trim();
 
-  const isUpdateDisabled = !isDirty && !isImageUpdated;
   const onSubmit = async (data: BrandRequest) => {
     const formData = new FormData();
     formData.append("title", data.title.trim());
-    formData.append("description", data.description || ""); 
+    formData.append("description", data.description || "");
 
 
     if (file) {
       formData.append("logo", file);
     } else if (element?.path) {
       formData.append("logo", element.path);
-    } else {
-      setError("logo", { type: "manual", message: "Image is required" });
-      return;
     }
 
     if (element?.id) {
@@ -103,7 +96,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
             reset();
             setPreview(null);
             setFile(null);
-            setIsImageUpdated(false);
           },
         }
       );
@@ -114,7 +106,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
           reset();
           setPreview(null);
           setFile(null);
-          setIsImageUpdated(false);
         },
       });
     }
@@ -132,7 +123,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
       } else {
         setPreview(null);
       }
-      setIsImageUpdated(false);
       setFile(null);
     }
   }, [isOpen, element, reset]);
@@ -141,7 +131,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(file);
-      setIsImageUpdated(true);
       clearErrors("logo");
       const reader = new FileReader();
       reader.onloadend = () => setPreview(reader.result as string);
@@ -186,15 +175,13 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
             )}
           </div>
           <div>
-            <input
-              type="text"
-              {...register("description")}
-              className={classNames(
-                `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
-                "focus:ring-activeInput mt-2"
-              )}  
-              placeholder="Brand Description"
-            />
+            <textarea {...register("description")} className={classNames(
+              `inputs ${theme.sidebar} ${theme.text} placeholder:${theme.text}`,
+              "focus:ring-activeInput mt-2 h-36"
+            )}
+              placeholder="Brand Description">
+
+            </textarea>
           </div>
 
           <div className="mt-4">
@@ -246,7 +233,6 @@ export const BrandModal = ({ isOpen, handleOpen, element }: Props) => {
               <Button
                 type="submit"
                 className="w-full py-5 font-bold"
-                disabled={isUpdateDisabled}
               >
                 Update
               </Button>

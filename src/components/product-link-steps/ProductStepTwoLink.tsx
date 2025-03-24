@@ -26,7 +26,7 @@ export const ProductStepTwoLink = ({
   const articul = watch("articul");
   const productCode = watch("productCode");
   const inStock = watch("inStock");
-  const price = watch("price");
+  // const price = watch("price");
   const description = watch("description");
 
   useEffect(() => {
@@ -39,11 +39,11 @@ export const ProductStepTwoLink = ({
     if (linkData?.stock) {
       setValue("inStock", linkData.stock);
     }
-    setValue("price", linkData?.price ? +linkData.price : 0);
-  }, [setValue, linkData])
+    setValue("price", linkData?.price ? +linkData.price : +"0");
+  }, [setValue, linkData]);
 
   const isNextDisabled =
-    !title || !articul || !productCode || !inStock || !price || !description;
+    !title || !articul || !productCode || !inStock || !description;
 
   return (
     <div className="space-y-5">

@@ -20,12 +20,14 @@ interface Props {
   setValue: UseFormSetValue<ProductRequest>;
   watch: UseFormWatch<ProductRequest>;
   handleNext: () => void;
+  handleBack: () => void;
 }
 
 export const ProductCatalogsLink = ({
   control,
   setValue,
   watch,
+  handleBack,
   handleNext,
 }: Props) => {
   const catalogId = watch("catalogId");
@@ -157,7 +159,10 @@ export const ProductCatalogsLink = ({
         />
       </div>
 
-      <div className="col-span-3 flex justify-end mt-10">
+      <div className="col-span-3 flex justify-end gap-5">
+        <Button onClick={handleBack}>
+          Back
+        </Button>
         <Button onClick={handleNext} disabled={isNextDisabled}>
           Next
         </Button>

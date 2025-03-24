@@ -220,6 +220,7 @@ export const ProductModalLink = ({
   const catalogsProps = {
     control,
     handleNext,
+    handleBack,
     setValue,
     watch,
   };

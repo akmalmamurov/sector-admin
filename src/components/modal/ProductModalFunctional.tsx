@@ -212,6 +212,7 @@ export const ProductModalFunctional = ({
     control,
     handleNext,
     setValue,
+    handleBack,
     watch,
   };
   useEffect(() => {
@@ -295,8 +296,8 @@ export const ProductModalFunctional = ({
               <ProductFullDescriptionLink
                 setValue={setValue}
                 getValues={getValues}
-                handleNext={handleNext}
                 handleBack={handleBack}
+                handleNext={handleNext}
               />
             )}
             {activeStep === 4 && (

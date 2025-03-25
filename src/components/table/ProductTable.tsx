@@ -43,10 +43,10 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
       deleteProduct({ id });
     });
   };
-
+  
   return (
-    <>
-      <Table>
+    <div className="overflow-y-scroll h-[calc(100vh-300px)]">
+      <Table className="">
         <TableHeader className={`${theme.header}`}>
           <TableRow>
             <TableHead
@@ -202,7 +202,7 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
         onConfirm={onConfirm}
         closeModal={closeModal}
       />
-    </>
+    </div>
   );
 };
 

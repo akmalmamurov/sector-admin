@@ -26,26 +26,23 @@ interface Props {
   productData: ProductData[];
   handleOpen: (element: ProductData) => void;
 }
-export const ProductTable = ({
-  productData,
-  handleOpen,
-}: Props) => {
+export const ProductTable = ({ productData, handleOpen }: Props) => {
   const theme = useCurrentColor();
 
-  const { mutate: deleteProduct} = useDeleteProduct();
+  const { mutate: deleteProduct } = useDeleteProduct();
 
-   const {
-     isOpen: isConfirmOpen,
-     message,
-     openModal,
-     closeModal,
-     onConfirm,
-   } = useConfirmModal();
-   const handleDeleteClick = (id: string) => {
-     openModal("Are you sure you want to delete this garantee?", () => {
-       deleteProduct({ id });
-     });
-   };
+  const {
+    isOpen: isConfirmOpen,
+    message,
+    openModal,
+    closeModal,
+    onConfirm,
+  } = useConfirmModal();
+  const handleDeleteClick = (id: string) => {
+    openModal("Are you sure you want to delete this garantee?", () => {
+      deleteProduct({ id });
+    });
+  };
 
   return (
     <>
@@ -94,6 +91,14 @@ export const ProductTable = ({
             </TableHead>
             <TableHead
               className={classNames(
+                "font-bold text-sm uppercase px-5",
+                theme.text
+              )}
+            >
+              fullDescription
+            </TableHead>
+            <TableHead
+              className={classNames(
                 "font-bold text-sm uppercase px-5 text-right",
                 theme.text
               )}
@@ -134,6 +139,14 @@ export const ProductTable = ({
               >
                 {priceFormat(product.price)} summ
               </TableCell>
+              <TableCell
+                className={classNames("text-sm px-6 py-1", theme.text)}
+              >
+                Uzunligi:{" "}
+                {product.fullDescription?.length
+                  ? product.fullDescription.length
+                  : 0}
+              </TableCell>
 
               <TableCell
                 className={classNames("text-sm px-6 py-1 text-end", theme.text)}
@@ -169,7 +182,7 @@ export const ProductTable = ({
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <button
-                      onClick={() => handleDeleteClick(product.id)}
+                        onClick={() => handleDeleteClick(product.id)}
                         className={`flex items-center justify-center px-3 py-2 w-full ${theme.text}`}
                       >
                         <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />

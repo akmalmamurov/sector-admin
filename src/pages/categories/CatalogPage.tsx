@@ -7,7 +7,6 @@ import { tabHeader } from "@/data";
 
 const CatalogPage = () => {
   const { data: catalogData = [], isLoading, error } = useGetCatalog();
-  console.log(catalogData);
   
   const tabList = [
     {

@@ -29,12 +29,13 @@ const ProductsPage = () => {
     setIsOpenFunctional(!isOpenFunctional);
   };
   const { data: productData = [] } = useGetProduct();
-
+  
   return (
     <Section>
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Product Table</TableTitle>
         <div className="flex gap-4 items-center">
+          <p>{productData.length}</p>
           <CreateButton onClick={() => handleOpenFunctional()}>Create Product Functional</CreateButton>
           <CreateButton onClick={() => handleOpenLink()}>Create Product Link</CreateButton>
           <CreateButton onClick={() => handleOpen()}>Create Product</CreateButton>

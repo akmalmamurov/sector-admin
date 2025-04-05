@@ -21,7 +21,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle  } from "../ui/dialog"
 
 interface Props {
   filterData: FilterResponse[];
-  handleOpen: (element?: FilterResponse) => void;
+  // handleOpen: (element?: FilterResponse) => void;
 }
 
 
@@ -29,7 +29,7 @@ const formatNumber = (num: number) => {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   };
 
-export const FilterTable = ({ filterData, handleOpen }: Props) => {
+export const FilterTable = ({ filterData }: Props) => {
   const theme = useCurrentColor();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   // const { mutate: deleteFilter } = useDeleteFilterFull();

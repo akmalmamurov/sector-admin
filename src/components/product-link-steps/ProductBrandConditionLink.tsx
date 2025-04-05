@@ -29,7 +29,7 @@ export const ProductBrandConditionLink = ({
   setValue,
   linkData
 }: Props) => {
-  const { data: brandData = [] } = useGetBrand();
+  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({});
   const { data: conditionData = [] } = useGetCondition();
   const { data: relevanceData = [] } = useGetRelevance();
   const { data: garanteeData = [] } = useGetGarantee();
@@ -40,8 +40,8 @@ export const ProductBrandConditionLink = ({
 
   const theme = useCurrentColor();
   useEffect(() => {
-    if (brandData.length > 1 && linkData !== null && 'brand' in linkData) {
-      const selectedBrand = brandData.find(
+    if (brandData.data.brands.length > 1 && linkData !== null && 'brand' in linkData) {
+      const selectedBrand = brandData.data.brands.find(
         (brand) => brand.title === linkData.brand
       );
 
@@ -61,13 +61,13 @@ export const ProductBrandConditionLink = ({
           control={control}
           render={({ field }) => {
             // Foydalanuvchi tanlagan yoki mavjud brandni olish
-            const selectedBrand = brandData.find(
+            const selectedBrand = brandData.data.brands.find(
               (brand) => brand.id === field.value
             );
 
             return (
               <ReactSelect
-                options={brandData.map((brand) => ({
+                options={brandData.data.brands.map((brand) => ({
                   label: brand.title,
                   value: brand.id,
                 }))}
@@ -78,7 +78,7 @@ export const ProductBrandConditionLink = ({
                 }
                 onChange={(selectedOption) =>
                   field.onChange(selectedOption?.value)
-                }
+                }   
                 placeholder="Select Brand"
                 className={classNames(theme.text, theme.bg)}
               />

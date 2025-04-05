@@ -12,7 +12,7 @@ import { ProductRecommendationList } from "@/components/tab-list/ProductRecommen
 const Popular = () => {
   const { data: catalogData = []} = useGetCatalog();
   const { data: popularCategoryData = [], isLoading: popularCategoryLoading, error: popularCategoryError } = useGetPopularCategory(true);
-  const { data: popularBrandData = [], isLoading: popularBrandLoading, error: popularBrandError } = useGetBrand(true);
+  const { data: popularBrandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200}, isLoading: popularBrandLoading, error: popularBrandError } = useGetBrand({popular: true});
   const { data: popularProductData = [], isLoading: popularProductLoading, error: popularProductError } = useGetPopularProducts({popular: true});
   const { data: productRecommendationData = [], isLoading: productRecommendationLoading, error: productRecommendationError } = useGetPopularProducts({recommended: true});
   
@@ -30,7 +30,7 @@ const Popular = () => {
     },
     {
       value: "Popular Brand",
-      item: <PopularBrandList popularBrandData={popularBrandData as IPopularBrand[]} isLoading={popularBrandLoading} error={popularBrandError as Error} />,
+      item: <PopularBrandList popularBrandData={popularBrandData.data.brands as IPopularBrand[]} isLoading={popularBrandLoading} error={popularBrandError as Error} />,
     },
     {
       value: "Popular Product",

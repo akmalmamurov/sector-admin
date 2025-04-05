@@ -21,12 +21,19 @@ import { DOMAIN } from "@/constants";
 import { priceFormat } from "@/utils";
 import { useDeleteProduct } from "@/hooks/product/delete-product";
 import { ConfirmModal } from "../modal";
+import { Pagination } from "../pagination/Pagination";
+import { IProductResponse } from "@/hooks/product/get-product-by-filter";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem   } from "../ui/select";
 
 interface Props {
-  productData: ProductData[];
-  handleOpen: (element: ProductData) => void;
+  productData: IProductResponse;
+  handleOpen: (element: ProductData) => void,
+  setPage: (page: number) => void,
+  page: number,
+  limit: number,
+  setLimit: (limit: number) => void,
 }
-export const ProductTable = ({ productData, handleOpen }: Props) => {
+export const ProductTable = ({ productData, handleOpen, setPage, page, limit, setLimit }: Props) => {
   const theme = useCurrentColor();
 
   const { mutate: deleteProduct } = useDeleteProduct();
@@ -45,10 +52,18 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
   };
   
   return (
-    <div className="overflow-y-scroll h-[calc(100vh-300px)]">
+    <div className="overflow-y-scroll h-[calc(100vh-300px)] flex flex-col ">
       <Table className="">
         <TableHeader className={`${theme.header}`}>
           <TableRow>
+            <TableHead
+              className={classNames(
+                "font-bold text-sm uppercase px-5",
+                theme.text
+              )}
+            >
+              ID
+            </TableHead>
             <TableHead
               className={classNames(
                 "font-bold text-sm uppercase px-5",
@@ -108,8 +123,11 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productData?.map((product) => (
+          {productData.data.products?.map((product, idx) => (
             <TableRow key={product?.id}>
+              <TableCell className={classNames("text-sm pl-5", theme.text)}>
+                {(page - 1) * limit + idx + 1}
+              </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1 w-1/3", theme.text)}
               >
@@ -196,6 +214,25 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
           ))}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-center gap-4 mt-auto">
+        <Select onValueChange={(value) => setLimit(Number(value))} value={limit.toString()}>
+          <SelectTrigger className="border border-blue-500 hover:border-blue-500 focus:border-blue-500 w-[150px] rounded-none py-2">
+            <SelectValue placeholder="Select limit" />
+          </SelectTrigger>  
+          <SelectContent defaultValue={limit} className="rounded-none">
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="20">20</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+          </SelectContent>
+        </Select>
+        <Pagination
+          total={productData.data.total}
+          page={page}
+          limit={limit}
+          setPage={setPage}
+        />
+      </div>
       <ConfirmModal
         isOpen={isConfirmOpen}
         message={message}

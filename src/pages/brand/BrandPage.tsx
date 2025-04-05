@@ -12,8 +12,14 @@ const BrandPage = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableElement, setTableElement] = useState<Partial<Brand>>({});
   const [isSearch, setIsSearch] = useState<string>("");
-  const [searchArr, setSearchArr] = useState<Brand[]>([]);
-  const { data: brandData = [] } = useGetBrand();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({
+    page: page,
+    limit: limit,
+    title: isSearch || undefined,
+  });
+  
   const handleOpen = (elementOrIsOpen?: boolean | Brand) => {
     if (typeof elementOrIsOpen === "boolean") {
       setIsOpen(elementOrIsOpen);
@@ -23,15 +29,7 @@ const BrandPage = () => {
     }
   };
   const handleSearch = (value: string) => {
-    setIsSearch(value);
-    const searchArr = brandData.filter((item) =>
-      item.title.toLowerCase().includes(value.toLowerCase())
-    );
-    if (value.length > 0) {
-      setSearchArr(searchArr);
-    } else {
-      setSearchArr(brandData);
-    }
+    setIsSearch(value.length > 0 ? value : "");
   };
   return (
     <Section>
@@ -46,10 +44,8 @@ const BrandPage = () => {
         <CreateButton onClick={() => handleOpen()}>Create Brand</CreateButton>
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        {isSearch ? (
-          <BrandTable brandData={searchArr} handleOpen={handleOpen} />
-        ) : brandData.length > 0 ? (
-          <BrandTable brandData={brandData} handleOpen={handleOpen} />
+        {brandData.data.brands.length ?? 0 > 0 ? (
+          <BrandTable brandData={brandData} handleOpen={handleOpen} page={page} setPage={setPage} limit={limit} setLimit={setLimit} />
         ) : (
           <div className="p-4 text-center text-gray-500">
             <p>No Brand found for</p>

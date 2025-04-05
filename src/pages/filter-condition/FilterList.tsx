@@ -36,7 +36,7 @@ const FilterList = () => {
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
 
   const { data: filterData = [] } = useGetFilter(
-    selectedCategoryId || selectedSubCatalogId
+    selectedCategoryId
   );
   const formattedData: FilterResponse[] = Array.isArray(filterData)
     ? filterData

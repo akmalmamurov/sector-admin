@@ -12,7 +12,7 @@ import {
 } from "../ui/table";
 
 import { useConfirmModal, useCurrentColor } from "@/hooks";
-import { FilterResponse, FilterOption } from "@/types";
+import { FilterResponse, FilterOption, FilterRequest } from "@/types";
 import DeleteFilterModal from "../modal/DeleteItem";
 import { ConfirmModal } from "../modal";
 import { Input } from "../ui/input";
@@ -86,7 +86,6 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
         [title]: values,
       }));
     };
-   console.log(filterData);
 
     const [expandedFilters, setExpandedFilters] = useState<{
       [key: string]: boolean;
@@ -98,6 +97,139 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
         [title]: !prev[title],
       }));
     };
+
+    const renderFilterItem = (filterItem: FilterRequest) => {
+      if (filterItem.type === "import-checkbox") {
+        return (
+         <div className="mb-2 space-y-2">
+          {filterItem.options
+            .slice(0, expandedFilters[filterItem.title] ? filterItem.options.length : 5)
+            .map((option, optIdx) => (
+              <label
+                key={`${filterItem.name}-${optIdx}`}
+                htmlFor={`import-checkbox-${filterItem.name}-${optIdx}`}
+                className="flex items-center space-x-2 select-none"
+              >
+                <input
+                  type="checkbox"
+                  id={`import-checkbox-${filterItem.name}-${optIdx}`}
+                />
+                <span className={`${theme.text} text-sm`}>
+                  {option.title}
+                </span>
+              </label>
+            ))}
+
+          {filterItem.options.length > 5 && (
+            <button
+              onClick={() => {
+                setModalOpen(true)
+                setSelectedBrands(filterItem.options)
+              }}
+              className="text-blue-500 hover:underline"
+            >
+              {`Ещё ${filterItem.options.length - 5}`}
+            </button>
+          )}
+        </div>
+      );
+      } else if (filterItem.type === "checkbox") {
+        return (
+          <div className="mb-2 space-y-2">
+            {filterItem.options
+              .slice(0, expandedFilters[filterItem.title] ? filterItem.options.length : 5)
+              .map((option, optIdx) => (
+                <label
+                  key={`${filterItem.name}-${optIdx}`}
+                  htmlFor={`checkbox-${filterItem.name}-${optIdx}`}
+                  className="flex items-center space-x-2 select-none"
+                >
+                  <input
+                    type="checkbox"
+                    id={`checkbox-${filterItem.name}-${optIdx}`}
+                  />
+                  <span className={`${theme.text} text-sm`}>
+                    {option.title}
+                  </span>
+                </label>
+              ))}
+
+            {filterItem.options.length > 5 && (
+              <button
+                onClick={() => toggleFilter(filterItem.title)}
+                className="text-blue-500 hover:underline"
+              >
+                {expandedFilters[filterItem.title]
+                  ? "Скрыть"
+                  : `Ещё ${filterItem.options.length - 5}`}
+              </button>
+            )}
+          </div>
+        );
+      } else if (filterItem.type === "radio") {
+        return (
+          <div className="mb-4 pr-4 py-3">
+            <p className="text-sm font-medium text-gray-700 mb-4">
+              Диапазон: {formatNumber(rangeValues[filterItem.title]?.[0] || 0)} - 
+              {formatNumber(rangeValues[filterItem.title]?.[1] || 500000000)}
+            </p>
+            <Range
+              values={rangeValues[filterItem.title] || [0, 500000000]}
+              step={1000}
+              min={0}
+              max={500000000}
+              onChange={(values) => handleRangeChange(filterItem.title, values as [number, number])}
+              renderTrack={({ props, children }) => (
+                <div {...props} className="h-1 w-full bg-gray-200 rounded-full relative">
+                  <div
+                    className="absolute h-1 bg-green-500 rounded-full"
+                    style={{
+                      left: `${((rangeValues[filterItem.title]?.[0] || 0) / 500000000) * 100}%`,
+                      width: `${(((rangeValues[filterItem.title]?.[1] || 500000000) - (rangeValues[filterItem.title]?.[0] || 0)) / 500000000) * 100}%`
+                    }}
+                  />
+                  {children}
+                </div>
+              )}
+              renderThumb={({ props }) => (
+                <div {...props} className="h-5 w-5 bg-white border-2 border-green-500 rounded-full flex items-center justify-center focus:outline-none" />
+              )}
+            />
+          </div>
+        );
+      } else if (filterItem.type === "link") {
+        return (
+          <>
+            {filterItem.withSearch && (
+              <div className="relative mb-2">
+                <Input
+                  type="text"
+                  placeholder="Search"
+                  className="w-full outline-none"
+                />
+                <SearchIcon className="w-5 h-5 absolute right-2 top-1/2 -translate-y-1/2" />
+              </div>
+            )}
+
+            <div className="mb-2 overflow-y-auto max-h-[200px]">
+              {filterItem.options.map((option, idx) => (
+                <div key={`${filterItem.name}-option-${idx}`} className="mb-2">
+                  <Link
+                    to={"#"}
+                    className={`${theme.text} text-sm hover:text-blue-500`}
+                  >
+                    {option.title}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </>
+        );
+      } else {
+        return <p className="text-gray-500 text-sm italic">No filters available</p>;
+      }
+    };
+
       
   return (
     <>
@@ -117,234 +249,28 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
             </TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {filterData?.map((item, index) => (
-            <TableRow key={item.id || index} className="flex gap-5">
-              <TableCell className="gap-1 text-sm w-[300px] shadow-md">
-                <div
-                  className={`${theme.text} text-lg mb-3 flex gap-2 items-center ml-4`}
-                >
-                  <img src="/filter.svg" alt="filter" className="w-5 h-5" />
-                  Фильтры
+       <TableBody>
+        {filterData?.map((filterItem, idx) => (
+          <TableRow key={`${filterItem.id}-data-${idx}`} className="gap-5 flex">
+            <TableCell className="gap-1 text-sm w-[300px] shadow-md">
+              <div className="flex gap-2 items-center mb-4 py-2 px-3">
+                <img src="/filter.svg" alt="filter" className="w-5 h-5" />
+                <p className="text-lg font-medium">Фильтры</p>
+              </div>
+              {filterItem.data.map((item, itemIdx) => (
+                <div key={`${filterItem.id}-item-${itemIdx}`} className="mb-4 ">
+                  <div className={`${theme.text} text-lg flex gap-2 items-center bg-gray-100 px-4 py-2 mb-2 select-none`}>
+                    <img src={item.icon} alt="filter-icon" className="w-5 h-5" />
+                    {item.title}
+                  </div>
+                  <div className="ml-4">{renderFilterItem(item)}</div>
                 </div>
-                 {item.data.map((filterItem, idx) => {
-                  return (
-                    <div key={`${item.id}-data-${idx}`} className="mb-4">
-                      <div className="flex gap-2 bg-gray-100 w-full items-center py-3 px-5 mb-2">
-                        <span className="text-header">
-                          <img
-                            src={filterItem.icon}
-                            alt={filterItem.icon}
-                            className="w-5 h-5"
-                          />
-                        </span>
-                        <p className={`${theme.text} `}>{filterItem.title}</p>
-                      </div>
-                      <div className="ml-4">
-                        {filterItem.type === "link" && (
-                          <>
-                            {filterItem.withSearch && (
-                              <div className="relative mb-2">
-                                <Input
-                                  type="text"
-                                  placeholder="Search"
-                                  className="w-full outline-none"
-                                />
-                                <SearchIcon className="w-5 h-5 absolute right-2 top-1/2 -translate-y-1/2" />
-                              </div>
-                            )}
+              ))}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
 
-                            <div className="mb-2 overflow-y-auto max-h-[200px]">
-                              {filterItem.options.map((option, idx) => (
-                                <div
-                                  key={`${item.id}-data-option-${idx}`}
-                                  className="mb-2 "
-                                >
-                                  <Link
-                                    to={"#"}
-                                    className={`${theme.text} text-sm hover:text-blue-500`}
-                                  >
-                                    {option.title}
-                                  </Link>
-                                </div>
-                              ))}
-                            </div>
-                          </>
-                        )}
-                      </div>
-                      <div className="ml-4">
-                        {filterItem.type === "import-checkbox" && (
-                          <div className="mb-2 space-y-2">
-                            {filterItem.options
-                              .slice(0, 5)
-                              .map((option, idx) => (
-                                <label
-                                  key={`${item.id}-data-option-${idx}`}
-                                  htmlFor={`import-checkbox-${idx}`}
-                                  className="flex items-center space-x-2 select-none"
-                                >
-                                  <input type="checkbox" id={`import-checkbox-${idx}`} />
-                                  <span className={`${theme.text} text-sm`}>
-                                    {option.title}
-                                  </span>
-                                </label>
-                              ))}
-
-                            {filterItem.options.length > 5 && (
-                              <button
-                                onClick={() => {
-                                  setSelectedBrands(filterItem.options);
-                                  setModalOpen(true);
-                                }}
-                                className="mt-2 text-blue-500 hover:underline"
-                              >
-                                Ещё {filterItem.options.length - 5}
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="ml-4 pr-4">
-                        {filterItem.type === "radio" && (
-                          <div className="mb-4">
-                            <div className="flex justify-between items-center mb-2 min-h-[60px] gap-2">
-                              <span className="text-sm font-medium text-gray-700">
-                                Диапазон
-                              </span>
-                              <span className="text-sm text-gray-500">
-                                {formatNumber(
-                                  rangeValues[filterItem.title]?.[0] || 0
-                                )}{" "}
-                                сум -{" "}
-                                {formatNumber(
-                                  rangeValues[filterItem.title]?.[1] ||
-                                    500000000
-                                )}{" "}
-                                сум
-                              </span>
-                            </div>
-
-                            <div className="relative flex items-center">
-                              <Range
-                                values={
-                                  rangeValues[filterItem.title] || [
-                                    0, 500000000,
-                                  ]
-                                }
-                                step={1000}
-                                min={0}
-                                max={500000000}
-                                onChange={(values) =>
-                                  handleRangeChange(
-                                    filterItem.title,
-                                    values as [number, number]
-                                  )
-                                }
-                                renderTrack={({ props, children }) => (
-                                  <div
-                                    {...props}
-                                    className="h-1 w-full bg-gray-200 rounded-full relative"
-                                    style={{ ...props.style }}
-                                  >
-                                    <div
-                                      className="absolute h-1 bg-green-500 rounded-full"
-                                      style={{
-                                        left: `${
-                                          ((rangeValues[
-                                            filterItem.title
-                                          ]?.[0] || 0) /
-                                            500000000) *
-                                          100
-                                        }%`,
-                                        width: `${
-                                          (((rangeValues[
-                                            filterItem.title
-                                          ]?.[1] || 500000000) -
-                                            (rangeValues[
-                                              filterItem.title
-                                            ]?.[0] || 0)) /
-                                            500000000) *
-                                          100
-                                        }%`,
-                                      }}
-                                    />
-                                    {children}
-                                  </div>
-                                )}
-                                renderThumb={({ props }) => (
-                                  <div
-                                    {...props}
-                                    className="h-5 w-5 bg-white border-2 border-green-500 rounded-full flex items-center justify-center focus:outline-none"
-                                    style={{ ...props.style }}
-                                  />
-                                )}
-                              />
-                            </div>
-
-                            <div className="flex justify-between mt-2">
-                              <span className="text-sm text-gray-600">
-                                {formatNumber(
-                                  rangeValues[filterItem.title]?.[0] || 0
-                                )}
-                              </span>
-                              <span className="text-sm text-gray-600">
-                                {formatNumber(
-                                  rangeValues[filterItem.title]?.[1] ||
-                                    500000000
-                                )}
-                              </span>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="ml-4">
-                        {filterItem.type === "checkbox" && (
-                          <div className="mb-2 space-y-2">
-                            {filterItem.options
-                              .slice(0,expandedFilters[filterItem.title] ? filterItem.options.length : 5)
-                              .map((option, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-2"
-                                >
-                                  <label
-                                    htmlFor={`checkbox-${idx}`}
-                                    className="flex items-center gap-2 select-none"
-                                  >
-                                    <input type="checkbox" id={`checkbox-${idx}`} />
-                                    <span className={`${theme.text} text-sm`}>
-                                      {option.title}
-                                    </span>
-                                  </label>
-                                </div>
-                              ))}
-
-                            {filterItem.options.length > 5 && (
-                              <button
-                                onClick={() => toggleFilter(filterItem.title)}
-                                className="text-blue-500 hover:underline"
-                              >
-                                {expandedFilters[filterItem.title]
-                                  ? "Скрыть"
-                                  : `Ещё ${filterItem.options.length - 5}`}
-                              </button>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}  
-              </TableCell>
-              <TableCell className="gap-1 text-sm flex-1">
-                <p className={`${theme.text} text-sm`}>
-                  There are products in this filter
-                </p>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
       </Table>
 
       <Dialog open={modalOpen} onOpenChange={() => setModalOpen(false)}>

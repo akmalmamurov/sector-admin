@@ -22,6 +22,7 @@ export interface PageInterface<T> {
   total?: number;
   page?: number;
   limit?: number;
+  limitNumber?: number;
 }
 export interface UserLogin {
   username: string;
@@ -104,6 +105,17 @@ export interface IPopularBrand extends Brand {
   popularBrand: {
     id: string;
   };
+}
+
+export interface BrandResponse {
+  data: {
+    brands: Brand[] | IPopularBrand[];
+    total: number;
+    limitNumber: number;
+    pageNumber: number;
+  },
+  error: string | null;
+  status: number;
 }
 
 export interface IReply {
@@ -267,6 +279,8 @@ export interface ProductData {
   recommended: boolean;
   fullDescription?: string;
   fullDescriptionImages?: string[];
+  total: number;
+  limitNumber: number;
 }
 export interface LinkOption {
   title: string;
@@ -294,6 +308,8 @@ export interface PopularProduct extends ProductData {
 
 export interface ProductResponse {
   data: ProductData[];
+  total: number;
+  limitNumber: number;
 }
 
 export interface BannerRequest {

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import classNames from "classnames";
-import { SearchIcon, X } from "lucide-react";
+import { SearchIcon, Trash2Icon, X } from "lucide-react";
 import { Range } from "react-range";
 import {
   Table,
@@ -11,13 +11,16 @@ import {
   TableRow,
 } from "../ui/table";
 
-import { useConfirmModal, useCurrentColor } from "@/hooks";
+import { useConfirmModal, useCurrentColor, useDeleteFilterFull } from "@/hooks";
 import { FilterResponse, FilterOption, FilterRequest } from "@/types";
 import DeleteFilterModal from "../modal/DeleteItem";
 import { ConfirmModal } from "../modal";
 import { Input } from "../ui/input";
   import { Link } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle  } from "../ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { MoreHorizontal, Edit } from "lucide-react";
 
 interface Props {
   filterData: FilterResponse[];
@@ -31,26 +34,26 @@ const formatNumber = (num: number) => {
 
 export const FilterTable = ({ filterData, handleOpen }: Props) => {
   const theme = useCurrentColor();
-  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  // const { mutate: deleteFilter } = useDeleteFilterFull();
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedBrands, setSelectedBrands] = useState<FilterOption[]>([]);
 
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const { mutate: deleteFilter } = useDeleteFilterFull();
 
-    
-  const {
-    isOpen: isConfirmOpen,
-    message,
-    // openModal,
-    closeModal,
-    onConfirm,
-  } = useConfirmModal();
+    const {
+      isOpen: isConfirmOpen,
+      message,
+      openModal,
+      closeModal,
+      onConfirm,
+    } = useConfirmModal();
 
-  // const handleDeleteClick = (id: string) => {
-  //   openModal("Are you sure you want to delete this filter?", () => {
-  //     deleteFilter({ id });
-  //   });
-  // };
+    const handleDeleteClick = (id: string) => {
+      openModal("Are you sure you want to delete this filter?", () => {
+        deleteFilter({ id });
+      });
+    };
+
 
   const groupBrandsByLetter = (brands: FilterOption[]) => {
     const grouped: { [key: string]: FilterOption[] } = {};
@@ -170,30 +173,53 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
         return (
           <div className="mb-4 pr-4 py-3">
             <p className="text-sm font-medium text-gray-700 mb-4">
-              Диапазон: {formatNumber(rangeValues[filterItem.title]?.[0] || 0)} - 
-              {formatNumber(rangeValues[filterItem.title]?.[1] || 500000000)}
+              Диапазон: {formatNumber(rangeValues[filterItem.title]?.[0] || 0)}{" "}
+              -{formatNumber(rangeValues[filterItem.title]?.[1] || 500000000)}
             </p>
             <Range
               values={rangeValues[filterItem.title] || [0, 500000000]}
               step={1000}
               min={0}
               max={500000000}
-              onChange={(values) => handleRangeChange(filterItem.title, values as [number, number])}
-              renderTrack={({ props, children }) => (
-                <div {...props} className="h-1 w-full bg-gray-200 rounded-full relative">
+              onChange={(values) =>
+                handleRangeChange(filterItem.title, values as [number, number])
+              }
+              renderTrack={({ props, children }) => {
+                return (
                   <div
-                    className="absolute h-1 bg-green-500 rounded-full"
-                    style={{
-                      left: `${((rangeValues[filterItem.title]?.[0] || 0) / 500000000) * 100}%`,
-                      width: `${(((rangeValues[filterItem.title]?.[1] || 500000000) - (rangeValues[filterItem.title]?.[0] || 0)) / 500000000) * 100}%`
-                    }}
+                    {...props}
+                    className="h-1 w-full bg-gray-200 rounded-full relative"
+                  >
+                    <div
+                      className="absolute h-1 bg-green-500 rounded-full"
+                      style={{
+                        left: `${
+                          ((rangeValues[filterItem.title]?.[0] || 0) /
+                            500000000) *
+                          100
+                        }%`,
+                        width: `${
+                          (((rangeValues[filterItem.title]?.[1] || 500000000) -
+                            (rangeValues[filterItem.title]?.[0] || 0)) /
+                            500000000) *
+                          100
+                        }%`,
+                      }}
+                    />
+                    {children}
+                  </div>
+                );
+              }}
+              renderThumb={({ props }) => {
+                const { key, ...restProps } = props;
+                return (
+                  <div
+                    key={key}
+                    {...restProps}
+                    className="h-5 w-5 bg-white border-2 border-green-500 rounded-full flex items-center justify-center focus:outline-none"
                   />
-                  {children}
-                </div>
-              )}
-              renderThumb={({ props }) => (
-                <div {...props} className="h-5 w-5 bg-white border-2 border-green-500 rounded-full flex items-center justify-center focus:outline-none" />
-              )}
+                );
+              }}
             />
           </div>
         );
@@ -239,7 +265,7 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
             <TableHead
               className={`px-4 py-2 uppercase font-bold text-sm ${theme.text}`}
             >
-              Filter 
+              Filter
             </TableHead>
             {/* <TableHead className="px-4 py-2">Type</TableHead> */}
             <TableHead
@@ -249,28 +275,84 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
             </TableHead>
           </TableRow>
         </TableHeader>
-       <TableBody>
-        {filterData?.map((filterItem, idx) => (
-          <TableRow key={`${filterItem.id}-data-${idx}`} className="gap-5 flex">
-            <TableCell className="gap-1 text-sm w-[300px] shadow-md">
-              <div className="flex gap-2 items-center mb-4 py-2 px-3">
-                <img src="/filter.svg" alt="filter" className="w-5 h-5" />
-                <p className="text-lg font-medium">Фильтры</p>
-              </div>
-              {filterItem.data.map((item, itemIdx) => (
-                <div key={`${filterItem.id}-item-${itemIdx}`} className="mb-4 ">
-                  <div className={`${theme.text} text-lg flex gap-2 items-center bg-gray-100 px-4 py-2 mb-2 select-none`}>
-                    <img src={item.icon} alt="filter-icon" className="w-5 h-5" />
-                    {item.title}
+        <TableBody>
+          {filterData?.map((filterItem, idx) => (
+            <TableRow
+              key={`${filterItem.id}-data-${idx}`}
+              className="gap-5 flex"
+            >
+              <TableCell className="gap-1 text-sm w-[300px] shadow-md">
+                <div className="flex gap-2 items-center justify-between mb-4 py-2 px-3">
+                  <div className="flex gap-2 items-center">
+                    <img src="/filter.svg" alt="filter" className="w-5 h-5" />
+                    <p className="text-lg font-medium">Фильтры</p>
                   </div>
-                  <div className="ml-4">{renderFilterItem(item)}</div>
-                </div>
-              ))}
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
+                  <div className="bg-gray-200 rounded-md p-1">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <MoreHorizontal
+                              className={classNames("w-4 h-4 text-header")}
+                            />
+                          </Button>
+                        </DropdownMenuTrigger>
 
+                        <DropdownMenuContent align="end" className={theme.bg}>
+                          <DropdownMenuItem>
+                            <button
+                              onClick={() => handleOpen(filterItem)}
+                              className="flex items-center justify-center px-3 py-2 w-full"
+                            >
+                              <Edit className="mr-2 w-4 h-4 text-blue-600" />
+                              <span className={`min-w-[47px] ${theme.text}`}>
+                                Edit
+                              </span>
+                            </button>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <button
+                              onClick={() => setIsDeleteOpen(true)}
+                              className={`flex items-center justify-center px-3 py-2 w-full ${theme.text}`}
+                            >
+                              <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
+                              Delete Item
+                            </button>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <button
+                              onClick={() => handleDeleteClick(filterItem.id)}
+                              className={`flex items-center justify-center px-3 py-2 w-full ${theme.text}`}
+                            >
+                              <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
+                              Delete Filter
+                            </button>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                  </div>
+                </div>
+                {filterItem.data.map((item, itemIdx) => (
+                  <div
+                    key={`${filterItem.id}-item-${itemIdx}`}
+                    className="mb-4 "
+                  >
+                    <div
+                      className={`${theme.text} text-lg flex gap-2 items-center bg-gray-100 px-4 py-2 mb-2 select-none`}
+                    >
+                      <img
+                        src={item.icon}
+                        alt="filter-icon"
+                        className="w-5 h-5"
+                      />
+                      {item.title}
+                    </div>
+                    <div className="ml-4">{renderFilterItem(item)}</div>
+                  </div>
+                ))}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
       </Table>
 
       <Dialog open={modalOpen} onOpenChange={() => setModalOpen(false)}>
@@ -311,9 +393,9 @@ export const FilterTable = ({ filterData, handleOpen }: Props) => {
                     >
                       <input type="checkbox" id={`checkbox-${idx}`} />
                       <span className={`${theme.text} text-sm font-medium`}>
-                          {brand.title}
+                        {brand.title}
                       </span>
-                    </label>  
+                    </label>
                   ))}
                 </div>
               )

@@ -6,7 +6,7 @@ import { Section } from "@/components/section";
 import { ProductTable } from "@/components/table";
 import { TableTitle } from "@/components/title";
 import { Input } from "@/components/ui/input";
-import { useGetProduct } from "@/hooks";
+import { IProductResponse, useGetProductByFilter } from "@/hooks/product/get-product-by-filter";
 import { ProductData } from "@/types";
 import { memo, useState } from "react";
 
@@ -17,9 +17,13 @@ const ProductsPage = () => {
   const [tableElement, setTableElement] = useState({});
   const [tableElementLink, setTableElementLink] = useState({});
   const [tableElementFunctional, setTableElementFunctional] = useState({});
-  const [searchArr, setSearchArr] = useState<ProductData[]>([]);
   const [isSearch, setIsSearch] = useState<string>("");
-  const { data: productData = [] } = useGetProduct();
+  const [isCode, setIsCode] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
+
+  const { data: productData } = useGetProductByFilter({page: page, limit: limit, title: isSearch || undefined, productCode: isCode || undefined});
+  
   const handleOpen = (element?: ProductData) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
@@ -35,22 +39,17 @@ const ProductsPage = () => {
 
   const handleSearch = (value: string) => {
     setIsSearch(value);
-    const searchArr = productData.filter((item) =>
-      item.title.toLowerCase().includes(value.toLowerCase())
-    );
     if (value.length > 0) {
-      setSearchArr(searchArr);
+      setIsSearch(value);
     } else {
-      setSearchArr(productData);
+      setIsSearch("");
     }
   };
   const handleCode = (value: string) => {
-    setIsSearch(value);
-    const searchArr = productData.filter((item) => item.productCode == value);
     if (value.length > 0) {
-      setSearchArr(searchArr);
+      setIsCode(value);
     } else {
-      setSearchArr(productData);
+      setIsCode("");
     }
   };
   return (
@@ -58,9 +57,8 @@ const ProductsPage = () => {
       <div className="flex justify-between items-center mb-4">
         <TableTitle>Product Table</TableTitle>
         <div className="flex gap-4 items-center">
-          <p>
-            {productData.length}/
-            {productData.filter((item) => item.fullDescription).length}
+          <p className="whitespace-nowrap">
+            {productData?.data.totalPages} {" / "} {productData?.data.pageNumber}
           </p>
           <Input
             onChange={(e) => handleSearch(e.target.value)}
@@ -84,10 +82,8 @@ const ProductsPage = () => {
         </div>
       </div>
       <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-        {isSearch ? (
-          <ProductTable productData={searchArr} handleOpen={handleOpen} />
-        ) : productData.length > 0 ? (
-          <ProductTable productData={productData} handleOpen={handleOpen} />
+        {productData?.data.products.length ?? 0 > 0 ? (
+          <ProductTable productData={productData as IProductResponse} handleOpen={handleOpen} setPage={setPage} page={page} limit={limit} setLimit={setLimit} />
         ) : (
           <div className="p-4 text-center text-gray-500">
             <p>No Product available</p>

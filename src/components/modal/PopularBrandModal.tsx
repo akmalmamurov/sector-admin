@@ -23,7 +23,7 @@ export const PopularBrandModal = (props: PopularBrandModalProps) => {
   const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
   const theme = useCurrentColor();
 
-  const { data: brandsData = [], refetch } = useGetBrand(false);
+  const { data: brandsData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200}, refetch } = useGetBrand({popular: false});
   const { mutate: addBrand } = useCreateToggleBrand();
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export const PopularBrandModal = (props: PopularBrandModalProps) => {
         </DialogHeader>
 
         <ReactSelect
-          options={brandsData.map((brand) => ({
+          options={brandsData.data.brands.map((brand) => ({
             label: brand.title,
             value: brand.id,
           }))}

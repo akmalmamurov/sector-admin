@@ -1,1 +1,1 @@
-export const catalogTableData = ["title", "subcatalog count", "action"];
+export const catalogTableData = ["Id", "Title", "Subcatalog count", "Action"];

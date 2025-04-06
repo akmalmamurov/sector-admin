@@ -360,3 +360,9 @@ export interface PromotionDescriptionImage {
   url: string;
   name: string;
 }
+
+export interface ChangeOrderData {
+  id: string;
+  index: number;
+  name: string;
+}

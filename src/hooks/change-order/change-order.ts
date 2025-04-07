@@ -13,6 +13,7 @@ interface ErrorResponse {
 }
 
 const changeOrder = async (data: ChangeOrderData): Promise<ChangeOrderResponse> => {
+    console.log(data);
     const res = await request.patch<ChangeOrderResponse>(
         "/change-order/update",
         { id: data.id, index: data.index },
@@ -26,8 +27,10 @@ export const useChangeOrder = () => {
 
     return useMutation<ChangeOrderResponse, AxiosError<ErrorResponse>, ChangeOrderData>({
         mutationFn: (data) => changeOrder(data),
-        onSuccess: (res) => {
-            queryClient.invalidateQueries({ queryKey: ["catalog"] });
+        onSuccess: (res, variables) => {
+            if (variables.name) {
+                queryClient.invalidateQueries({ queryKey: [variables.name] });
+            }
             toast.success(`${res?.message}`);
         },
         onError: (error: AxiosError<ErrorResponse>) => {

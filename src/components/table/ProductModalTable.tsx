@@ -15,84 +15,71 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import classNames from "classnames";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { Edit, MoreHorizontal, Trash2Icon, X } from "lucide-react";
+import { X } from "lucide-react";
 import { ProductData } from "@/types";
 import { DOMAIN } from "@/constants";
 import { priceFormat } from "@/utils";
-import { useDeleteProduct } from "@/hooks/product/delete-product";
 import { ConfirmModal } from "../modal";
-import { Pagination } from "../pagination/Pagination";
-import { IProductResponse } from "@/hooks/product/get-product-by-filter";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
+// import { Pagination } from "../pagination/Pagination";
+// import {
+//   Select,
+//   SelectTrigger,
+//   SelectValue,
+//   SelectContent,
+//   SelectItem,
+// } from "../ui/select";
 import { useState } from "react";
+import { Checkbox } from "../ui/checkbox";
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 interface Props {
-  productData: IProductResponse;
-  handleOpen: (element: ProductData) => void;
+  productData: ProductData[];
   setPage: (page: number) => void;
   page: number;
   limit: number;
   setLimit: (limit: number) => void;
-  color?: string;
+  number?: boolean;
+  handleChecked: (id: string) => void;
 }
-export const ProductTable = ({
+export const ProductModalTable = ({
   productData,
-  handleOpen,
-  setPage,
-  page,
-  limit,
-  setLimit,
-  color
+  // setPage,
+  // page,
+  // limit,
+  // setLimit,
+  number = false,
+  handleChecked,
 }: Props) => {
   const theme = useCurrentColor();
   const [image, setImage] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { mutate: deleteProduct } = useDeleteProduct();
+  const { visibleData, loaderRef } = useInfiniteScroll(productData, 20);
+  console.log(visibleData);
 
   const {
     isOpen: isConfirmOpen,
     message,
-    openModal,
     closeModal,
     onConfirm,
   } = useConfirmModal();
-  const handleDeleteClick = (id: string) => {
-    openModal("Are you sure you want to delete this garantee?", () => {
-      deleteProduct({ id });
-    });
-  };
+
   const handleImage = (path: string | null) => {
     setImage(path);
     setIsOpen(true);
   };
 
   return (
-    <div className="overflow-y-scroll h-[calc(100vh-300px)] flex flex-col ">
+    <div className="h-[calc(100vh-300px)] flex flex-col ">
       <Table className="">
-        <TableHeader className={`${theme.header} ${color ? `bg-${color}` : ""}`}>
+        <TableHeader className={`${theme.header} bg-gray-300`}>
           <TableRow>
             <TableHead
               className={classNames(
                 "font-bold text-sm uppercase px-5",
                 theme.text
               )}
-            >
-              ID
-            </TableHead>
+            ></TableHead>
             <TableHead
               className={classNames(
                 "font-bold text-sm uppercase px-5",
@@ -115,14 +102,6 @@ export const ProductTable = ({
                 theme.text
               )}
             >
-              instock
-            </TableHead>
-            <TableHead
-              className={classNames(
-                "font-bold text-sm uppercase px-5",
-                theme.text
-              )}
-            >
               product code
             </TableHead>
             <TableHead
@@ -133,29 +112,17 @@ export const ProductTable = ({
             >
               price
             </TableHead>
-            <TableHead
-              className={classNames(
-                "font-bold text-sm uppercase px-5",
-                theme.text
-              )}
-            >
-              fullDescription
-            </TableHead>
-            <TableHead
-              className={classNames(
-                "font-bold text-sm uppercase px-5 text-right",
-                theme.text
-              )}
-            >
-              Action
-            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productData.data.products?.map((product, idx) => (
+          {visibleData.map((product, index) => (
             <TableRow key={product?.id}>
               <TableCell className={classNames("text-sm pl-5", theme.text)}>
-                {(page - 1) * limit + idx + 1}
+                {number ? (
+                  <p>{index + 1}</p>
+                ) : (
+                  <Checkbox onCheckedChange={() => handleChecked(product.id)} />
+                )}
               </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1 w-1/3", theme.text)}
@@ -164,18 +131,16 @@ export const ProductTable = ({
               </TableCell>
               <TableCell
                 onClick={() => handleImage(product?.mainImage)}
-                className={classNames("text-sm px-6 py-1 cursor-pointer", theme.text)}
+                className={classNames(
+                  "text-sm px-6 py-1 cursor-pointer",
+                  theme.text
+                )}
               >
                 <img
                   src={`${DOMAIN}/${product?.mainImage}`}
                   alt="productImage"
                   className="w-10 h-10"
                 />
-              </TableCell>
-              <TableCell
-                className={classNames("text-sm px-6 py-1", theme.text)}
-              >
-                {product.inStock}
               </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1", theme.text)}
@@ -187,64 +152,17 @@ export const ProductTable = ({
               >
                 {priceFormat(product.price)} summ
               </TableCell>
-              <TableCell
-                className={classNames("text-sm px-6 py-1", theme.text)}
-              >
-                Uzunligi:{" "}
-                {product.fullDescription?.length
-                  ? product.fullDescription.length
-                  : 0}
-              </TableCell>
-
-              <TableCell
-                className={classNames("text-sm px-6 py-1 text-end", theme.text)}
-              >
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <MoreHorizontal
-                        className={classNames("w-4 h-4 text-header")}
-                      />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end" className={theme.bg}>
-                    <DropdownMenuItem>
-                      <button
-                        onClick={() => handleOpen(product)}
-                        className="flex items-center justify-center px-3 py-2 w-full"
-                      >
-                        <Edit className="mr-2 w-4 h-4 text-blue-600" />
-                        <span className={`min-w-[47px] ${theme.text}`}>
-                          Edit
-                        </span>
-                      </button>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <button
-                        className={`flex items-center justify-center px-3 py-2 w-full ${theme.text}`}
-                      >
-                        <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
-                        Delete Item
-                      </button>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <button
-                        onClick={() => handleDeleteClick(product.id)}
-                        className={`flex items-center justify-center px-3 py-2 w-full ${theme.text}`}
-                      >
-                        <Trash2Icon className="mr-2 w-4 h-4 text-red-600" />
-                        Delete Filter
-                      </button>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-center gap-4 mt-auto">
+      <div
+        ref={loaderRef}
+        className="h-10 w-full flex justify-center items-center"
+      >
+        <p className="text-gray-500 text-sm"></p>
+      </div>
+      {/* <div className="flex items-center justify-center gap-4 mt-auto">
         <Select
           onValueChange={(value) => setLimit(Number(value))}
           value={limit.toString()}
@@ -260,12 +178,12 @@ export const ProductTable = ({
           </SelectContent>
         </Select>
         <Pagination
-          total={productData.data.total}
+          total={productData.length}
           page={page}
           limit={limit}
           setPage={setPage}
         />
-      </div>
+      </div> */}
       <ConfirmModal
         isOpen={isConfirmOpen}
         message={message}
@@ -301,4 +219,4 @@ export const ProductTable = ({
   );
 };
 
-export default ProductTable;
+export default ProductModalTable;

@@ -45,15 +45,12 @@ export const PopularProductTable = ({ productData }: Props) => {
       togglePopularProduct([deleteId]);
       setDeleteIsOpen(false);
     }
-  };  
+  };
 
   const handleCancel = () => {
     setDeleteIsOpen(false);
     setDeleteId(null);
   };
-
-
-
 
   const handleImage = (path: string | null) => {
     setImage(path);
@@ -191,7 +188,7 @@ export const PopularProductTable = ({ productData }: Props) => {
           </motion.div>
           <DialogFooter />
         </DialogContent>
-      </Dialog> 
+      </Dialog>
     </Table>
   );
 };

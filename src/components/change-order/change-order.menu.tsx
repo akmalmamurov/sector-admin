@@ -14,11 +14,11 @@ import { X } from 'lucide-react';
 import { orderSelect } from './change-order';
 
 interface ChangeOrderMenuProps {
-  handleOpen: (value: Catalog | SubCatalog) => void;
+  handleOpen: (value: SubCatalog | Catalog) => void;
   handleDeleteClick: (id: string) => void;
   setOrderData: (orderData: { id: string; index: number }) => void;
   setIsOpen: (isOpen: boolean) => void;
-  value: Catalog | SubCatalog;
+  value: SubCatalog | Catalog;
 }
 
 const ChangeOrderMenu = ({ handleOpen, handleDeleteClick, setOrderData, setIsOpen, value }: ChangeOrderMenuProps) => {

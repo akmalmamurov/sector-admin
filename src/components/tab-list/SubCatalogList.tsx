@@ -17,7 +17,7 @@ export const SubCatalogList = ({ catalogData }: { catalogData: Catalog[] }) => {
 
   const { data: subCatalogData = [] } = useGetSubCatalogs(catalogId);
 
-  const handleOpen = (element?: SubCatalog) => {
+  const handleOpen = (element?: SubCatalog | Catalog) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);
   };

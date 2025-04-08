@@ -89,7 +89,7 @@ interface ChangeOrderDialogProps {
   name: string;
 }
 
-export const ChangeOrderDialog = ({ isOpen, setIsOpen, setOrderData, orderData, length, handleChangeOrder, name }: ChangeOrderDialogProps  ) => {
+export const ChangeOrderDialog = memo(({ isOpen, setIsOpen, setOrderData, orderData, length, handleChangeOrder, name }: ChangeOrderDialogProps  ) => {
 
   const theme = useCurrentColor();
   return (
@@ -147,4 +147,4 @@ export const ChangeOrderDialog = ({ isOpen, setIsOpen, setOrderData, orderData, 
       </DialogContent>
     </Dialog>
   );
-}
+});

@@ -1,19 +1,24 @@
 import classNames from "classnames";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useCurrentColor, useGetBrand, useGetCatalog } from "@/hooks";
+import { useCurrentColor, useGetCatalog } from "@/hooks";
 import { popularTabHeader } from "@/data";
 import { useGetPopularCategory } from "@/hooks/popular-category/get-popular-category";
 import { PopularCategoryList } from "@/components/tab-list/PopularCategoryList";  
 import { PopularBrandList } from "@/components/tab-list/PopularBrand";
-import { IPopularBrand, PopularProduct } from "@/types";
+import { IPopularBrands, PopularProduct } from "@/types";
 import { useGetPopularProducts } from "@/hooks/product/get-popular-products";
 import { PopularProductList } from "@/components/tab-list/PopularProductList";
 import { ProductRecommendationList } from "@/components/tab-list/ProductRecommendationList";
+import { useGetPopularBrands } from "@/hooks/brand/get-popular-brands";
+import { useGetProductsPopular } from "@/hooks/product/get-products-popular";
+import { IpopularProduct } from "@/hooks/product/get-products-popular";
+
 const Popular = () => {
   const { data: catalogData = []} = useGetCatalog();
   const { data: popularCategoryData = [], isLoading: popularCategoryLoading, error: popularCategoryError } = useGetPopularCategory(true);
-  const { data: popularBrandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200}, isLoading: popularBrandLoading, error: popularBrandError } = useGetBrand({popular: true});
-  const { data: popularProductData = [], isLoading: popularProductLoading, error: popularProductError } = useGetPopularProducts({popular: true});
+  const { data: popularBrandData = {data: {brands: []}, error: null, status: 200}, isLoading: popularBrandLoading, error: popularBrandError } = useGetPopularBrands();
+  const { data: popularProductData = [], isLoading: popularProductLoading, error: popularProductError } = useGetProductsPopular();
+  
   const { data: productRecommendationData = [], isLoading: productRecommendationLoading, error: productRecommendationError } = useGetPopularProducts({recommended: true});
   
   const tabList = [
@@ -30,11 +35,11 @@ const Popular = () => {
     },
     {
       value: "Popular Brand",
-      item: <PopularBrandList popularBrandData={popularBrandData.data.brands as IPopularBrand[]} isLoading={popularBrandLoading} error={popularBrandError as Error} />,
+      item: <PopularBrandList popularBrandData={popularBrandData.data as unknown as IPopularBrands[]} isLoading={popularBrandLoading} error={popularBrandError as Error} />,
     },
     {
       value: "Popular Product",
-      item: <PopularProductList popularProductData={popularProductData as PopularProduct[]} isLoading={popularProductLoading} error={popularProductError as Error} />,
+      item: <PopularProductList popularProductData={popularProductData as IpopularProduct[]} isLoading={popularProductLoading} error={popularProductError as Error} />,
     },
     {
       value: "Product Recommendation",

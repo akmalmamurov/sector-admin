@@ -13,7 +13,6 @@ interface ErrorResponse {
 }
 
 const changeOrder = async (data: ChangeOrderData): Promise<ChangeOrderResponse> => {
-    console.log(data);
     const res = await request.patch<ChangeOrderResponse>(
         "/change-order/update",
         { id: data.id, index: data.index },

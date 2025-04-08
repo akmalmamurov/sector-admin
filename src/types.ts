@@ -69,11 +69,15 @@ export interface Category {
   title: string;
 }
 
-export interface IPopularCategory extends Category {
-  slug: string;
-  popularCategory: {
-    id: string;
-  };
+export interface IPopularCategory {
+  id: string;
+  updatedAt: string;
+  category: {
+    id: string,
+    title: string,
+    path: string,
+    slug: string
+  }
 }
 
 export interface CategoryResponse {
@@ -105,6 +109,12 @@ export interface IPopularBrand extends Brand {
   popularBrand: {
     id: string;
   };
+}
+
+export interface IPopularBrands {
+  id: string;
+  updatedAt: string;
+  brand: { id: string, title: string, path: string, slug: string, description: string, image: string }
 }
 
 export interface BrandResponse {
@@ -358,5 +368,11 @@ export interface PromotionRequest {
 
 export interface PromotionDescriptionImage {
   url: string;
+  name: string;
+}
+
+export interface ChangeOrderData {
+  id: string;
+  index: number;
   name: string;
 }

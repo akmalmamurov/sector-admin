@@ -36,7 +36,7 @@ export const useCreateToggleProduct = () => {
     return useMutation<PopularProductResponse, AxiosError, string[]>({
         mutationFn: createPopularProduct,
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["product", {popular: true}] });
+            queryClient.invalidateQueries({ queryKey: ["popularProduct"] });
             toast.success(data?.data.message);
         },
         onError: (error) => {

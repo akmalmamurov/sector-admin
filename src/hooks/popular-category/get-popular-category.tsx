@@ -14,7 +14,7 @@ const fetchData = async (popular?: boolean): Promise<IPopularCategory[]> => {
 
 export const useGetPopularCategory = (popular?: boolean) => {
   return useQuery<IPopularCategory[], Error>({
-    queryKey: ["popular_category", popular],
+    queryKey: ["popularCategory", popular],
     queryFn: () => fetchData(popular),
   });
 };

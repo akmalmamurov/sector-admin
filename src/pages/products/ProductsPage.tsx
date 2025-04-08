@@ -58,7 +58,7 @@ const ProductsPage = () => {
         <TableTitle>Product Table</TableTitle>
         <div className="flex gap-4 items-center">
           <p className="whitespace-nowrap">
-            {productData?.data.totalPages} {" / "} {productData?.data.pageNumber}
+            {productData?.data.total} {" / "} {page * limit}
           </p>
           <Input
             onChange={(e) => handleSearch(e.target.value)}

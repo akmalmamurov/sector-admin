@@ -35,7 +35,7 @@ export const useCreateToggleCategory = () => {
   return useMutation<PopularCategoryResponse, AxiosError, string[]>({
     mutationFn: createPopularCategory,
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["popular_category"] });
+      queryClient.invalidateQueries({ queryKey: ["popularCategory"] });
       toast.success(data.data?.message);  
     },
     onError: (error) => {

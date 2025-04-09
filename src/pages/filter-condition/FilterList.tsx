@@ -153,10 +153,10 @@ const FilterList = () => {
         </div>
       ) : (
         <FilterTable
-          selectedSubCatalogId={selectedSubCatalogId || ""}
-          selectedCategoryId={selectedCategoryId || ""}
           filterData={formattedData}
           handleOpen={handleOpen}
+          selectedSubCatalogId={selectedSubCatalogId || ""}
+          selectedCategoryId={selectedCategoryId || ""}
         />
       )}
 

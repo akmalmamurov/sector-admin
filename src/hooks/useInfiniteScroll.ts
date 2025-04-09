@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 
-export function useInfiniteScroll<T>(data: T[], step = 20) {
+export function useInfiniteScrollObserver<T>(data: T[], step = 20) {
+
   const [visibleData, setVisibleData] = useState<T[]>([]);
   const [count, setCount] = useState(step);
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -29,7 +30,8 @@ export function useInfiniteScroll<T>(data: T[], step = 20) {
         observer.unobserve(loaderRef.current);
       }
     };
-  }, [loaderRef, count]);
+  }, [loaderRef, count, data.length]);
+
 
   return { visibleData, loaderRef };
 }

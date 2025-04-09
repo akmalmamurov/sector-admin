@@ -1,30 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "@/services";
-import { ProductData } from "@/types";
 
-export interface IProductCatalogResponse {
-  data: ProductData[],
-  error: null;
-  status: number;
+import { ProductData, ProductResponse } from "@/types";
+
+interface Filters {
+  subcatalogId: string;
+  catalogId: string;
 }
 
-interface ProductFilterParams {
-  subcatalogId?: string;
-  catalogId?: string;
-}
-
-const fetchData = async (
-  params: ProductFilterParams
-): Promise<IProductCatalogResponse> => {
-  const res = await request.get<IProductCatalogResponse>("/product/by-catalog-id", {
-    params,
-  });
-  return res.data;
+const fetchData = async (filters: Filters): Promise<ProductData[]> => {
+    const res = await request.get<ProductResponse>(`/product/by-catalog-id`,{
+        params: filters,
+    });
+    return res.data.data;
 };
 
-export const useGetProductByCatalogId = (params: ProductFilterParams) => {
-  return useQuery<IProductCatalogResponse, Error>({
-    queryKey: ["product-by-catalog-id", params],
-    queryFn: () => fetchData(params),
-  });
+export const useGetProductByCatalogId = (filters: Filters) => {
+    return useQuery<ProductData[], Error>({
+        queryKey: ["product-by-catalog-id", filters],
+        queryFn: () => fetchData(filters),
+    });
+
 };

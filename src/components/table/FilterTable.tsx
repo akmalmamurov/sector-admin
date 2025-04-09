@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import classNames from "classnames";
-import { SearchIcon, Trash2Icon, X } from "lucide-react";
-import { Range } from "react-range";
+import { SearchIcon, Trash2Icon, X, MoreHorizontal, Edit } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -10,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import { Range } from "react-range";
 
 import { useConfirmModal, useCurrentColor, useDeleteFilterFull } from "@/hooks";
 import {
@@ -18,11 +18,15 @@ import {
   FilterRequest,
   ProductData,
 } from "@/types";
-import DeleteFilterModal from "../modal/DeleteItem";
-import { ConfirmModal } from "../modal";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "../ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,9 +34,11 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { MoreHorizontal, Edit } from "lucide-react";
+import DeleteFilterModal from "../modal/DeleteItem";
+import { ConfirmModal } from "../modal";
 import ProductModalTable from "./ProductModalTable";
 import { useGetProductByCatalogId } from "@/hooks/product/get-product-by-catalog";
+
 interface Props {
   filterData: FilterResponse[];
   handleOpen: (element?: FilterResponse) => void;
@@ -51,15 +57,24 @@ export const FilterTable = ({
   selectedCategoryId,
 }: Props) => {
   const theme = useCurrentColor();
-  const [checked, setChecked] = useState<string[]>([]);
+  const [checkedProduct, setCheckedProduct] = useState<ProductData[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenAdd, setModalOpenAdd] = useState(false);
   const filterNameRef = useRef<HTMLInputElement>(null);
   const [selectedBrands, setSelectedBrands] = useState<FilterOption[]>([]);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [filteredProduct, setFilteredProduct] = useState<ProductData[]>([]);
+  const [filterCheckedData, setFilterCheckedData] = useState<FilterOption[]>(
+    []
+  );
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const { data: productData } = useGetProductByCatalogId({
+    catalogId: selectedCategoryId,
+    subcatalogId: selectedSubCatalogId,
+  });
+  const [step, setStep] = useState(1);
   const { mutate: deleteFilter } = useDeleteFilterFull();
-
   const {
     isOpen: isConfirmOpen,
     message,
@@ -67,14 +82,6 @@ export const FilterTable = ({
     closeModal,
     onConfirm,
   } = useConfirmModal();
-
-  const [page, setPage] = useState(1);
-  const [step, setStep] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const { data: productData } = useGetProductByCatalogId({
-    catalogId: selectedCategoryId,
-    subcatalogId: selectedSubCatalogId,
-  });
 
   const handleDeleteClick = (id: string) => {
     openModal("Are you sure you want to delete this filter?", () => {
@@ -125,6 +132,40 @@ export const FilterTable = ({
       ...prev,
       [title]: !prev[title],
     }));
+  };
+
+  const handleUpload = () => {
+    localStorage.setItem(
+      "filterCheckedData",
+      JSON.stringify(filterCheckedData)
+    );
+    // const sendData = filterCheckedData.map((item) => ({
+    //   name: item.name,
+    //   options: item.options,
+    // }));
+    // console.log(sendData);
+    console.log(selectedCategoryId, selectedSubCatalogId);
+    console.log(checkedProduct);
+  };
+
+  const handleFilterChecked = (filter: FilterOption) => {
+    if (filterCheckedData.some((item) => item.name === filter.name)) {
+      setFilterCheckedData((prev) =>
+        prev.filter((item) => item.name !== filter.name)
+      );
+    } else {
+      setFilterCheckedData((prev) => [...prev, filter]);
+    }
+  };
+
+  const handleChecked = (product: ProductData) => {
+    if (checkedProduct.some((item) => item.id === product.id)) {
+      setCheckedProduct((prev) =>
+        prev.filter((item) => item.id !== product.id)
+      );
+    } else {
+      setCheckedProduct((prev) => [...prev, product]);
+    }
   };
 
   const renderFilterItem = (filterItem: FilterRequest) => {
@@ -289,18 +330,97 @@ export const FilterTable = ({
       );
     }
   };
-
-  const handleChecked = (id: string) => {
-    if (checked.includes(id)) {
-      setChecked((prev) => prev.filter((item) => item !== id));
+  const renderFilterModalItem = (
+    filterItem: FilterRequest,
+    itemIdx: number
+  ) => {
+    if (filterItem.type === "import-checkbox") {
+      return (
+        <div className="mb-2 space-y-1.5 overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
+          {(filterItem.options ?? []).map((option, optIdx) => (
+            <label
+              key={`${filterItem.name}-${optIdx}`}
+              htmlFor={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+              className="flex items-center space-x-2 select-none"
+            >
+              <input
+                onChange={() => handleFilterChecked(option)}
+                checked={filterCheckedData.some(
+                  (item) => item.name === option.name
+                )}
+                type="checkbox"
+                id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+              />
+              <span className={`${theme.text} text-sm`}>{option.title}</span>
+            </label>
+          ))}
+        </div>
+      );
+    } else if (filterItem.type === "checkbox") {
+      return (
+        <div className="mb-2 space-y-1.5 overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
+          {(filterItem.options ?? []).map((option, optIdx) => (
+            <label
+              key={`${filterItem.name}-${optIdx}`}
+              htmlFor={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+              className="flex items-center space-x-2 select-none"
+            >
+              <input
+                onChange={() => handleFilterChecked(option)}
+                checked={filterCheckedData.some(
+                  (item) => item.name === option.name
+                )}
+                type="checkbox"
+                id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+              />
+              <span className={`${theme.text} text-sm`}>{option.title}</span>
+            </label>
+          ))}
+        </div>
+      );
+    } else if (filterItem.type === "radio") {
+      return (
+        <div className="mb-4 pr-4 py-3">
+          <input
+            type="text"
+            className="w-full outline-none border border-gray-400 rounded-md px-2 py-1.5  text-xs"
+          />
+        </div>
+      );
+    } else if (filterItem.type === "link") {
+      return (
+        <>
+          <div className="mb-2 space-y-1.5 overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
+            {(filterItem.options ?? []).map((option, optIdx) => (
+              <label
+                key={`${filterItem.name}-${optIdx}`}
+                htmlFor={`modal-link-${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+                className="flex items-center space-x-2 select-none"
+              >
+                <input
+                  onChange={() => handleFilterChecked(option)}
+                  checked={filterCheckedData.some(
+                    (item) => item.name === option.name
+                  )}
+                  type="checkbox"
+                  id={`modal-link-${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
+                />
+                <span className={`${theme.text} text-sm`}>{option.title}</span>
+              </label>
+            ))}
+          </div>
+        </>
+      );
     } else {
-      setChecked((prev) => [...prev, id]);
+      return (
+        <p className="text-gray-500 text-sm italic">No filters available</p>
+      );
     }
   };
 
   const handleGetProduct = () => {
     setFilteredProduct(
-      productData?.data.filter(
+      productData?.filter(
         (product) =>
           product.title
             .toLowerCase()
@@ -311,6 +431,9 @@ export const FilterTable = ({
       ) ?? []
     );
   };
+
+  console.log(filterData);
+
   return (
     <>
       <Table className="table-auto min-w-[800px] w-full">
@@ -413,10 +536,11 @@ export const FilterTable = ({
                   </Button>
                 </div>
                 <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-                  {productData?.data.length ?? 0 > 0 ? (
+                  {productData?.length ?? 0 > 0 ? (
                     <ProductModalTable
                       handleChecked={handleChecked}
-                      productData={productData?.data as ProductData[]}
+                      checkedProduct={checkedProduct}
+                      productData={productData as ProductData[]}
                       setPage={setPage}
                       page={page}
                       limit={limit}
@@ -450,6 +574,7 @@ export const FilterTable = ({
               />
             </button>
           </DialogHeader>
+          <DialogDescription className="hidden">a</DialogDescription>
 
           <div className="mt-4 flex items-center gap-2">
             <SearchIcon className="w-5 h-5 text-gray-500" />
@@ -490,7 +615,7 @@ export const FilterTable = ({
         }}
       >
         <DialogContent
-          className={`${theme.bg} max-w-6xl max-h-[90vh] overflow-y-auto  flex flex-col px-5 pt-6`}
+          className={`${theme.bg} max-w-6xl max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent flex flex-col px-5 pt-6`}
         >
           {step === 1 && (
             <>
@@ -505,6 +630,7 @@ export const FilterTable = ({
                   />
                 </button>
               </DialogHeader>
+              <DialogDescription className="hidden">a</DialogDescription>
               <div className="mt-4 flex items-center gap-2">
                 <Input
                   ref={filterNameRef}
@@ -516,13 +642,14 @@ export const FilterTable = ({
                 </Button>
               </div>
               <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-                {productData?.data.length ?? 0 > 0 ? (
+                {productData?.length ?? 0 > 0 ? (
                   <ProductModalTable
                     handleChecked={handleChecked}
+                    checkedProduct={checkedProduct}
                     productData={
                       filteredProduct.length > 0
                         ? filteredProduct
-                        : (productData?.data as ProductData[])
+                        : (productData as ProductData[])
                     }
                     setPage={setPage}
                     page={page}
@@ -537,7 +664,7 @@ export const FilterTable = ({
               </div>
               <div className="flex justify-end">
                 <Button
-                  disabled={checked.length === 0}
+                  disabled={checkedProduct.length === 0}
                   onClick={() => setStep(2)}
                 >
                   Next
@@ -548,7 +675,9 @@ export const FilterTable = ({
           {step === 2 && (
             <>
               <DialogHeader className="font-bold">
-                <DialogTitle className={theme.text}>Update</DialogTitle>
+                <DialogTitle className={theme.text}>
+                  {checkedProduct[0].title}
+                </DialogTitle>
                 <button onClick={() => setModalOpenAdd(false)}>
                   <X
                     className={classNames(
@@ -558,6 +687,7 @@ export const FilterTable = ({
                   />
                 </button>
               </DialogHeader>
+              <DialogDescription className="hidden">a</DialogDescription>
               <div className="mt-4 flex items-center gap-2">
                 <Input
                   ref={filterNameRef}
@@ -568,11 +698,34 @@ export const FilterTable = ({
                   Search
                 </Button>
               </div>
-              <div className="overflow-y-auto scrollbar-hide border rounded-md">
-                
+              <div className="border rounded-md">
+                <div className="grid grid-cols-3 gap-2">
+                  {filterData[0].data.map((item, itemIdx) => {
+                    if (item.name !== "brend" && item.name !== "tsena") {
+                      return (
+                        <div key={`item-${itemIdx}`} className="">
+                          <div
+                            className={`${theme.text} text-sm flex gap-2 items-center bg-gray-100 px-4 py-2 mb-2 select-none`}
+                          >
+                            <img
+                              src={item.icon}
+                              alt="filter-icon"
+                              className="w-3.5 h-3.5"
+                            />
+                            {item.title}
+                          </div>
+                          <div className="ml-3 max-h-[200px] overflow-y-auto scrollbar-default">
+                            {renderFilterModalItem(item, itemIdx)}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-end gap-2">
                 <Button onClick={() => setStep(1)}>Back</Button>
+                <Button onClick={handleUpload}>Upload</Button>
               </div>
             </>
           )}

@@ -165,12 +165,18 @@ export interface FilterOption {
   title: string;
 }
 
+
 export interface FilterRequest {
   name: string;
   title: string;
   icon: string;
   withSearch: boolean;
   type: string;
+  options: FilterOption[];
+}
+
+export interface FilterOptionRequest {
+  name: string;
   options: FilterOption[];
 }
 

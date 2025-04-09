@@ -40,6 +40,7 @@ import DeleteFilterModal from "../modal/DeleteItem";
 import { ConfirmModal } from "../modal";
 import ProductModalTable from "./ProductModalTable";
 import { useGetProductByCatalogId } from "@/hooks/product/get-product-by-catalog";
+import { useAddProductToFilter } from "@/hooks/filter/add-product-to-filter";
 
 interface Props {
   filterData: FilterResponse[];
@@ -68,7 +69,7 @@ export const FilterTable = ({
   const [filteredProduct, setFilteredProduct] = useState<ProductData[]>([]);
   const [filterCheckedData, setFilterCheckedData] = useState<
     FilterOptionRequest[]
-  >([]);
+  >(localStorage.getItem("filterCheckedData") ? JSON.parse(localStorage.getItem("filterCheckedData") || "[]") : []);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const { data: productData } = useGetProductByCatalogId({
@@ -84,6 +85,7 @@ export const FilterTable = ({
     closeModal,
     onConfirm,
   } = useConfirmModal();
+  const { mutate: addProductToFilter } = useAddProductToFilter();
 
   const handleDeleteClick = (id: string) => {
     openModal("Are you sure you want to delete this filter?", () => {
@@ -141,22 +143,25 @@ export const FilterTable = ({
       "filterCheckedData",
       JSON.stringify(filterCheckedData)
     );
-    const sendData = filterCheckedData.map((item) => ({
-      name: item.name,
-      options: item.options,
-    }));
-    console.log(filterCheckedData);
+    const sendData = {
+      subcatalogId: filterData[0].subcatalog,
+      categoryId: filterData[0].category,
+      data: filterCheckedData,
+    };
 
-
-    console.log(sendData);
-    console.log(selectedCategoryId, selectedSubCatalogId);
-    console.log(checkedProduct);
+    addProductToFilter(
+      { data: sendData, id: filterData[0].id },
+      {
+        onSuccess: () => {
+          setModalOpenAdd(false);
+          setStep(1);
+          setCheckedProduct([]);
+        },
+      }
+    );
   };
 
-
   const handleFilterChecked = (filter: FilterOption, name: string) => {
-    console.log(filter, name);
-
     if (
       filterCheckedData.some(
         (item) =>
@@ -264,8 +269,7 @@ export const FilterTable = ({
               </label>
             ))}
 
-
-{(filterItem.options ?? []).length > 5 && (
+          {(filterItem.options ?? []).length > 5 && (
             <button
               onClick={() => toggleFilter(filterItem.title)}
               className="text-blue-500 hover:underline"
@@ -345,8 +349,7 @@ export const FilterTable = ({
             </div>
           )}
 
-
-<div className="mb-2 overflow-y-auto max-h-[200px]">
+          <div className="mb-2 overflow-y-auto max-h-[200px]">
             {(filterItem.options ?? []).map((option, idx) => (
               <div key={`${filterItem.name}-option-${idx}`} className="mb-2">
                 <Link
@@ -382,7 +385,9 @@ export const FilterTable = ({
               <input
                 onChange={() => handleFilterChecked(option, filterItem.name)}
                 checked={filterCheckedData.some(
-                  (item) => item.name === filterItem.name && item.options.some((item) => item.name === option.name) 
+                  (item) =>
+                    item.name === filterItem.name &&
+                    item.options.some((item) => item.name === option.name)
                 )}
                 type="checkbox"
                 id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
@@ -404,7 +409,9 @@ export const FilterTable = ({
               <input
                 onChange={() => handleFilterChecked(option, filterItem.name)}
                 checked={filterCheckedData.some(
-                  (item) => item.name === filterItem.name && item.options.some((item) => item.name === option.name)
+                  (item) =>
+                    item.name === filterItem.name &&
+                    item.options.some((item) => item.name === option.name)
                 )}
                 type="checkbox"
                 id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
@@ -444,7 +451,7 @@ export const FilterTable = ({
                   id={`modal-link-${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
                 />
 
-<span className={`${theme.text} text-sm`}>{option.title}</span>
+                <span className={`${theme.text} text-sm`}>{option.title}</span>
               </label>
             ))}
           </div>
@@ -473,7 +480,6 @@ export const FilterTable = ({
 
   return (
     <>
-
       <Table className="table-auto min-w-[800px] w-full">
         <TableHeader className={`${theme.header}`}>
           <TableRow>
@@ -510,7 +516,6 @@ export const FilterTable = ({
                           />
                         </Button>
                       </DropdownMenuTrigger>
-
 
                       <DropdownMenuContent align="end" className={theme.bg}>
                         <DropdownMenuItem>
@@ -597,7 +602,6 @@ export const FilterTable = ({
           ))}
         </TableBody>
       </Table>
-
 
       <Dialog open={modalOpen} onOpenChange={() => setModalOpen(false)}>
         <DialogContent

@@ -37,8 +37,14 @@ export interface Catalog {
   subcatalogs?: SubCatalog[];
 }
 
-export interface CatalogRequest {
-  title: string;
+export interface AddProductToFilter {
+  success: boolean;
+  message: string;
+}
+export interface AddProductToFilterResponse {
+  subcatalogId: string | null;
+  categoryId: string | null;
+  data: {name: string, options: {name: string}[]}[];
 }
 
 export interface SubCatalog {
@@ -177,12 +183,6 @@ export interface FilterRequest {
 export interface FilterOptionRequest {
   name: string;
   options: { name: string }[];
-}
-
-
-export interface FilterOptionRequest {
-  name: string;
-  options: FilterOption[];
 }
 
 export interface FilterFormData {

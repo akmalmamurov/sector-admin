@@ -57,7 +57,7 @@ const {mutate: deleteItem} = useDeleteFilterItem();
               </tr>
             </thead>
             <tbody>
-              {filterData.flatMap((filter) =>
+              {filterData?.flatMap((filter) =>
                 filter.data.map((item, index) => (
                   <tr key={`${filter.id}-${index}`} className="border">
                     <td className="border p-2">{item.name}</td>

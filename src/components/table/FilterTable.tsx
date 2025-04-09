@@ -17,6 +17,7 @@ import {
   FilterOption,
   FilterRequest,
   ProductData,
+  FilterOptionRequest,
 } from "@/types";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
@@ -33,6 +34,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+
 import { Button } from "../ui/button";
 import DeleteFilterModal from "../modal/DeleteItem";
 import { ConfirmModal } from "../modal";
@@ -64,9 +66,9 @@ export const FilterTable = ({
   const [selectedBrands, setSelectedBrands] = useState<FilterOption[]>([]);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [filteredProduct, setFilteredProduct] = useState<ProductData[]>([]);
-  const [filterCheckedData, setFilterCheckedData] = useState<FilterOption[]>(
-    []
-  );
+  const [filterCheckedData, setFilterCheckedData] = useState<
+    FilterOptionRequest[]
+  >([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const { data: productData } = useGetProductByCatalogId({
@@ -139,22 +141,54 @@ export const FilterTable = ({
       "filterCheckedData",
       JSON.stringify(filterCheckedData)
     );
-    // const sendData = filterCheckedData.map((item) => ({
-    //   name: item.name,
-    //   options: item.options,
-    // }));
-    // console.log(sendData);
+    const sendData = filterCheckedData.map((item) => ({
+      name: item.name,
+      options: item.options,
+    }));
+    console.log(filterCheckedData);
+
+
+    console.log(sendData);
     console.log(selectedCategoryId, selectedSubCatalogId);
     console.log(checkedProduct);
   };
 
-  const handleFilterChecked = (filter: FilterOption) => {
-    if (filterCheckedData.some((item) => item.name === filter.name)) {
-      setFilterCheckedData((prev) =>
-        prev.filter((item) => item.name !== filter.name)
+
+  const handleFilterChecked = (filter: FilterOption, name: string) => {
+    console.log(filter, name);
+
+    if (
+      filterCheckedData.some(
+        (item) =>
+          item.name === name &&
+          item.options.some((option) => option.name === filter.name)
+      )
+    ) {
+      setFilterCheckedData(
+        filterCheckedData.map((item) =>
+          item.name === name
+            ? {
+                ...item,
+                options: item.options.filter(
+                  (option) => option.name !== filter.name
+                ),
+              }
+            : item
+        )
+      );
+    } else if (filterCheckedData.some((item) => item.name === name)) {
+      setFilterCheckedData(
+        filterCheckedData.map((item) =>
+          item.name === name
+            ? { ...item, options: [...item.options, { name: filter.name }] }
+            : item
+        )
       );
     } else {
-      setFilterCheckedData((prev) => [...prev, filter]);
+      setFilterCheckedData((prev) => [
+        ...prev,
+        { name: name, options: [{ name: filter.name }] },
+      ]);
     }
   };
 
@@ -230,7 +264,8 @@ export const FilterTable = ({
               </label>
             ))}
 
-          {(filterItem.options ?? []).length > 5 && (
+
+{(filterItem.options ?? []).length > 5 && (
             <button
               onClick={() => toggleFilter(filterItem.title)}
               className="text-blue-500 hover:underline"
@@ -310,7 +345,8 @@ export const FilterTable = ({
             </div>
           )}
 
-          <div className="mb-2 overflow-y-auto max-h-[200px]">
+
+<div className="mb-2 overflow-y-auto max-h-[200px]">
             {(filterItem.options ?? []).map((option, idx) => (
               <div key={`${filterItem.name}-option-${idx}`} className="mb-2">
                 <Link
@@ -344,9 +380,9 @@ export const FilterTable = ({
               className="flex items-center space-x-2 select-none"
             >
               <input
-                onChange={() => handleFilterChecked(option)}
+                onChange={() => handleFilterChecked(option, filterItem.name)}
                 checked={filterCheckedData.some(
-                  (item) => item.name === option.name
+                  (item) => item.name === filterItem.name && item.options.some((item) => item.name === option.name) 
                 )}
                 type="checkbox"
                 id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
@@ -366,9 +402,9 @@ export const FilterTable = ({
               className="flex items-center space-x-2 select-none"
             >
               <input
-                onChange={() => handleFilterChecked(option)}
+                onChange={() => handleFilterChecked(option, filterItem.name)}
                 checked={filterCheckedData.some(
-                  (item) => item.name === option.name
+                  (item) => item.name === filterItem.name && item.options.some((item) => item.name === option.name)
                 )}
                 type="checkbox"
                 id={`${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
@@ -382,7 +418,7 @@ export const FilterTable = ({
       return (
         <div className="mb-4 pr-4 py-3">
           <input
-            type="text"
+            type="number"
             className="w-full outline-none border border-gray-400 rounded-md px-2 py-1.5  text-xs"
           />
         </div>
@@ -398,14 +434,17 @@ export const FilterTable = ({
                 className="flex items-center space-x-2 select-none"
               >
                 <input
-                  onChange={() => handleFilterChecked(option)}
+                  onChange={() => handleFilterChecked(option, filterItem.name)}
                   checked={filterCheckedData.some(
-                    (item) => item.name === option.name
+                    (item) =>
+                      item.name === filterItem.name &&
+                      item.options.some((item) => item.name === option.name)
                   )}
                   type="checkbox"
                   id={`modal-link-${filterItem.name}-${option.name}-${optIdx}-${itemIdx}`}
                 />
-                <span className={`${theme.text} text-sm`}>{option.title}</span>
+
+<span className={`${theme.text} text-sm`}>{option.title}</span>
               </label>
             ))}
           </div>
@@ -420,7 +459,7 @@ export const FilterTable = ({
 
   const handleGetProduct = () => {
     setFilteredProduct(
-      productData?.filter(
+      productData?.data?.filter(
         (product) =>
           product.title
             .toLowerCase()
@@ -432,10 +471,9 @@ export const FilterTable = ({
     );
   };
 
-  console.log(filterData);
-
   return (
     <>
+
       <Table className="table-auto min-w-[800px] w-full">
         <TableHeader className={`${theme.header}`}>
           <TableRow>
@@ -472,6 +510,7 @@ export const FilterTable = ({
                           />
                         </Button>
                       </DropdownMenuTrigger>
+
 
                       <DropdownMenuContent align="end" className={theme.bg}>
                         <DropdownMenuItem>
@@ -536,11 +575,11 @@ export const FilterTable = ({
                   </Button>
                 </div>
                 <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-                  {productData?.length ?? 0 > 0 ? (
+                  {productData?.data?.length ?? 0 > 0 ? (
                     <ProductModalTable
                       handleChecked={handleChecked}
                       checkedProduct={checkedProduct}
-                      productData={productData as ProductData[]}
+                      productData={productData?.data as ProductData[]}
                       setPage={setPage}
                       page={page}
                       limit={limit}
@@ -558,6 +597,7 @@ export const FilterTable = ({
           ))}
         </TableBody>
       </Table>
+
 
       <Dialog open={modalOpen} onOpenChange={() => setModalOpen(false)}>
         <DialogContent
@@ -642,14 +682,14 @@ export const FilterTable = ({
                 </Button>
               </div>
               <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-                {productData?.length ?? 0 > 0 ? (
+                {productData?.data?.length ?? 0 > 0 ? (
                   <ProductModalTable
                     handleChecked={handleChecked}
                     checkedProduct={checkedProduct}
                     productData={
                       filteredProduct.length > 0
                         ? filteredProduct
-                        : (productData as ProductData[])
+                        : (productData?.data as ProductData[])
                     }
                     setPage={setPage}
                     page={page}
@@ -662,6 +702,7 @@ export const FilterTable = ({
                   </div>
                 )}
               </div>
+
               <div className="flex justify-end">
                 <Button
                   disabled={checkedProduct.length === 0}

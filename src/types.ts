@@ -174,6 +174,11 @@ export interface FilterRequest {
   type: string;
   options: FilterOption[];
 }
+export interface FilterOptionRequest {
+  name: string;
+  options: { name: string }[];
+}
+
 
 export interface FilterOptionRequest {
   name: string;

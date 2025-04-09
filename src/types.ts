@@ -67,6 +67,9 @@ export interface SubCatalogRequest {
   title: string;
   catalogId: string;
 }
+export interface CatalogRequest {
+  title: string;
+}
 // category
 export interface Category {
   id: string;

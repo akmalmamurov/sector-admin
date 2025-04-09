@@ -139,7 +139,12 @@ const FilterList = () => {
           </CreateButton>
         </div>
       ) : (
-        <FilterTable filterData={formattedData} handleOpen={handleOpen} />
+        <FilterTable
+          filterData={formattedData}
+          handleOpen={handleOpen}
+          selectedSubCatalogId={selectedSubCatalogId || ""}
+          selectedCategoryId={selectedCategoryId || ""}
+        />
       )}
 
       <FilterModal

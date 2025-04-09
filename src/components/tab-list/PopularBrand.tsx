@@ -3,12 +3,12 @@ import { CreateButton } from "../create-button";
 import { LoadingData } from "../loading";
 import { TableTitle } from "../title";
 import { Section } from "../section";
-import { IPopularBrand } from "@/types";
+import { IPopularBrands } from "@/types";
 import { PopularBrandModal } from "../modal/PopularBrandModal";
 import { PopularBrandTable } from "../table/PopularBrand";
 
 interface PopularBrandListProps {
-  popularBrandData: IPopularBrand[];
+  popularBrandData: IPopularBrands[];
   isLoading: boolean;
   error: Error;
 }
@@ -18,6 +18,7 @@ export const PopularBrandList = ({
   isLoading,
   error,
 }: PopularBrandListProps) => {
+  
   const [isOpen, setIsOpen] = useState(false);
     return (
       <Section>
@@ -35,7 +36,7 @@ export const PopularBrandList = ({
           <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
             {popularBrandData?.length > 0 ? (
               <PopularBrandTable
-                brandsData={popularBrandData}
+                popularBrandData={popularBrandData}
                 handleOpen={() => setIsOpen(true)}
               />
             ) : (

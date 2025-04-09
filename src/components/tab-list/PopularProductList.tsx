@@ -7,17 +7,16 @@ import { PopularProduct } from "@/types";
 import { PopularProductTable } from "../table/PopularProductTable";
 import { PopularProductModal } from "../modal/PopularProductModal";
 import { useGetPopularProducts } from "@/hooks/product/get-popular-products";
+import { IpopularProduct } from "@/hooks/product/get-products-popular";
+
 interface PopularProductListProps {
-  popularProductData: PopularProduct[];
+  popularProductData: IpopularProduct[];
   isLoading: boolean;
   error: Error;
 }
 
-export const PopularProductList = ({
-  popularProductData,
-  isLoading,
-  error,
-}: PopularProductListProps) => {
+export const PopularProductList = ({popularProductData, isLoading, error}: PopularProductListProps) => {
+  
   const [isOpen, setIsOpen] = useState(false);
   const { data: productData , refetch } = useGetPopularProducts({popular: false});
 

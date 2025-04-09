@@ -50,7 +50,12 @@ const formatNumber = (num: number) => {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 };
 
-export const FilterTable = ({ filterData, handleOpen, selectedSubCatalogId, selectedCategoryId }: Props) => {
+export const FilterTable = ({
+  filterData,
+  handleOpen,
+  selectedSubCatalogId,
+  selectedCategoryId,
+}: Props) => {
   const theme = useCurrentColor();
   const [checkedProduct, setCheckedProduct] = useState<ProductData[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -325,7 +330,10 @@ export const FilterTable = ({ filterData, handleOpen, selectedSubCatalogId, sele
       );
     }
   };
-  const renderFilterModalItem = (filterItem: FilterRequest, itemIdx: number) => {
+  const renderFilterModalItem = (
+    filterItem: FilterRequest,
+    itemIdx: number
+  ) => {
     if (filterItem.type === "import-checkbox") {
       return (
         <div className="mb-2 space-y-1.5 overflow-y-auto max-h-[200px] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent">
@@ -428,58 +436,7 @@ export const FilterTable = ({ filterData, handleOpen, selectedSubCatalogId, sele
 
   return (
     <>
-      {/* <Table className="table-auto min-w-[800px] w-full">
-        <TableHeader className={`${theme.header}`}>
-          <TableRow>
-            <TableHead className={`px-4 py-2 uppercase font-bold text-sm ${theme.text}`}>Name</TableHead>
-            <TableHead className={`px-4 py-2 uppercase font-bold text-sm text-right ${theme.text}`}>Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody className="overflow-x-auto">
-          {filterData?.map((item, index) => (
-            <TableRow key={item.id || index} className="overflow-x-auto">
-              <TableCell className="flex gap-1 text-sm">
-                {item.data.map((filterItem, idx) => (
-                  <div key={`${item.id}-data-${idx}`} className="flex gap-1 ">
-                    <span className="text-header font-bold"> {idx + 1}. </span>
-                    <p className={theme.text}>{filterItem.title}</p>
-                  </div>
-                ))}
-              </TableCell>
-              <TableCell>
-                <div className="flex justify-end">
-                  <Button
-                     onClick={() => setModalOpenAdd(true)}
-                    className="my-3 w-[300px]"
-                  >
-                    Update
-                  </Button>
-                </div>
-                <div className="h-[calc(100vh-290px)] overflow-y-auto scrollbar-hide border rounded-md">
-                  {productData?.length ?? 0 > 0 ? (
-                    <ProductModalTable
-                      handleChecked={handleChecked}
-                      checkedProduct={checkedProduct}
-                      productData={productData as ProductData[]}
-                      setPage={setPage}
-                      page={page}
-                      limit={limit}
-                      setLimit={setLimit}
-                      number={true}
-                    />
-                  ) : (
-                    <div className="p-4 text-center text-gray-500">
-                      <p>No Product available</p>
-                    </div>
-                  )}
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table> */}
-
-<Table className="table-auto min-w-[800px] w-full">
+      <Table className="table-auto min-w-[800px] w-full">
         <TableHeader className={`${theme.header}`}>
           <TableRow>
             <TableHead

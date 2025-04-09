@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import request from "@/services";
+
 import { ProductData, ProductResponse } from "@/types";
 
 interface Filters {
@@ -19,4 +20,5 @@ export const useGetProductByCatalogId = (filters: Filters) => {
         queryKey: ["product-by-catalog-id", filters],
         queryFn: () => fetchData(filters),
     });
+
 };

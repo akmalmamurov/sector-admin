@@ -24,7 +24,7 @@ export const ProductBrandCondition = ({
   handleBack,
   watch,
 }: Props) => {
-  const { data: brandData = [] } = useGetBrand();
+  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({});
   const { data: conditionData = [] } = useGetCondition();
   const { data: relevanceData = [] } = useGetRelevance();
   const { data: garanteeData = [] } = useGetGarantee();
@@ -48,16 +48,16 @@ export const ProductBrandCondition = ({
           control={control}
           render={({ field }) => {
             // Foydalanuvchi tanlagan yoki mavjud brandni olish
-            const selectedBrand = brandData.find(
+            const selectedBrand = brandData.data.brands.find(
               (brand) => brand.id === field.value
             );
 
             return (
               <ReactSelect
-                options={brandData.map((brand) => ({
+                options={brandData.data.brands.map((brand) => ({
                   label: brand.title,
                   value: brand.id,
-                }))}
+                }))}  
                 value={
                   selectedBrand
                     ? { label: selectedBrand.title, value: selectedBrand.id }

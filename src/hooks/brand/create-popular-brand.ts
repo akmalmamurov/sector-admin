@@ -38,9 +38,9 @@ export const useCreateToggleBrand = () => {
         mutationFn: createPopularBrand,
         onSuccess: (data) => {
 
-            queryClient.invalidateQueries({ queryKey: ["brand", true] });
+            queryClient.invalidateQueries({ queryKey: ['popularBrand'] });
 
-            toast.success(data.data?.message);
+            toast.success(data.data?.message);  
         },
         onError: (error) => {
             toast.error(`Error: ${error.message}`);

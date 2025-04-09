@@ -7,6 +7,13 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../ui/dialog";
 import classNames from "classnames";
 import {
   DropdownMenu,
@@ -15,19 +22,44 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { Edit, MoreHorizontal, Trash2Icon } from "lucide-react";
+import { Edit, MoreHorizontal, Trash2Icon, X } from "lucide-react";
 import { ProductData } from "@/types";
 import { DOMAIN } from "@/constants";
 import { priceFormat } from "@/utils";
 import { useDeleteProduct } from "@/hooks/product/delete-product";
 import { ConfirmModal } from "../modal";
+import { Pagination } from "../pagination/Pagination";
+import { IProductResponse } from "@/hooks/product/get-product-by-filter";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../ui/select";
+import { useState } from "react";
 
 interface Props {
-  productData: ProductData[];
+  productData: IProductResponse;
   handleOpen: (element: ProductData) => void;
+  setPage: (page: number) => void;
+  page: number;
+  limit: number;
+  setLimit: (limit: number) => void;
+  color?: string;
 }
-export const ProductTable = ({ productData, handleOpen }: Props) => {
+export const ProductTable = ({
+  productData,
+  handleOpen,
+  setPage,
+  page,
+  limit,
+  setLimit,
+  color
+}: Props) => {
   const theme = useCurrentColor();
+  const [image, setImage] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
   const { mutate: deleteProduct } = useDeleteProduct();
 
@@ -43,12 +75,24 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
       deleteProduct({ id });
     });
   };
+  const handleImage = (path: string | null) => {
+    setImage(path);
+    setIsOpen(true);
+  };
 
   return (
-    <>
-      <Table>
-        <TableHeader className={`${theme.header}`}>
+    <div className="overflow-y-scroll h-[calc(100vh-300px)] flex flex-col ">
+      <Table className="">
+        <TableHeader className={`${theme.header} ${color ? `bg-${color}` : ""}`}>
           <TableRow>
+            <TableHead
+              className={classNames(
+                "font-bold text-sm uppercase px-5",
+                theme.text
+              )}
+            >
+              ID
+            </TableHead>
             <TableHead
               className={classNames(
                 "font-bold text-sm uppercase px-5",
@@ -108,15 +152,19 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productData?.map((product) => (
+          {productData.data.products?.map((product, idx) => (
             <TableRow key={product?.id}>
+              <TableCell className={classNames("text-sm pl-5", theme.text)}>
+                {(page - 1) * limit + idx + 1}
+              </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1 w-1/3", theme.text)}
               >
                 {product?.title}
               </TableCell>
               <TableCell
-                className={classNames("text-sm px-6 py-1", theme.text)}
+                onClick={() => handleImage(product?.mainImage)}
+                className={classNames("text-sm px-6 py-1 cursor-pointer", theme.text)}
               >
                 <img
                   src={`${DOMAIN}/${product?.mainImage}`}
@@ -196,13 +244,60 @@ export const ProductTable = ({ productData, handleOpen }: Props) => {
           ))}
         </TableBody>
       </Table>
+      <div className="flex items-center justify-center gap-4 mt-auto">
+        <Select
+          onValueChange={(value) => setLimit(Number(value))}
+          value={limit.toString()}
+        >
+          <SelectTrigger className="border border-blue-500 hover:border-blue-500 focus:border-blue-500 w-[150px] rounded-none py-2">
+            <SelectValue placeholder="Select limit" />
+          </SelectTrigger>
+          <SelectContent defaultValue={limit} className="rounded-none">
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="20">20</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+          </SelectContent>
+        </Select>
+        <Pagination
+          total={productData.data.total}
+          page={page}
+          limit={limit}
+          setPage={setPage}
+        />
+      </div>
       <ConfirmModal
         isOpen={isConfirmOpen}
         message={message}
         onConfirm={onConfirm}
         closeModal={closeModal}
       />
-    </>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent
+          className={`max-w-3xl h-[500px] ${theme.bg} px-5 pt-6 flex flex-col`}
+        >
+          <DialogHeader>
+            <DialogTitle className="hidden">Image</DialogTitle>
+            <button onClick={() => setIsOpen(false)}>
+              <X
+                className={classNames(
+                  theme.text,
+                  "w-6 h-6 absolute top-4 right-4"
+                )}
+              />
+            </button>
+          </DialogHeader>
+          <DialogDescription className="hidden"></DialogDescription>
+          <div className="w-full h-full px-14 rounded-md overflow-hidden flex justify-center items-center">
+            <img
+              src={`${DOMAIN}/${image}`}
+              alt="brandImage"
+              className="w-[300px] h-[240px]"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

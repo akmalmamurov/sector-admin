@@ -15,6 +15,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "../ui/button";
 import { useConfirmModal, useDeleteGarantee } from "@/hooks";
 import { ConfirmModal } from "../modal/ConfirmModal";
+import { priceFormat } from "@/utils";
 interface Props {
   garanteeData: GaranteeData[];
   handleOpen: (element: GaranteeData) => void;
@@ -77,7 +78,7 @@ export const GaranteeTable = ({ garanteeData, handleOpen }: Props) => {
                   theme.text
                 )}
               >
-                {garantee.price}
+                {priceFormat(typeof garantee.price === 'string' ? Number(garantee.price) : garantee.price)} sum
               </TableCell>
               <TableCell
                 className={classNames("text-sm px-6 py-1 text-end", theme.text)}

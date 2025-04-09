@@ -22,6 +22,7 @@ export interface PageInterface<T> {
   total?: number;
   page?: number;
   limit?: number;
+  limitNumber?: number;
 }
 export interface UserLogin {
   username: string;
@@ -45,6 +46,10 @@ export interface SubCatalog {
   title: string;
   catalogId: string;
   categories: Category[];
+  catalog:{
+    id: string;
+    title: string
+  }
 }
 
 export interface SubCatalogResponse {
@@ -64,11 +69,15 @@ export interface Category {
   title: string;
 }
 
-export interface IPopularCategory extends Category {
-  slug: string;
-  popularCategory: {
-    id: string;
-  };
+export interface IPopularCategory {
+  id: string;
+  updatedAt: string;
+  category: {
+    id: string,
+    title: string,
+    path: string,
+    slug: string
+  }
 }
 
 export interface CategoryResponse {
@@ -100,6 +109,23 @@ export interface IPopularBrand extends Brand {
   popularBrand: {
     id: string;
   };
+}
+
+export interface IPopularBrands {
+  id: string;
+  updatedAt: string;
+  brand: { id: string, title: string, path: string, slug: string, description: string, image: string }
+}
+
+export interface BrandResponse {
+  data: {
+    brands: Brand[] | IPopularBrand[];
+    total: number;
+    limitNumber: number;
+    pageNumber: number;
+  },
+  error: string | null;
+  status: number;
 }
 
 export interface IReply {
@@ -269,6 +295,8 @@ export interface ProductData {
   recommended: boolean;
   fullDescription?: string;
   fullDescriptionImages?: string[];
+  total: number;
+  limitNumber: number;
 }
 export interface LinkOption {
   title: string;
@@ -296,6 +324,8 @@ export interface PopularProduct extends ProductData {
 
 export interface ProductResponse {
   data: ProductData[];
+  total: number;
+  limitNumber: number;
 }
 
 export interface BannerRequest {
@@ -344,5 +374,11 @@ export interface PromotionRequest {
 
 export interface PromotionDescriptionImage {
   url: string;
+  name: string;
+}
+
+export interface ChangeOrderData {
+  id: string;
+  index: number;
   name: string;
 }

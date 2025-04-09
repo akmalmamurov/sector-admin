@@ -1,5 +1,6 @@
 export const subCatalogTableData = [
-    "title",
-    "categories count",
-    "action",
+    "Id",
+    "Title",
+    "Categories count",
+    "Action",
 ]

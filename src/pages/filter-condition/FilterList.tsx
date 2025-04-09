@@ -36,7 +36,7 @@ const FilterList = () => {
   const { data: categoriesData = [] } = useGetCategories(selectedSubCatalogId);
 
   const { data: filterData = [] } = useGetFilter(
-    selectedCategoryId || selectedSubCatalogId
+    selectedCategoryId
   );
   const formattedData: FilterResponse[] = Array.isArray(filterData)
     ? filterData
@@ -64,13 +64,18 @@ const FilterList = () => {
         <TableTitle>Filter Table</TableTitle>
         <div className="flex gap-5">
           <Select
-            onValueChange={handleCatalogChange}
-            value={selectedCatalogId || ""}
+            onValueChange={(value) => {
+              handleCatalogChange(value === "none" ? "" : value);
+            }}
+            value={selectedCatalogId || "none"}
           >
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[250px] text-sm font-semibold">
               <SelectValue placeholder="Select Catalog" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key={0} value="none">
+                No selected
+              </SelectItem>
               {catalogData.map(({ id, title }) => (
                 <SelectItem
                   key={id}
@@ -84,14 +89,19 @@ const FilterList = () => {
           </Select>
 
           <Select
-            onValueChange={handleSubCatalogChange}
-            value={selectedSubCatalogId || ""}
+            onValueChange={(value) => {
+              handleSubCatalogChange(value === "none" ? "" : value);
+            }}
+            value={selectedSubCatalogId || "none"}
             disabled={!selectedCatalogId || !subCatalogData.length}
           >
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[250px] text-sm font-semibold">
               <SelectValue placeholder="Select Subcatalog" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key={1} value="none">
+                No selected
+              </SelectItem>
               {subCatalogData.map(({ id, title }) => (
                 <SelectItem
                   key={id}
@@ -106,15 +116,18 @@ const FilterList = () => {
 
           <Select
             onValueChange={(value) => {
-              setSelectedCategoryId(value);
+              setSelectedCategoryId(value === "none" ? "" : value);
             }}
-            value={selectedCategoryId || ""}
+            value={selectedCategoryId || "none"}
             disabled={!selectedSubCatalogId || !categoriesData.length}
           >
             <SelectTrigger className="border border-header rounded-md px-3 text-header ring-header focus:ring-header min-w-[250px] text-sm font-semibold">
               <SelectValue placeholder="Select Category (Optional)" />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem key={2} value="none">
+                No selected
+              </SelectItem>
               {categoriesData.map(({ id, title }) => (
                 <SelectItem
                   key={id}

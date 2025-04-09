@@ -80,7 +80,6 @@ export const FilterModal = ({
   const watchedFields = watch("data") || [];
   const watchedSubCatalogId = watch("subcatalogId");
   const watchedCategoryId = watch("categoryId");
-  console.log(element);
 
   const isDirtyArray = watchedFields.map((item, index) =>
     element.data && element.data[index]
@@ -160,7 +159,6 @@ export const FilterModal = ({
           : [],
       },
     };
-  console.log(payload);
   
     updateFilter({ id: element.id, data: payload });
   };

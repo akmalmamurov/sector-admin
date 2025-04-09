@@ -20,14 +20,6 @@ import { ProductData } from "@/types";
 import { DOMAIN } from "@/constants";
 import { priceFormat } from "@/utils";
 import { ConfirmModal } from "../modal";
-// import { Pagination } from "../pagination/Pagination";
-// import {
-//   Select,
-//   SelectTrigger,
-//   SelectValue,
-//   SelectContent,
-//   SelectItem,
-// } from "../ui/select";
 import { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
 import { useInfiniteScrollObserver } from "@/hooks/useInfiniteScroll";

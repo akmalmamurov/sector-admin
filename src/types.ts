@@ -42,6 +42,7 @@ export interface AddProductToFilter {
   message: string;
 }
 export interface AddProductToFilterResponse {
+  productId: string;
   subcatalogId: string | null;
   categoryId: string | null;
   data: {name: string, options: {name: string}[]}[];

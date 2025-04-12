@@ -144,6 +144,7 @@ export const FilterTable = ({
       JSON.stringify(filterCheckedData)
     );
     const sendData = {
+      productId: checkedProduct[0].id,
       subcatalogId: filterData[0].subcatalog,
       categoryId: filterData[0].category,
       data: filterCheckedData,
@@ -478,6 +479,11 @@ export const FilterTable = ({
     );
   };
 
+  const handleCloseModal = () => {
+    setModalOpenAdd(false);
+    setStep(1);
+    setCheckedProduct([]);
+  };
   return (
     <>
       <Table className="table-auto min-w-[800px] w-full">
@@ -655,17 +661,17 @@ export const FilterTable = ({
       <Dialog
         open={modalOpenAdd}
         onOpenChange={() => {
-          setModalOpenAdd(false);
+          handleCloseModal();
         }}
       >
         <DialogContent
-          className={`${theme.bg} max-w-6xl max-h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent flex flex-col px-5 pt-6`}
+          className={`${theme.bg} max-w-6xl h-[90vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-transparent flex flex-col px-5 pt-6`}
         >
           {step === 1 && (
             <>
               <DialogHeader className="font-bold">
                 <DialogTitle className={theme.text}>Update</DialogTitle>
-                <button onClick={() => setModalOpenAdd(false)}>
+                <button onClick={handleCloseModal}>
                   <X
                     className={classNames(
                       theme.text,
@@ -733,16 +739,6 @@ export const FilterTable = ({
                 </button>
               </DialogHeader>
               <DialogDescription className="hidden">a</DialogDescription>
-              <div className="mt-4 flex items-center gap-2">
-                <Input
-                  ref={filterNameRef}
-                  placeholder="Name or code of product"
-                  className="border-gray-300 rounded-md w-[80%] h-[42px]"
-                />
-                <Button onClick={handleGetProduct} className="w-[20%] h-[42px]">
-                  Search
-                </Button>
-              </div>
               <div className="border rounded-md">
                 <div className="grid grid-cols-3 gap-2">
                   {filterData[0].data.map((item, itemIdx) => {
@@ -759,7 +755,7 @@ export const FilterTable = ({
                             />
                             {item.title}
                           </div>
-                          <div className="ml-3 max-h-[200px] overflow-y-auto scrollbar-default">
+                          <div className="ml-3">
                             {renderFilterModalItem(item, itemIdx)}
                           </div>
                         </div>

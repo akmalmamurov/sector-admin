@@ -8,9 +8,7 @@ const addProductToFilter = async (data: {
   data: AddProductToFilterResponse;
   id: string;
 }): Promise<AddProductToFilter> => {
-  const res = await request.post<AddProductToFilter>("/catalog-filter/addProduct", data.data, {
-    params: {id: data.id},
-  });
+  const res = await request.post<AddProductToFilter>(`/catalog-filter/addProduct/${data.id}`, data.data);
   return res.data;
 };
 

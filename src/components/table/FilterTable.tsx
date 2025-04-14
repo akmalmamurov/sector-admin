@@ -461,51 +461,27 @@ export const FilterTable = ({
 
   const updateHandler = () => {
     setModalOpenAdd(true);
-    setFilterCheckedData(
-      filterCheckedData.map((smallItem) => {
-        const bigItem = filterData[0].data.find(
-          (b) => b.name === smallItem.name
-        );
+    const filtered = filterCheckedData.map((smallItem) => {
+      const bigItem = filterData[0].data.find((b) => b.name === smallItem.name);
 
-        if (!bigItem) {
-          return { ...smallItem, options: [] };
-        }
+      if (!bigItem) {
+        return { ...smallItem, options: [] };
+      }
 
-        const bigOptionNames = new Set(bigItem.options.map((opt) => opt.name));
+      const bigOptionNames = new Set(bigItem.options.map((opt) => opt.name));
 
-        const filteredOptions = smallItem.options.filter((opt) =>
-          bigOptionNames.has(opt.name)
-        );
+      const filteredOptions = smallItem.options.filter((opt) =>
+        bigOptionNames.has(opt.name)
+      );
 
-        return {
-          ...smallItem,
-          options: filteredOptions,
-        };
-      })
-    );
+      return {
+        ...smallItem,
+        options: filteredOptions,
+      };
+    });
+    setFilterCheckedData(filtered);
 
-    console.log(
-      filterCheckedData.map((smallItem) => {
-        const bigItem = filterData[0].data.find(
-          (b) => b.name === smallItem.name
-        );
-
-        if (!bigItem) {
-          return { ...smallItem, options: [] };
-        }
-
-        const bigOptionNames = new Set(bigItem.options.map((opt) => opt.name));
-
-        const filteredOptions = smallItem.options.filter((opt) =>
-          bigOptionNames.has(opt.name)
-        );
-
-        return {
-          ...smallItem,
-          options: filteredOptions,
-        };
-      })
-    );
+    localStorage.setItem(`${filterData[0].id}`, JSON.stringify(filtered));
   };
 
   const handleUpload = () => {
@@ -538,7 +514,6 @@ export const FilterTable = ({
     setCheckedProduct([]);
   };
 
-  console.log(filterData[0].data);
 
   return (
     <>

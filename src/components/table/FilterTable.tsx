@@ -69,7 +69,11 @@ export const FilterTable = ({
   const [filteredProduct, setFilteredProduct] = useState<ProductData[]>([]);
   const [filterCheckedData, setFilterCheckedData] = useState<
     FilterOptionRequest[]
-  >(localStorage.getItem("filterCheckedData") ? JSON.parse(localStorage.getItem("filterCheckedData") || "[]") : []);
+  >(
+    localStorage.getItem(`${filterData[0].id}`)
+      ? JSON.parse(localStorage.getItem(`${filterData[0].id}`) || "[]")
+      : []
+  );
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const { data: productData } = useGetProductByCatalogId({
@@ -136,30 +140,6 @@ export const FilterTable = ({
       ...prev,
       [title]: !prev[title],
     }));
-  };
-
-  const handleUpload = () => {
-    localStorage.setItem(
-      "filterCheckedData",
-      JSON.stringify(filterCheckedData)
-    );
-    const sendData = {
-      productId: checkedProduct[0].id,
-      subcatalogId: filterData[0].subcatalog,
-      categoryId: filterData[0].category,
-      data: filterCheckedData,
-    };
-
-    addProductToFilter(
-      { data: sendData, id: filterData[0].id },
-      {
-        onSuccess: () => {
-          // setModalOpenAdd(false);
-          // setStep(1);
-          // setCheckedProduct([]);
-        },
-      }
-    );
   };
 
   const handleFilterChecked = (filter: FilterOption, name: string) => {
@@ -479,11 +459,87 @@ export const FilterTable = ({
     );
   };
 
+  const updateHandler = () => {
+    setModalOpenAdd(true);
+    setFilterCheckedData(
+      filterCheckedData.map((smallItem) => {
+        const bigItem = filterData[0].data.find(
+          (b) => b.name === smallItem.name
+        );
+
+        if (!bigItem) {
+          return { ...smallItem, options: [] };
+        }
+
+        const bigOptionNames = new Set(bigItem.options.map((opt) => opt.name));
+
+        const filteredOptions = smallItem.options.filter((opt) =>
+          bigOptionNames.has(opt.name)
+        );
+
+        return {
+          ...smallItem,
+          options: filteredOptions,
+        };
+      })
+    );
+
+    console.log(
+      filterCheckedData.map((smallItem) => {
+        const bigItem = filterData[0].data.find(
+          (b) => b.name === smallItem.name
+        );
+
+        if (!bigItem) {
+          return { ...smallItem, options: [] };
+        }
+
+        const bigOptionNames = new Set(bigItem.options.map((opt) => opt.name));
+
+        const filteredOptions = smallItem.options.filter((opt) =>
+          bigOptionNames.has(opt.name)
+        );
+
+        return {
+          ...smallItem,
+          options: filteredOptions,
+        };
+      })
+    );
+  };
+
+  const handleUpload = () => {
+    localStorage.setItem(
+      `${filterData[0].id}`,
+      JSON.stringify(filterCheckedData)
+    );
+    const sendData = {
+      productId: checkedProduct[0].id,
+      subcatalogId: filterData[0].subcatalog,
+      categoryId: filterData[0].category,
+      data: filterCheckedData,
+    };
+
+    addProductToFilter(
+      { data: sendData, id: filterData[0].id },
+      {
+        onSuccess: () => {
+          setModalOpenAdd(false);
+          setStep(1);
+          setCheckedProduct([]);
+        },
+      }
+    );
+  };
+
   const handleCloseModal = () => {
     setModalOpenAdd(false);
     setStep(1);
     setCheckedProduct([]);
   };
+
+  console.log(filterData[0].data);
+
   return (
     <>
       <Table className="table-auto min-w-[800px] w-full">
@@ -578,10 +634,7 @@ export const FilterTable = ({
               </TableCell>
               <TableCell>
                 <div className="flex justify-end">
-                  <Button
-                    onClick={() => setModalOpenAdd(true)}
-                    className="my-3 w-[300px]"
-                  >
+                  <Button onClick={updateHandler} className="my-3 w-[300px]">
                     Update
                   </Button>
                 </div>

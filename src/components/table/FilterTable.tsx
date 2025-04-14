@@ -524,9 +524,9 @@ export const FilterTable = ({
       { data: sendData, id: filterData[0].id },
       {
         onSuccess: () => {
-          setModalOpenAdd(false);
-          setStep(1);
-          setCheckedProduct([]);
+          // setModalOpenAdd(false);
+          // setStep(1);
+          // setCheckedProduct([]);
         },
       }
     );

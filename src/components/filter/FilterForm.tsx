@@ -198,7 +198,7 @@ export const FilterForm = ({
                       </Button>
                     )}
 
-                    {field.value.map((option, optionIndex) => (
+                    {field?.value?.map((option, optionIndex) => (
                       <div key={optionIndex} className="flex gap-3 mb-2">
                         <input
                           placeholder="Option Title"

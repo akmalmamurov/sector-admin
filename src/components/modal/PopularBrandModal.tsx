@@ -23,7 +23,7 @@ export const PopularBrandModal = (props: PopularBrandModalProps) => {
   const [selectedBrandIds, setSelectedBrandIds] = useState<string[]>([]);
   const theme = useCurrentColor();
 
-  const { data: brandsData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200}, refetch } = useGetBrand({popular: false});
+  const { data: brandsData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200}, refetch } = useGetBrand({popular: false, limit: 1000});
   const { mutate: addBrand } = useCreateToggleBrand();
 
   useEffect(() => {

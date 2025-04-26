@@ -4,7 +4,7 @@ import { ProductResponse } from "@/types";
 
 interface Filters {
   subcatalogId: string;
-  catalogId: string;
+  categoryId: string;
 }
 
 const fetchData = async (filters: Filters): Promise<ProductResponse> => {

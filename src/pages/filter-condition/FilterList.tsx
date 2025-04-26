@@ -38,10 +38,12 @@ const FilterList = () => {
   const { data: filterData = [] } = useGetFilter(
     selectedCategoryId
   );
+  
   const formattedData: FilterResponse[] = Array.isArray(filterData)
     ? filterData
     : [filterData];
 
+    
   const handleOpen = (element?: FilterResponse) => {
     setTableElement(element || {});
     setIsOpen(!isOpen);

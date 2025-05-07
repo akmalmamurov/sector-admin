@@ -4,16 +4,7 @@ import request from "@/services";
 import { PromotionRequest } from "@/types";
 import { toast } from "react-toastify";
 
-const updatePromotion = async ({
-    id,
-    data,
-}: {
-    id: string;
-    data: FormData;
-    }): Promise<PromotionRequest> => {
-        for (const [key, value] of data.entries()) {
-            console.log(`${key}:`, value);
-        }
+const updatePromotion = async ({ id, data, }: { id: string; data: FormData; }): Promise<PromotionRequest> => {
     const res = await request.patch<PromotionRequest>(`/promotion/${id}`, data, {
         headers: {
             "Content-Type": "multipart/form-data",

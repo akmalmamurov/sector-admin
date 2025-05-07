@@ -381,6 +381,23 @@ export interface PromotionRequest {
   promotionDescriptionImages?: File[];
 }
 
+export interface NewsRequest {
+  id?: number;
+  title: string;
+  description: string;
+  fullDescription:string;
+  createdAt: string;
+  fullDescriptionImages: File[]
+}
+export interface NewsData {
+  id: string;
+  title: string;
+  description: string;
+  fullDescription:string;
+  createdAt: string;
+  fullDescriptionImages: string[]
+}
+
 export interface PromotionDescriptionImage {
   url: string;
   name: string;
@@ -390,4 +407,13 @@ export interface ChangeOrderData {
   id: string;
   index: number;
   name: string;
+}
+
+
+export interface ErrorResponse {
+  message: string
+}
+
+export interface NewsResponse { 
+  data: NewsData[]
 }

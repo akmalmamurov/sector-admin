@@ -13,6 +13,7 @@ import Popular from "./pages/popular/Popular";
 import Remark from "./pages/remark/Remark";
 import Garantee from "./pages/garantee/Garantee";
 import Promotion from "./pages/promotion/Promotion";
+import News from "./pages/news/News";
 function App() {
   const { auth } = useStore();
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/remark" element={<Remark />} />
             <Route path="/garantee" element={<Garantee />} />
             <Route path="/promotion" element={<Promotion />} />
+            <Route path="/news" element={<News />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

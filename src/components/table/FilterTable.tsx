@@ -77,7 +77,7 @@ export const FilterTable = ({
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const { data: productData } = useGetProductByCatalogId({
-    catalogId: selectedCategoryId,
+    categoryId: selectedCategoryId,
     subcatalogId: selectedSubCatalogId,
   });
   const [step, setStep] = useState(1);

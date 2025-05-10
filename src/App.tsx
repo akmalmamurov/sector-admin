@@ -14,6 +14,7 @@ import Remark from "./pages/remark/Remark";
 import Garantee from "./pages/garantee/Garantee";
 import Promotion from "./pages/promotion/Promotion";
 import News from "./pages/news/News";
+import Order from "./pages/orders/Order";
 function App() {
   const { auth } = useStore();
 
@@ -39,6 +40,7 @@ function App() {
             <Route path="/garantee" element={<Garantee />} />
             <Route path="/promotion" element={<Promotion />} />
             <Route path="/news" element={<News />} />
+            <Route path="/order" element={<Order />} />
           </Route>
           <Route path="/signin" element={<Navigate to="/" replace />} />
         </>

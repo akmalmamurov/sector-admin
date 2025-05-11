@@ -431,7 +431,8 @@ export interface OrderProduct {
   count: number;
   price: number;
   product: {
-    title: string
+    title: string;
+    mainImage: string;
   }
   garantee?: {
     id: string;
@@ -484,6 +485,16 @@ export interface OrderDataFull {
     status: string;
     createdAt: Date;
   }[];
+  kontragent: {
+      ownershipForm: string,
+      inn: string,
+      pinfl: string,
+      legalAddress: string
+      countryOfRegistration: string,
+      name: string,
+      oked:string,
+
+    }
 }
 
 export interface UpdateOrderData {
@@ -491,9 +502,9 @@ export interface UpdateOrderData {
   paymentMethod?: string;
   orderPriceStatus?: string;
   deliveryMethod?: string;
-  orderDeliveryType?: string;
+  orderDeleveryType?: string;
   comment?: string;
-  validStartDate?: string;
-  validEndDate?: string;
+  validStartDate?: Date;
+  validEndDate?: Date;
   deletedAt?: Date;
 }

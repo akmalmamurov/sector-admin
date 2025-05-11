@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { Home,ShoppingBasket, Grid, LogOut, User2,  Earth, ListFilter, Image, MessageCircle, Shield, Percent, TrendingUp, Newspaper } from "lucide-react";
+import { Home,ShoppingBasket, Grid, LogOut, User2,  Earth, ListFilter, Image, MessageCircle, Shield, Percent, TrendingUp, Newspaper, ListOrdered, MessagesSquare } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { SidebarContent, SidebarMenu, SidebarMenuItem, } from "@/components/ui/sidebar";
 import { logo, logoXl } from "@/assets/images";
@@ -19,6 +19,8 @@ const menuItems = [
   { title: "Garantee", url: "/garantee", icon: Shield },
   { title: "Promotion", url: "/promotion", icon: Percent },
   { title: "News", url: "/news", icon: Newspaper },
+  { title: "Orders", url: "/order", icon: ListOrdered },
+  { title: "Requests", url: "/requests", icon: MessagesSquare },
   { title: "Users", url: "/users", icon: User2 },
 ];
 

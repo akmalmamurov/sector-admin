@@ -12,7 +12,6 @@ const News = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { data: newsData = [], isLoading, error } = useGetNews();
   const [tableElement, setTableElement] = useState<Partial<NewsData>>({});
-    console.log(newsData);
     
   const handleOpen = (element?: NewsData) => {
     setIsOpen(!isOpen);

@@ -138,8 +138,7 @@ export const NewsModal = ({ isOpen, handleOpen, element }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogContent
-        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[calc(100vh-100px)] overflow-y-auto`}
-      >
+        className={`${theme.bg} flex flex-col py-5 px-7 max-w-5xl h-[calc(100vh-100px)] overflow-y-auto`}>
         <DialogHeader>
           <DialogTitle className={theme.text}>
             <div className="flex gap-5">

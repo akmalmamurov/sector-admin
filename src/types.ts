@@ -417,3 +417,94 @@ export interface ErrorResponse {
 export interface NewsResponse { 
   data: NewsData[]
 }
+
+export interface OrderResponse {
+  data: OrderDataFull[]
+}
+
+export interface IOneOrderResponse {
+  data: OrderDataFull
+}
+
+export interface OrderProduct {
+  productId: string;
+  count: number;
+  price: number;
+  product: {
+    title: string;
+    mainImage: string;
+  }
+  garantee?: {
+    id: string;
+    title: string;
+    price: string;
+  };
+}
+
+
+export interface OrderDataFull {
+  id: string;
+  orderNumber: string;
+  agentId?: string;
+  contrAgentId: string;
+  userId: string;
+  city: string;
+  comment?: string;
+  deliveryMethod: string;
+  email: string;
+  fullname: string;
+  phone: string;
+  total: number;
+  orderType: string;
+  kontragentName?: string;
+  orderDeleveryType: string;
+  orderPriceStatus: string;
+  paymentMethod?: string;
+  validStartDate: string;
+  validEndDate: string;
+  createdAt: Date;
+  updatedAt: Date;
+  products?: OrderProduct[];
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  adminId?: string;
+  admin?: {
+    id: string;
+    name: string;
+  };
+  requests?: {
+    id: string;
+    topicCategory: string;
+    topic: string;
+    fullName: string;
+    email: string;
+    status: string;
+    createdAt: Date;
+  }[];
+  kontragent: {
+      ownershipForm: string,
+      inn: string,
+      pinfl: string,
+      legalAddress: string
+      countryOfRegistration: string,
+      name: string,
+      oked:string,
+
+    }
+}
+
+export interface UpdateOrderData {
+  orderType?: string;
+  paymentMethod?: string;
+  orderPriceStatus?: string;
+  deliveryMethod?: string;
+  orderDeleveryType?: string;
+  comment?: string;
+  validStartDate?: Date;
+  validEndDate?: Date;
+  deletedAt?: Date;
+}

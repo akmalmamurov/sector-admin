@@ -508,3 +508,44 @@ export interface UpdateOrderData {
   validEndDate?: Date;
   deletedAt?: Date;
 }
+// types.ts
+export interface RequestData {
+  id: string;
+  topicCategory: string;
+  topic: string;
+  fullName: string;
+  email: string;
+  requestNumber: string;
+  orderNumber?: string;
+  status: string;
+  createdAt: string;
+  messages: {
+    message: string;
+    userId?: string;
+    adminId?: string;
+    filePath?: string;
+    createdAt: string;
+  }[];
+}
+
+export interface RequestResponse {
+  status: number;
+  message: string;
+  data: {
+    requests: RequestData[];
+    total: number;
+    totalPages: number;
+    currentPage: number;
+  };
+}
+
+export interface ReplyRequestPayload {
+  id: string;
+  message: string;
+  status?: string;
+  file?: File;
+}
+
+export interface ErrorResponse {
+  message: string;
+}

@@ -24,7 +24,7 @@ export const ProductBrandCondition = ({
   handleBack,
   watch,
 }: Props) => {
-  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({});
+  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({limit: 1000});
   const { data: conditionData = [] } = useGetCondition();
   const { data: relevanceData = [] } = useGetRelevance();
   const { data: garanteeData = [] } = useGetGarantee();

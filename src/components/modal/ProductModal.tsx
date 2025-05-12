@@ -125,7 +125,7 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
     }
 
     if (element?.id) {
-      console.log("Updating product", data);
+      // console.log("Updating product", data);
       updateProduct(
         { id: element.id, data: formData },
         {
@@ -134,12 +134,12 @@ export const ProductModal = ({ isOpen, handleOpen, element }: Props) => {
             reset();
             localStorage.removeItem("editorImages");
             localStorage.removeItem("fullDescriptionImages");
-            console.log("Product updated successfully", formData);
+            // console.log("Product updated successfully", formData);
           },
         }
       );
     } else {
-      console.log("Creating product", data);
+      // console.log("Creating product", data);
       createProduct(formData, {
         onSuccess: () => {
           handleOpen();

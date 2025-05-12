@@ -15,10 +15,10 @@ export const useUpdateRelevance = () => {
   return useMutation<RelevanceResponse, AxiosError, { id: string; data: RelevanceRequest }>(
     {
       mutationFn: updateRelevance,
-      onSuccess: (res) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["relevance"] });
         toast.success( "Updated successfully!");
-        console.log("update", res);
+        // console.log("update", res);
         
       },
       onError: (error) => {

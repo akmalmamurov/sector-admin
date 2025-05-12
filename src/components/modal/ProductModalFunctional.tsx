@@ -139,7 +139,7 @@ export const ProductModalFunctional = ({
     }
 
     if (element?.id) {
-      console.log("Updating product", data);
+      // console.log("Updating product", data);
       updateProduct(
         { id: element.id, data: formData },
         {
@@ -148,12 +148,12 @@ export const ProductModalFunctional = ({
             reset();
             localStorage.removeItem("editorImages");
             localStorage.removeItem("fullDescriptionImages");
-            console.log("Product updated successfully", formData);
+            // console.log("Product updated successfully", formData);
           },
         }
       );
     } else {
-      console.log("Creating product", data);
+      // console.log("Creating product", data);
       createFunctional(formData, {
         onSuccess: () => {
           handleOpenFunctional();

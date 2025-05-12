@@ -15,10 +15,10 @@ export const useUpdateCondition = () => {
   return useMutation<ConditionResponse, AxiosError, { id: string; data: ConditionRequest }>(
     {
       mutationFn: updateCondition,
-      onSuccess: (res) => {
+      onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["condition"] });
         toast.success( "Updated successfully!");
-        console.log("update", res);
+        // console.log("update", res);
         
       },
       onError: (error) => {

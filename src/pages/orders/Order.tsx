@@ -4,10 +4,8 @@ import OrdersTable from "@/components/table/OrdersTable";
 import { TableTitle } from "@/components/title";
 import { usegetOrders } from "@/hooks/order/get-all-orders";
 import { OrderDataFull } from "@/types";
-import { useState } from "react";
 
 const Order = () => {
-    const [isOpen, setIsOpen] = useState(false);
     const { data: ordersData = [], isLoading, error } = usegetOrders();
   
   return (

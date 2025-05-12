@@ -50,7 +50,7 @@ export const CommentTable = ({ commentData }: Props) => {
   const { mutate: deleteComment} = useDeleteComment()
   const [replyData, setReplyData] = useState<{ id: string; message: string; } | null>(null);
 
-  console.log(commentData);
+  // console.log(commentData);
   
   useEffect(() => {
        if (replyData) {

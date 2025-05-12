@@ -17,7 +17,7 @@ const SignIn = () => {
   const { mutate: signIn } = useLogin();
 
   const onSubmit: SubmitHandler<UserLogin> = (data) => {
-    console.log(data);
+    // console.log(data);
     signIn(data);
   };
 

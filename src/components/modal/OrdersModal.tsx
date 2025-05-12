@@ -149,7 +149,7 @@ const OrdersModal: FC<IModalProps> = ({ orderData, handleOpen, open }) => {
       }
 
       if (Object.keys(updatedFields).length === 0) {
-        console.log("Hech qanday o'zgarish yo'q. Update qilinmaydi.");
+        // console.log("Hech qanday o'zgarish yo'q. Update qilinmaydi.");
         handleClose();
         return;
       }

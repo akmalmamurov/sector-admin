@@ -27,7 +27,7 @@ export const useAddProductToFilter = () => {
       toast.success("Updated successfully!");
     },
     onError: (error) => {
-      console.log(error);
+      // console.log(error);
 
       toast.error(`Error: ${error.message}`, { theme: "colored" });
     },

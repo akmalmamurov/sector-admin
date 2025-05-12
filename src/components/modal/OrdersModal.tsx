@@ -56,7 +56,7 @@ const OrdersModal: FC<IModalProps> = ({ orderData, handleOpen, open }) => {
   const theme = useCurrentColor();
   const { mutate: updateOrders } = useUpdateOrders();
 
-  const { register, handleSubmit, reset, control, setValue } = useForm<UpdateOrderData>({
+  const { register, handleSubmit, control, setValue } = useForm<UpdateOrderData>({
     defaultValues: {
       orderType: "",
       paymentMethod: "",

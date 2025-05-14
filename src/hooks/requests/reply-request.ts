@@ -18,7 +18,7 @@ const replyRequest = async ({ id, message, status, file }: ReplyRequestParams): 
 
   formData.append("message", message);
   if (status) formData.append("status", status);
-  if (file) formData.append("file", file);
+  if (file) formData.append("imageRequest", file);
 
   const response = await request.patch<{ data: RequestData }>(`/request/reply/${id}`, formData, {
     headers: {

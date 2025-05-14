@@ -122,7 +122,7 @@ const ReplyRequestModal: FC<IProps> = ({ requestData, open, setOpen }) => {
         </div>
 
         {/* Reply Form */}
-        <form onSubmit={handleSubmit} className="space-y-6 mt-6">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-2">
           <div>
             <label
               className="block text-sm font-semibold text-gray-700 mb-2"
@@ -168,7 +168,7 @@ const ReplyRequestModal: FC<IProps> = ({ requestData, open, setOpen }) => {
             >
               Прикрепите файл
             </label>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <Input
                 id="file"
                 type="file"

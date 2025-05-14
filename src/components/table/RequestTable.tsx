@@ -78,7 +78,7 @@ export const RequestTable = ({ requestData }: Props) => {
                 {item.email}
               </TableCell>
               <TableCell className={classNames("text-sm px-5 py-1", theme.text)}>
-                {item.orderNumber || "N/A"}
+                {item.orderNumber || "-"}
               </TableCell>
               <TableCell className={classNames("text-sm px-5 py-1", theme.text)}>
                 {item.status}

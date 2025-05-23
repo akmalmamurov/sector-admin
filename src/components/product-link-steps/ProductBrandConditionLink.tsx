@@ -29,11 +29,12 @@ export const ProductBrandConditionLink = ({
   setValue,
   linkData
 }: Props) => {
-  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({});
+  const { data: brandData = {data: {brands: [], total: 0, limitNumber: 0, pageNumber: 0}, error: null, status: 200} } = useGetBrand({limit: 1000});
   const { data: conditionData = [] } = useGetCondition();
   const { data: relevanceData = [] } = useGetRelevance();
   const { data: garanteeData = [] } = useGetGarantee();
 
+  console.log(brandData);
   const conditionId = watch("conditionId");
   const relevanceId = watch("relevanceId");
   const brandId = watch("brandId");
@@ -48,6 +49,8 @@ export const ProductBrandConditionLink = ({
       setValue("brandId", selectedBrand?.id);
     }
   }, [brandData, setValue, linkData]);
+  
+  
   const isNextDisabled = !relevanceId || !conditionId || !brandId;
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
